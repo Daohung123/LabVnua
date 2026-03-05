@@ -1,0 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:aqedu/env.dart';
+
+class Chat extends StatefulWidget {
+  const Chat({super.key});
+
+  @override
+  State<Chat> createState() => _ChatState();
+}
+
+class _ChatState extends State<Chat> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Text("Tro chuyen")
+    );
+  }
+}
