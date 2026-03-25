@@ -7,7 +7,7 @@ import 'package:aqedu/shared/widgets/appBar/scan.dart';
 import 'package:aqedu/shared/widgets/appBar/time_fomat.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/shared/widgets/Button/btn_Common.dart';
-import 'package:aqedu/features/schedure/screens/schedure.dart';
+import 'package:aqedu/features/schedure/screens/components/schedure.dart';
 import 'package:aqedu/shared/widgets/study_tool/study_tool.dart';
 class Home extends StatefulWidget {
   const Home({super.key});

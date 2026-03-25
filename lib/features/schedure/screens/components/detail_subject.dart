@@ -1,6 +1,6 @@
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:flutter/material.dart';
-import '../ctrls/ctrl_schedure.dart';
+import '../../ctrls/ctrl_schedure.dart';
 
 class DetailSubjectSchedure extends StatefulWidget {
   final int tuan;
