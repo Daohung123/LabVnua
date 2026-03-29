@@ -17,7 +17,7 @@ class _SchedureState extends State<Schedure> {
   @override
   void initState() {
     super.initState();
-    _future = getTkbToday(5); // 👉 đổi tuần nếu cần
+    _future = getTkbToday(); // 👉 đổi tuần nếu cần
   }
 
   @override

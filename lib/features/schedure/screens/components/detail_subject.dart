@@ -7,7 +7,7 @@ class DetailSubjectSchedure extends StatefulWidget {
 
   const DetailSubjectSchedure({
     super.key,
-    required this.tuan,
+    required this.tuan, required String nameSubject,
   });
 
   @override
@@ -22,7 +22,7 @@ class _DetailSubjectSchedureState
   @override
   void initState() {
     super.initState();
-    _future = getTkbToday(widget.tuan);
+    _future = getTkbToday();
   }
 
   @override

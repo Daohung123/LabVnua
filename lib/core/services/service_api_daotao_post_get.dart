@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../shared/models/sqlite/cookie_token_model.dart';
+import '../constants/env_api_daotao.dart';
 
 class ApiHelper {
   String? cookie;
@@ -19,7 +20,7 @@ class ApiHelper {
   Future<SessionModel?> login(String user, String pass) async {
     try {
       final auth = await http.get(
-        Uri.parse("https://daotao.vnua.edu.vn/api/auth/authconfig"),
+        Uri.parse(APIAUTH),
       );
 
       final rawCookie = auth.headers['set-cookie']!;
@@ -37,8 +38,7 @@ class ApiHelper {
           )
           .replaceAll("=", "%3D");
 
-      final url =
-          "https://daotao.vnua.edu.vn/api/pn-signin?code=$code&gopage=&mgr=1";
+      final url = APILOGIN(code);
 
       final req = http.Request("GET", Uri.parse(url))
         ..headers["cookie"] = rawCookie
@@ -75,7 +75,7 @@ class ApiHelper {
   /// GET API
   Future<dynamic> get(String path) async {
     final res = await http.get(
-      Uri.parse("https://daotao.vnua.edu.vn/api$path"),
+      Uri.parse("$APIDAOTAO$path"),
       headers: {"cookie": cookie ?? "", "authorization": "Bearer $token"},
     );
 
@@ -85,7 +85,7 @@ class ApiHelper {
   /// POST API
   Future<dynamic> post(String path, Map body) async {
     final res = await http.post(
-      Uri.parse("https://daotao.vnua.edu.vn/api$path"),
+      Uri.parse("$APIDAOTAO$path"),
       headers: {
         "cookie": cookie ?? "",
         "authorization": "Bearer $token",

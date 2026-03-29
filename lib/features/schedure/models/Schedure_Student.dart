@@ -4,7 +4,6 @@ class TkbResponse {
   final List<TietTrongNgay> dsTietTrongNgay;
   final List<TuanTkb> dsTuanTkb;
 
-  
   TkbResponse({
     required this.totalItems,
     required this.totalPages,
@@ -51,11 +50,15 @@ class TietTrongNgay {
 class TuanTkb {
   final int tuanHocKy;
   final String thongTinTuan;
+  final String ngayBatDau;
+  final String ngayKetThuc;
   final List<ThoiKhoaBieu> dsThoiKhoaBieu;
 
   TuanTkb({
     required this.tuanHocKy,
     required this.thongTinTuan,
+    required this.ngayBatDau,
+    required this.ngayKetThuc,
     required this.dsThoiKhoaBieu,
   });
 
@@ -63,6 +66,8 @@ class TuanTkb {
     return TuanTkb(
       tuanHocKy: json["tuan_hoc_ky"],
       thongTinTuan: json["thong_tin_tuan"],
+      ngayBatDau: json["ngay_bat_dau"],
+      ngayKetThuc: json["ngay_ket_thuc"],
       dsThoiKhoaBieu: (json["ds_thoi_khoa_bieu"] as List)
           .map((e) => ThoiKhoaBieu.fromJson(e))
           .toList(),

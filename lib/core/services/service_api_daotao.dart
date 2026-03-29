@@ -1,3 +1,4 @@
+import 'package:aqedu/core/constants/env_api_daotao.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import './service_api_daotao_post_get.dart';
 import 'dart:convert';
@@ -9,7 +10,7 @@ Future<TkbResponse?> core_services_get_TkbResponse(
   try {
     final api = ApiHelper.withSession(cookie, token);
 
-    final res = await api.post("/sch/w-locdstkbtuanusertheohocky", {
+    final res = await api.post(APISCHEDURE, {
       "filter": {"hoc_ky": 20252, "ten_hoc_ky": ""},
       "additional": {
         "paging": {"limit": 100, "page": 1},
