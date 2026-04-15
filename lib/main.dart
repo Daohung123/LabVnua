@@ -10,6 +10,6 @@ import 'app.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp( MaterialApp(home: MyWidget()));
 }
 

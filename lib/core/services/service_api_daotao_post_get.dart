@@ -65,7 +65,7 @@ class ApiHelper {
       token = currUser["access_token"];
 
       /// tạo SessionModel
-      return SessionModel(cookie: cookie!, token: token!);
+      return SessionModel(user:user, pass:pass, cookie: cookie!, token: token!);
     } catch (e) {
       print("Ngon Luon! Sai mat khau r");
       return null;

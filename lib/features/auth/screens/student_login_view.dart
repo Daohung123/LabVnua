@@ -1,6 +1,6 @@
 import 'package:aqedu/features/home/screens/student_home_screen_view.dart';
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/auth/services/ctrl_login.dart';
+import 'package:aqedu/features/auth/ctrls/ctrl_login.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,6 +43,16 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Đăng nhập thất bại",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override

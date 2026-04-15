@@ -9,78 +9,60 @@ import 'package:flutter/material.dart';
 import 'package:aqedu/shared/widgets/Button/btn_Common.dart';
 import 'package:aqedu/features/schedure/screens/components/schedure.dart';
 import 'package:aqedu/shared/widgets/study_tool/study_tool.dart';
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeStudent extends StatefulWidget {
+  const HomeStudent({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeStudent> createState() => _HomeStudentState();
 }
 
-class _HomeState extends State<Home> {
-
-
+class _HomeStudentState extends State<HomeStudent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff104492),
+        backgroundColor: const Color(0xff104492),
         toolbarHeight: 95,
         leadingWidth: 210,
         leading: Padding(
-          padding: EdgeInsetsGeometry.all(5),
-          child: Padding(
-            padding: EdgeInsetsGeometry.all(0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Avatar(),
-                    Container(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NameUser(),
-                        Text(
-                          "Welcome back!",
-                          style: TextStyle(color: Colors.white70, fontSize: 10),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Container(height: 5),
-                TimeFormat(
-                  leading: const Icon(Icons.access_time, size: 18),
-                  backgroundColor: Colors.white,
-                  textStyle: TextStyle(fontSize: 10, color: Colors.black),
-                ),
-              ],
-            ),
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Avatar(),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      NameUser(),
+                      Text(
+                        "Welcome back!",
+                        style: TextStyle(color: Colors.white70, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              const TimeFormat(
+                leading: Icon(Icons.access_time, size: 18),
+                backgroundColor: Colors.white,
+                textStyle: TextStyle(fontSize: 10, color: Colors.black),
+              ),
+            ],
           ),
         ),
         title: Align(
           alignment: Alignment.topRight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
+            children: const [
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [Noti(), Scan()],
               ),
-              // SizedBox(
-              //   height: 32,
-              //   width: width_screen_percent(context, 8),
-              //   child: btnCommon(
-              //     text: "Thêm tiện ích",
-              //     width_text: 8.5,
-              //     onPressed: () {
-              //       print('Them tien ich');
-              //     },
-              //     colors_background: Colors.white,
-              //     colors_text: Colors.black,
-              //   ),
-              // ),
               SizedBox(height: 2.5),
             ],
           ),
@@ -93,14 +75,14 @@ class _HomeState extends State<Home> {
         child: SingleChildScrollView(
           child: Center(
             child: Padding(
-              padding: EdgeInsetsGeometry.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
-                children: [
+                children: const [
                   Schedure(),
                   SizedBox(height: 10),
                   StudyTool(),
                 ],
-              )
+              ),
             ),
           ),
         ),

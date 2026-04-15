@@ -82,6 +82,7 @@ class ThoiKhoaBieu {
   final String tenMon;
   final String giangVien;
   final String phong;
+  final String ngayhoc;
 
   ThoiKhoaBieu({
     required this.thu,
@@ -90,6 +91,7 @@ class ThoiKhoaBieu {
     required this.tenMon,
     required this.giangVien,
     required this.phong,
+    required this.ngayhoc
   });
 
   factory ThoiKhoaBieu.fromJson(Map<String, dynamic> json) {
@@ -100,6 +102,7 @@ class ThoiKhoaBieu {
       tenMon: json["ten_mon"],
       giangVien: json["ten_giang_vien"],
       phong: json["ma_phong"],
+      ngayhoc: json["ngay_hoc"]
     );
   }
 }

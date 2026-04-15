@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // danh sách màn hình (không thay đổi) — dùng const khi có thể
   final List<Widget> _pages = const [
-    Home(),
+    HomeStudent(),
     Study(),
     Chat(),
     Other(),

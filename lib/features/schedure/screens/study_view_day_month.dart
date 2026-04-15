@@ -1,5 +1,5 @@
-import 'package:aqedu/config/env.dart';
-import 'package:aqedu/shared/models/daotao/tkb.dart'; 
+import 'package:aqedu/features/schedure/ctrls/ctrl_schedure.dart';
+import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,35 +14,25 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
   DateTime selectedDate = DateTime.now();
   final DateTime today = DateTime.now();
 
-  // 1. Dữ liệu mẫu (Giả lập dữ liệu từ database/API)
-  List<ThoiKhoaBieu> dummyData = [
-    ThoiKhoaBieu(
-      tenMon: "An toàn hệ thống thông tin",
-      tenGiangVien: "Nguyễn Thị Lan",
-      maPhong: "TT312-TT312",
-      tietBatDau: 2,
-      soTiet: 4,
-      ngayHoc: "2026-03-24", // Trùng ngày hôm nay
-    ),
-    ThoiKhoaBieu(
-      tenMon: "Kỹ năng quản lý bản thân",
-      tenGiangVien: "Trần Thị Thanh Tâm",
-      maPhong: "E201-",
-      tietBatDau: 6,
-      soTiet: 5,
-      ngayHoc: "2026-03-24",
-    ),
-  ];
+  late Future<List<ThoiKhoaBieu>> _future;
 
-  // 2. Hàm lọc dữ liệu theo ngày được chọn
-  List<ThoiKhoaBieu> _getFilteredData() {
-    String formattedSelected = DateFormat('yyyy-MM-dd').format(selectedDate);
-    // Ở bước này, nếu bạn muốn test việc thay đổi dữ liệu khi bấm ngày,
-    // bạn có thể trả về list rỗng cho các ngày không phải là 24/03/2026.
-    if (formattedSelected == "2026-03-24") {
-      return dummyData;
-    }
-    return []; // Trả về danh sách trống cho các ngày khác để thấy sự thay đổi
+  @override
+  void initState() {
+    super.initState();
+    _future = _loadData();
+  }
+
+  Future<List<ThoiKhoaBieu>> _loadData() async {
+    final ctrl = await CtrlSchedure.create();
+    return await ctrl.getTkbInSemester();
+  }
+  
+  // ✅ FILTER ĐÚNG
+  List<ThoiKhoaBieu> _getFilteredData(List<ThoiKhoaBieu> data) {
+    return data.where((item) {
+      return DateFormat('yyyy-MM-dd').format(DateTime.parse(item.ngayhoc)) ==
+          DateFormat('yyyy-MM-dd').format(selectedDate);
+    }).toList();
   }
 
   @override
@@ -54,24 +44,21 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
         appBar: AppBar(
           backgroundColor: const Color(0xff104492),
           elevation: 0,
-          title: const Text("Thời khóa biểu", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
+          title: const Text(
+            "Thời khóa biểu",
+            style: TextStyle(color: Colors.white),
           ),
           bottom: const TabBar(
-            tabs: [Tab(text: "Ngày"), Tab(text: "Tuần")],
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
+            tabs: [
+              Tab(text: "Ngày"),
+              Tab(text: "Tuần"),
+            ],
           ),
         ),
         body: TabBarView(
           children: [
             _buildDayView(),
-            const Center(child: Text("Giao diện xem theo Tuần")),
+            const Center(child: Text("Giao diện tuần")),
           ],
         ),
       ),
@@ -83,19 +70,43 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
       children: [
         _buildDateHeader(),
         _buildWeekStrip(),
-        const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Chi tiết thời khóa biểu", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ),
-        ),
+        const SizedBox(height: 10),
         Expanded(child: _buildSubjectList()),
       ],
     );
   }
 
-  // --- WIDGETS THÀNH PHẦN ---
+  // ================== DATA ==================
+
+  Widget _buildSubjectList() {
+    return FutureBuilder<List<ThoiKhoaBieu>>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return const Center(child: Text("Lỗi tải dữ liệu"));
+        }
+
+        final data = snapshot.data ?? [];
+        final list = _getFilteredData(data);
+
+        if (list.isEmpty) {
+          return const Center(child: Text("Không có lịch học"));
+        }
+
+        return ListView.builder(
+          itemCount: list.length,
+          padding: const EdgeInsets.all(16),
+          itemBuilder: (context, index) => _buildSubjectCard(list[index]),
+        );
+      },
+    );
+  }
+
+  // ================== UI ==================
 
   Widget _buildDateHeader() {
     return Padding(
@@ -103,90 +114,74 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavBtn("Trước", Icons.arrow_back_ios, () {
-            setState(() => selectedDate = selectedDate.subtract(const Duration(days: 1)));
-          }),
-          InkWell(
-            onTap: () async {
-              DateTime? picked = await showDatePicker(
-                context: context,
-                initialDate: selectedDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-              );
-              if (picked != null) setState(() => selectedDate = picked);
+          IconButton(
+            onPressed: () {
+              setState(() {
+                selectedDate = selectedDate.subtract(const Duration(days: 1));
+              });
             },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(color: Colors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-              child: Row(
-                children: [
-                  Text(DateFormat('dd/MM/yyyy').format(selectedDate), style: const TextStyle(color: Color(0xff104492), fontWeight: FontWeight.bold)),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.calendar_month, size: 20, color: Color(0xff104492)),
-                ],
-              ),
-            ),
+            icon: const Icon(Icons.arrow_back),
           ),
-          _buildNavBtn("Sau", Icons.arrow_forward_ios, () {
-            setState(() => selectedDate = selectedDate.add(const Duration(days: 1)));
-          }, isLeading: false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavBtn(String text, IconData icon, VoidCallback onTap, {bool isLeading = true}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          if (isLeading) Icon(icon, size: 14),
-          Text(text, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xff104492))),
-          if (!isLeading) Icon(icon, size: 14),
+          Text(
+            DateFormat('dd/MM/yyyy').format(selectedDate),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                selectedDate = selectedDate.add(const Duration(days: 1));
+              });
+            },
+            icon: const Icon(Icons.arrow_forward),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildWeekStrip() {
-    DateTime firstDayOfWeek = selectedDate.subtract(Duration(days: selectedDate.weekday - 1));
+    DateTime firstDay = selectedDate.subtract(
+      Duration(days: selectedDate.weekday - 1),
+    );
 
-    return Container(
-      height: 100,
-      color: Colors.white,
+    return SizedBox(
+      height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 7,
         itemBuilder: (context, index) {
-          DateTime date = firstDayOfWeek.add(Duration(days: index));
-          bool isSelected = date.day == selectedDate.day && date.month == selectedDate.month;
-          bool isToday = date.day == today.day && date.month == today.month && date.year == today.year;
+          DateTime date = firstDay.add(Duration(days: index));
+
+          bool isSelected =
+              DateFormat('yyyy-MM-dd').format(date) ==
+              DateFormat('yyyy-MM-dd').format(selectedDate);
 
           return GestureDetector(
-            onTap: () => setState(() => selectedDate = date),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 7,
+            onTap: () {
+              setState(() {
+                selectedDate = date;
+              });
+            },
+            child: Container(
+              width: 50,
+              alignment: Alignment.center,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Th${index + 2 == 8 ? '7' : index + 2}",
-                      style: TextStyle(fontSize: 12, color: isSelected ? Colors.blue : (isToday ? Colors.green : Colors.grey))),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: isToday ? Border.all(color: Colors.green, width: 2) : null,
-                    ),
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: isSelected ? const Color(0xff104492) : Colors.transparent,
-                      child: Text("${date.day}",
-                          style: TextStyle(color: isSelected ? Colors.white : (isToday ? Colors.green : Colors.black), fontWeight: FontWeight.bold)),
+                  Text("T${date.weekday}"),
+                  const SizedBox(height: 5),
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: isSelected
+                        ? const Color(0xff104492)
+                        : Colors.transparent,
+                    child: Text(
+                      "${date.day}",
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
-                  if (isToday) Container(margin: const EdgeInsets.only(top: 4), width: 4, height: 4, decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle))
                 ],
               ),
             ),
@@ -196,83 +191,25 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
     );
   }
 
-  Widget _buildSubjectList() {
-    final list = _getFilteredData();
-    if (list.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.calendar_today_outlined, size: 80, color: Colors.grey[300]),
-            const SizedBox(height: 16),
-            const Text("Không có lịch học cho hôm nay", style: TextStyle(color: Color(0xff104492), fontWeight: FontWeight.bold)),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      itemCount: list.length,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemBuilder: (context, index) => _buildSubjectCard(list[index]),
-    );
-  }
-
   Widget _buildSubjectCard(ThoiKhoaBieu item) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
-      child: IntrinsicHeight(
-        child: Row(
+    int tietEnd = item.tietBatDau + item.soTiet - 1;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        title: Text(
+          item.tenMon,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 90,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(color: Colors.grey[100], borderRadius: const BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Thời gian", style: TextStyle(fontSize: 11, color: Colors.grey)),
-                  const SizedBox(height: 4),
-                  Text(item.tietBatDau! < 5 ? "07:55" : "12:45", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  Text(item.tietBatDau! < 5 ? "11:40" : "17:25", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(height: 3, width: 40, decoration: BoxDecoration(color: const Color(0xff104492), borderRadius: BorderRadius.circular(10))),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.tenMon ?? "", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xff104492))),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Text("Tiết: ", style: TextStyle(fontSize: 13)),
-                        Wrap(spacing: 4, children: List.generate(item.soTiet ?? 0, (i) => _buildBadge("${item.tietBatDau! + i}"))),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text("Phòng: ${item.maPhong}", style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                    Text("GV: ${item.tenGiangVien}", style: const TextStyle(color: Colors.green, fontWeight: FontWeight.w600, fontSize: 13)),
-                  ],
-                ),
-              ),
-            )
+            Text("Tiết: ${item.tietBatDau} - $tietEnd"),
+            Text("Phòng: ${item.phong}"),
+            Text("GV: ${item.giangVien}"),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBadge(String txt) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(color: const Color(0xff104492), borderRadius: BorderRadius.circular(5)),
-      child: Text(txt, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
     );
   }
 }

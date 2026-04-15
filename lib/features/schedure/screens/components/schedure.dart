@@ -4,6 +4,7 @@ import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/shared/widgets/Text/text_common.dart';
 import 'package:flutter/material.dart';
 import '../../ctrls/ctrl_schedure.dart';
+
 class Schedure extends StatefulWidget {
   const Schedure({super.key});
 
@@ -17,7 +18,12 @@ class _SchedureState extends State<Schedure> {
   @override
   void initState() {
     super.initState();
-    _future = getTkbToday(); // 👉 đổi tuần nếu cần
+    _future = loadData();
+  }
+
+  Future<List<ThoiKhoaBieu>> loadData() async {
+    final ctrl = await CtrlSchedure.create();
+    return await ctrl.getTkbToday();
   }
 
   @override
@@ -80,32 +86,25 @@ class _SchedureState extends State<Schedure> {
                 future: _future,
                 builder: (context, snapshot) {
                   /// ⏳ Loading
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   /// ❌ Lỗi
                   if (snapshot.hasError) {
-                    return const Center(
-                      child: Text("Có lỗi xảy ra"),
-                    );
+                    return const Center(child: Text("Có lỗi xảy ra"));
                   }
 
                   final list = snapshot.data ?? [];
 
                   /// 📭 Không có dữ liệu
                   if (list.isEmpty) {
-                    return const Center(
-                      child: Text("Không có lịch học"),
-                    );
+                    return const Center(child: Text("Không có lịch học"));
                   }
 
                   /// ✅ Scroll ngang
                   return ListView.builder(
-                    scrollDirection: Axis.horizontal,
+                    scrollDirection: Axis.vertical,
                     physics: const BouncingScrollPhysics(),
                     itemCount: list.length,
                     itemBuilder: (context, index) {
@@ -144,10 +143,7 @@ class _SchedureState extends State<Schedure> {
           /// 📘 Tên môn
           Text(
             mon.tenMon,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
 
           const SizedBox(height: 6),
@@ -155,8 +151,7 @@ class _SchedureState extends State<Schedure> {
           /// ⏰ Tiết học
           Row(
             children: [
-              const Icon(Icons.access_time,
-                  size: 16, color: Colors.grey),
+              const Icon(Icons.access_time, size: 16, color: Colors.grey),
               const SizedBox(width: 5),
               Text(
                 "Tiết ${mon.tietBatDau}",
@@ -170,13 +165,9 @@ class _SchedureState extends State<Schedure> {
           /// 🏫 Phòng
           Row(
             children: [
-              const Icon(Icons.location_on,
-                  size: 16, color: Colors.grey),
+              const Icon(Icons.location_on, size: 16, color: Colors.grey),
               const SizedBox(width: 5),
-              Text(
-                "Phòng: ${mon.phong}",
-                style: const TextStyle(fontSize: 13),
-              ),
+              Text("Phòng: ${mon.phong}", style: const TextStyle(fontSize: 13)),
             ],
           ),
 
@@ -185,10 +176,7 @@ class _SchedureState extends State<Schedure> {
           /// 👨‍🏫 Giảng viên
           Text(
             mon.giangVien,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],
       ),
