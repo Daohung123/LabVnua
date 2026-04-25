@@ -1,4 +1,4 @@
-import "package:aqedu/features/infor_student/ctrls/ctrls_inforStudent.dart";
+import "package:aqedu/features/infor/ctrls/ctrls_inforStudent.dart";
 import "package:flutter/material.dart";
 
 class MyWidget extends StatefulWidget {
