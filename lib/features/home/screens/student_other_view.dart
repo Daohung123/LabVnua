@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/config/env.dart';
 
 class Other extends StatefulWidget {
   const Other({super.key});

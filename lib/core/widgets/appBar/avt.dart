@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/home/screens/student_home_view.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:aqedu/config/env.dart';
+import 'package:aqedu/core/constants/env.dart';
 class Avatar extends StatefulWidget {
   const Avatar({super.key});
 

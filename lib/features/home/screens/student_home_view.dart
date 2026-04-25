@@ -1,14 +1,12 @@
-import 'package:aqedu/config/env.dart';
-import 'package:aqedu/shared/widgets/Button/btn_Common.dart';
-import 'package:aqedu/shared/widgets/appBar/avt.dart';
-import 'package:aqedu/shared/widgets/appBar/name_user.dart';
-import 'package:aqedu/shared/widgets/appBar/notification.dart';
-import 'package:aqedu/shared/widgets/appBar/scan.dart';
-import 'package:aqedu/shared/widgets/appBar/time_fomat.dart';
+import 'package:aqedu/core/constants/UI/styles/colors.dart';
+import 'package:aqedu/core/widgets/appBar/avt.dart';
+import 'package:aqedu/core/widgets/appBar/name_user.dart';
+import 'package:aqedu/core/widgets/appBar/notification.dart';
+import 'package:aqedu/core/widgets/appBar/scan.dart';
+import 'package:aqedu/core/widgets/appBar/time_fomat.dart';
 import 'package:flutter/material.dart';
-import 'package:aqedu/shared/widgets/Button/btn_Common.dart';
 import 'package:aqedu/features/schedure/screens/components/schedure.dart';
-import 'package:aqedu/shared/widgets/study_tool/study_tool.dart';
+import 'package:aqedu/core/widgets/study_tool/study_tool.dart';
 class HomeStudent extends StatefulWidget {
   const HomeStudent({super.key});
 

@@ -1,10 +1,11 @@
-import 'package:aqedu/core/constants/env_api_daotao.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
-import './service_api_daotao_post_get.dart';
 import 'dart:convert';
-import '../../features/auth/ctrls/ctrl_login.dart';
-import '../../config/config_DB.dart';
-import '../../shared/models/sqlite/cookie_token_model.dart';
+
+import 'package:aqedu/core/constants/api/api_daotao.dart';
+import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/services/api_daotao/auth/reLogin.dart';
+import 'package:aqedu/core/services/api_daotao/root_daotao/daotao_post_get.dart';
+import 'package:aqedu/core/services/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 
 Future<TkbResponse?> core_services_get_TkbResponse(
   String cookie,
@@ -44,7 +45,7 @@ Future<TkbResponse?> core_services_get_TkbResponse(
         print("Lỗi đăng nhập");
         return null;
       }
-      DBHelper db = DBHelper();
+      SqliteServices db = SqliteServices();
       SessionModel? sqlite = await db.getSession();
       if (sqlite == null) {
         print("Không lấy được session");
@@ -75,7 +76,7 @@ Future<TkbResponse?> core_services_get_TkbResponse(
           print("Lỗi đăng nhập");
           return null;
         }
-        DBHelper db = DBHelper();
+        SqliteServices db = SqliteServices();
         SessionModel? sqlite = await db.getSession();
         if (sqlite == null) {
           print("Không lấy được session");
@@ -103,33 +104,4 @@ Future<TkbResponse?> core_services_get_TkbResponse(
     print("Lỗi lấy TKB: $e");
     return null;
   }
-}
-
-Future<bool> reLogin() async {
-  DBHelper sqlite = DBHelper();
-  SessionModel? customer = await sqlite.getSession();
-  if (customer == null) {
-    print("Lỗi dữ liệu customer null!!");
-    return false;
-  }
-  return await ctrl_login(customer.user, customer.pass);
-}
-
-Future<bool> checkLogin() async {
-  DBHelper db = DBHelper();
-  SessionModel? customer = await db.getSession();
-  print("user: ${customer!.user}");
-  print("pass: ${customer!.pass}");
-  print("cookie: ${customer!.cookie}");
-  print("token: ${customer!.token}");
-  bool checkCount = await db.checkLogin();
-  if (checkCount != true) {
-    print("Lỗi count sql: ${checkCount}");
-    return false;
-  }
-  if (customer == null) {
-    print("Lỗi dữ liệu customer null!!");
-    return false;
-  }
-  return await ctrl_login(customer.user, customer.pass);
 }

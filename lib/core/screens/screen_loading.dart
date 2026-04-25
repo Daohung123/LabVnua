@@ -1,4 +1,3 @@
-import 'package:aqedu/core/services/service_api_daotao.dart';
 import 'package:flutter/material.dart';
 
 class ScreenLoading extends StatefulWidget {
@@ -35,6 +34,5 @@ class _ScreenLoadingState extends State<ScreenLoading> {
         ],
       ),
     );
-    ;
   }
 }

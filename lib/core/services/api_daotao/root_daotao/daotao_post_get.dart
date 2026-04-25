@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../shared/models/sqlite/cookie_token_model.dart';
-import '../constants/env_api_daotao.dart';
+import '../../../models/sqlite/Session.dart';
+import '../../../constants/api/api_daotao.dart';
 
 class ApiHelper {
   String? cookie;
   String? token;
 
-  ApiHelper() {}
+  ApiHelper();
   ApiHelper.withSession(String cookie_in, String token_in) {
-    this.cookie = cookie_in;
-    this.token = token_in;
+    cookie = cookie_in;
+    token = token_in;
   }
 
   String _getCookie(String raw, String key) =>

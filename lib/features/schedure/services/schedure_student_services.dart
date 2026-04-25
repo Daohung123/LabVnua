@@ -1,5 +1,4 @@
-import 'package:aqedu/core/services/service_api_daotao.dart';
-import 'package:aqedu/shared/services/cookie_token_services_shared.dart';
+import 'package:aqedu/core/services/api_daotao/schedure/getTkbResponse.dart';
 import "../models/Schedure_Student.dart";
 import 'package:intl/intl.dart';
 
@@ -46,7 +45,7 @@ class TkbService {
       final fomatTime = DateFormat('dd/MM/yyyy');
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
-      final dsTkbTuan = await tkb.dsTuanTkb;
+      final dsTkbTuan = tkb.dsTuanTkb;
 
       for (var item in dsTkbTuan) {
         DateTime startDate = fomatTime.parse(item.ngayBatDau);

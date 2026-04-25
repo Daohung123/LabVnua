@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/config/env.dart';
+import 'package:aqedu/core/constants/env.dart';
 class ContainerMod1 extends StatefulWidget {
   final double my_width;
   final double my_heigth;

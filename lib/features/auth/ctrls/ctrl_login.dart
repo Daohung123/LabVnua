@@ -1,9 +1,9 @@
-import '../../../config/config_DB.dart';
-import 'package:aqedu/core/services/service_api_daotao_post_get.dart';
-import 'package:aqedu/shared/models/sqlite/cookie_token_model.dart';
+import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/services/api_daotao/root_daotao/daotao_post_get.dart';
+import 'package:aqedu/core/services/sqlite/sessions/core_service_session.dart';
 
 Future<bool> ctrl_login(String username, String password) async {
-  DBHelper sqlite = DBHelper();
+  SqliteServices sqlite = SqliteServices();
   ApiHelper daotao = ApiHelper();
   SessionModel? res = await daotao.login(username, password);
   if (res == null) return false;

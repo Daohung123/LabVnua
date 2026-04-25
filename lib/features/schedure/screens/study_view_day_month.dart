@@ -26,7 +26,7 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
     final ctrl = await CtrlSchedure.create();
     return await ctrl.getTkbInSemester();
   }
-  
+
   // ✅ FILTER ĐÚNG
   List<ThoiKhoaBieu> _getFilteredData(List<ThoiKhoaBieu> data) {
     return data.where((item) {
@@ -155,7 +155,8 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
           bool isSelected =
               DateFormat('yyyy-MM-dd').format(date) ==
               DateFormat('yyyy-MM-dd').format(selectedDate);
-
+          String thu = "T${date.weekday + 1}";
+          if (date.weekday == 7) thu = "CN";
           return GestureDetector(
             onTap: () {
               setState(() {
@@ -168,7 +169,7 @@ class _StudyViewDayMothState extends State<StudyViewDayMoth> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("T${date.weekday}"),
+                  Text(thu),
                   const SizedBox(height: 5),
                   CircleAvatar(
                     radius: 18,

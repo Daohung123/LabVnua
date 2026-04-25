@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class TimeFormat extends StatefulWidget {
   const TimeFormat({
-    Key? key,
+    super.key,
     this.showDate = true,
     this.showSeconds = true,
     this.textStyle,
@@ -11,7 +11,7 @@ class TimeFormat extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     this.leading,
     this.borderRadius = 12.0,
-  }) : super(key: key);
+  });
 
   /// Short helper to use the common default.
   static Widget common() => const TimeFormat();

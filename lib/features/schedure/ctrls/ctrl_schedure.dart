@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:aqedu/core/services/service_api_daotao.dart';
-import 'package:aqedu/shared/services/cookie_token_services_shared.dart';
+
+import 'package:aqedu/core/services/api_daotao/schedure/getTkbResponse.dart';
+import 'package:aqedu/core/services/sqlite/sessions/services_get_cookie_token.dart';
 import '../models/Schedure_Student.dart';
 import '../services/schedure_student_services.dart';
 

@@ -1,0 +1,13 @@
+import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/services/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/features/auth/ctrls/ctrl_login.dart';
+
+Future<bool> reLogin() async {
+  SqliteServices sqlite = SqliteServices();
+  SessionModel? customer = await sqlite.getSession();
+  if (customer == null) {
+    print("Lỗi dữ liệu customer null!!");
+    return false;
+  }
+  return await ctrl_login(customer.user, customer.pass);
+}

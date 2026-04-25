@@ -1,7 +1,9 @@
-import 'package:aqedu/config/env.dart';
+import 'package:aqedu/core/constants/UI/styles/colors.dart';
+import 'package:aqedu/core/constants/env.dart';
+import 'package:aqedu/core/constants/UI/sizes/size_function.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
-import 'package:aqedu/shared/widgets/Text/text_common.dart';
+import 'package:aqedu/core/widgets/Text/text_common.dart';
 import 'package:flutter/material.dart';
 import '../../ctrls/ctrl_schedure.dart';
 

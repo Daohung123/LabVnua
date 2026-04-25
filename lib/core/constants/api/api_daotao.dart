@@ -3,7 +3,7 @@
 String APIDAOTAO = "https://daotao.vnua.edu.vn/api";
 
 //Api đăng nhập
-String APIAUTH = "${APIDAOTAO}/auth/authconfig";
+String APIAUTH = "$APIDAOTAO/auth/authconfig";
 String APILOGIN (final code){
 return "https://daotao.vnua.edu.vn/api/pn-signin?code=$code&gopage=&mgr=1";
 }

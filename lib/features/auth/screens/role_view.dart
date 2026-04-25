@@ -1,4 +1,3 @@
-import 'package:aqedu/features/home/screens/student_home_screen_view.dart';
 import 'package:aqedu/features/auth/screens/student_login_view.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,7 @@
-import 'package:aqedu/config/env.dart';
-import 'package:aqedu/shared/widgets/Button/btn_Icon.dart';
-import 'package:aqedu/shared/widgets/Text/text_common.dart';
+import 'package:aqedu/core/constants/env.dart';
+import 'package:aqedu/core/constants/UI/sizes/size_function.dart';
+import 'package:aqedu/core/widgets/Button/btn_Icon.dart';
+import 'package:aqedu/core/widgets/Text/text_common.dart';
 import 'package:flutter/material.dart';
 
 class StudyTool extends StatefulWidget {
