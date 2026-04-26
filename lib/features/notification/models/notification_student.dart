@@ -1,7 +1,7 @@
 class NotificationResponse {
   final NotificationData? data;
 
-  NotificationResponse({this.data});
+  NotificationResponse({this.data});//constructor == ham khoi tao 
 
   factory NotificationResponse.fromJson(Map<String, dynamic> json) {
     return NotificationResponse(

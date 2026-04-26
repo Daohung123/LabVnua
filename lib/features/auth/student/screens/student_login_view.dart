@@ -1,6 +1,6 @@
 import 'package:aqedu/features/home/screens/student_home_screen_view.dart';
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/auth/ctrls/ctrl_login.dart';
+import 'package:aqedu/features/auth/student/ctrls/ctrl_login_Student.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

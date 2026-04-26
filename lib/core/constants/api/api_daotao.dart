@@ -8,5 +8,8 @@ String APILOGIN (final code){
 return "https://daotao.vnua.edu.vn/api/pn-signin?code=$code&gopage=&mgr=1";
 }
 
-//Api Thời khóa biểu 
-String APISCHEDURE ="/sch/w-locdstkbtuanusertheohocky";
+
+String APISCHEDURE ="/sch/w-locdstkbtuanusertheohocky";//Api Thời khóa biểu 
+String APIREGISTER ="";
+String APISCOREDATA ="/srm/w-locdsdiemsinhvien?hien_thi_mon_theo_hkdk=false";//Api điểm
+String APINOTIFICATION ="";

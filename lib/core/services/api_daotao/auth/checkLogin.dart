@@ -1,6 +1,6 @@
 import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:aqedu/core/services/sqlite/sessions/core_service_session.dart';
-import 'package:aqedu/features/auth/ctrls/ctrl_login.dart';
+import 'package:aqedu/features/auth/student/ctrls/ctrl_login_Student.dart';
 
 Future<bool> checkLogin() async {
   SqliteServices db = SqliteServices();
