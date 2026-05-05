@@ -1,4 +1,5 @@
 import 'package:aqedu/core/services/api_daotao/schedure/getTkbResponse.dart';
+
 import "../models/Schedure_Student.dart";
 import 'package:intl/intl.dart';
 
@@ -45,7 +46,7 @@ class TkbService {
       final fomatTime = DateFormat('dd/MM/yyyy');
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
-      final dsTkbTuan = tkb.dsTuanTkb;
+      final dsTkbTuan = await tkb.dsTuanTkb;
 
       for (var item in dsTkbTuan) {
         DateTime startDate = fomatTime.parse(item.ngayBatDau);
