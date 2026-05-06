@@ -1,4 +1,4 @@
-import 'package:aqedu/core/services/api_daotao/schedure/getTkbResponse.dart';
+import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
 
 import "../models/Schedure_Student.dart";
 import 'package:intl/intl.dart';

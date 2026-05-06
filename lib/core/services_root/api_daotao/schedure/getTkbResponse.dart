@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
 import 'package:aqedu/core/models/sqlite/Session.dart';
-import 'package:aqedu/core/services/api_daotao/auth/reLogin.dart';
-import 'package:aqedu/core/services/api_daotao/root_daotao/daotao_post_get.dart';
-import 'package:aqedu/core/services/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/core/services_root/api_daotao/auth/reLogin.dart';
+import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 
 Future<TkbResponse?> core_services_get_TkbResponse(

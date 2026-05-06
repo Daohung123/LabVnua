@@ -1,12 +1,20 @@
+import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/notification/ctrls/ctrl_noti_student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../models/notification_student.dart';
 
-class NotificationView extends StatelessWidget {
+class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
 
+  @override
+  State<NotificationView> createState() => _NotificationViewState();
+}
+
+class _NotificationViewState extends State<NotificationView> {
   static const Color _bgTop = Color(0xFFF4F7FB);
   static const Color _bgBottom = Color(0xFFE9EAEC);
   static const Color _cardColor = Colors.white;
@@ -14,17 +22,68 @@ class NotificationView extends StatelessWidget {
   static const Color _brandColorSoft = Color(0xFFEAF1FF);
   static const Color _textDark = Color(0xFF1F2937);
   static const Color _textMuted = Color(0xFF6B7280);
-  static const Color _success = Color(0xFF10B981);
   static const Color _warning = Color(0xFFF2994A);
   static const Color _danger = Color(0xFFEB5757);
 
+  late Future<List<NotificationItem>> _futureNotifications;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureNotifications = _loadNotifications();
+  }
+
+  Future<List<NotificationItem>> _loadNotifications() async {
+    try {
+      final db = SqliteServices();
+      final SessionModel? session = await db.getSession();
+
+      if (session == null) {
+        return [];
+      }
+
+      final ctrl = CtrlNotiStudent(session.cookie, session.token);
+      return await ctrl.getNotification();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Widget _buildHtmlContent(
+    String? html, {
+    double fontSize = 13.5,
+    double? height,
+  }) {
+    final widget = Html(
+      data: html ?? 'Không có nội dung',
+      style: {
+        "body": Style(
+          margin: Margins.zero,
+          padding: HtmlPaddings.zero,
+          fontSize: FontSize(fontSize),
+          color: _textMuted,
+        ),
+        "p": Style(
+          margin: Margins.zero,
+          padding: HtmlPaddings.zero,
+        ),
+      },
+    );
+
+    if (height != null) {
+      return ClipRect(
+        child: SizedBox(
+          height: height,
+          child: widget,
+        ),
+      );
+    }
+
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<NotificationItem> notifications = getNotification();
-    final int unreadCount = notifications
-        .where((e) => !(e.isDaDoc ?? false))
-        .length;
-
     return Scaffold(
       backgroundColor: _bgBottom,
       appBar: AppBar(
@@ -53,26 +112,52 @@ class NotificationView extends StatelessWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-                child: _buildHeader(context, notifications.length, unreadCount),
-              ),
-              Expanded(
-                child: notifications.isEmpty
-                    ? _buildEmptyState()
-                    : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                        itemCount: notifications.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final item = notifications[index];
-                          return _buildNotificationCard(context, item);
-                        },
-                      ),
-              ),
-            ],
+          child: FutureBuilder<List<NotificationItem>>(
+            future: _futureNotifications,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Có lỗi khi tải thông báo'),
+                );
+              }
+
+              final List<NotificationItem> notifications = snapshot.data ?? [];
+              final int unreadCount =
+                  notifications.where((e) => !(e.isDaDoc ?? false)).length;
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                    child: _buildHeader(
+                      context,
+                      notifications.length,
+                      unreadCount,
+                    ),
+                  ),
+                  Expanded(
+                    child: notifications.isEmpty
+                        ? _buildEmptyState()
+                        : ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                            itemCount: notifications.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 12),
+                            itemBuilder: (context, index) {
+                              final item = notifications[index];
+                              return _buildNotificationCard(context, item);
+                            },
+                          ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -272,9 +357,8 @@ class NotificationView extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 item.ngayGui != null
-                                    ? DateFormat(
-                                        'dd/MM/yyyy',
-                                      ).format(item.ngayGui!)
+                                    ? DateFormat('dd/MM/yyyy')
+                                        .format(item.ngayGui!)
                                     : '--/--',
                                 style: const TextStyle(
                                   fontSize: 11.5,
@@ -285,15 +369,10 @@ class NotificationView extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            item.noiDung ?? 'Không có nội dung',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13.5,
-                              height: 1.4,
-                              color: _textMuted,
-                            ),
+                          _buildHtmlContent(
+                            item.noiDung,
+                            fontSize: 13.5,
+                            height: 42,
                           ),
                           const SizedBox(height: 12),
                           Row(
@@ -371,128 +450,129 @@ class NotificationView extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: _bgBottom,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 10,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 46,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD1D5DB),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: _cardColor,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
+        return DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.4,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: _bgBottom,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              ),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+              child: SafeArea(
+                top: false,
+                child: SingleChildScrollView(
+                  controller: scrollController,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        item.tieuDe ?? 'Không có tiêu đề',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: _textDark,
-                          height: 1.3,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _infoChip(
-                            icon: Icons.person_outline_rounded,
-                            label: item.nguoiGui ?? 'N/A',
-                          ),
-                          _infoChip(
-                            icon: Icons.calendar_today_rounded,
-                            label: item.ngayGui != null
-                                ? DateFormat('dd/MM/yyyy').format(item.ngayGui!)
-                                : '--/--',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      Text(
-                        item.noiDung ?? 'Không có nội dung',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.55,
-                          color: _textMuted,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      if ((item.dsDoiTuong ?? []).isNotEmpty) ...[
-                        const Text(
-                          'Đối tượng nhận',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w800,
-                            color: _textDark,
+                      Center(
+                        child: Container(
+                          width: 46,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD1D5DB),
+                            borderRadius: BorderRadius.circular(100),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: (item.dsDoiTuong ?? []).map((e) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 6,
+                      ),
+                      const SizedBox(height: 18),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: _cardColor,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 16,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.tieuDe ?? 'Không có tiêu đề',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                                color: _textDark,
+                                height: 1.3,
                               ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF3F4F6),
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                e,
-                                style: const TextStyle(
-                                  fontSize: 12,
+                            ),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                _infoChip(
+                                  icon: Icons.person_outline_rounded,
+                                  label: item.nguoiGui ?? 'N/A',
+                                ),
+                                _infoChip(
+                                  icon: Icons.calendar_today_rounded,
+                                  label: item.ngayGui != null
+                                      ? DateFormat('dd/MM/yyyy')
+                                          .format(item.ngayGui!)
+                                      : '--/--',
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            _buildHtmlContent(
+                              item.noiDung,
+                              fontSize: 14,
+                            ),
+                            const SizedBox(height: 14),
+                            if ((item.dsDoiTuong ?? []).isNotEmpty) ...[
+                              const Text(
+                                'Đối tượng nhận',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
                                   color: _textDark,
-                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            );
-                          }).toList(),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: (item.dsDoiTuong ?? []).map((e) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF3F4F6),
+                                      borderRadius: BorderRadius.circular(999),
+                                    ),
+                                    child: Text(
+                                      e,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: _textDark,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ],
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
