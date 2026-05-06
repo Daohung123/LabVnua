@@ -2,6 +2,7 @@ import 'package:aqedu/core/constants/env.dart';
 import 'package:aqedu/core/constants/UI/sizes/size_function.dart';
 import 'package:aqedu/core/widgets/Button/btn_Icon.dart';
 import 'package:aqedu/core/widgets/Text/text_common.dart';
+import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:flutter/material.dart';
 
 class StudyTool extends StatefulWidget {
@@ -35,15 +36,62 @@ class _StudyToolState extends State<StudyTool> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     spacing: 15,
                     children: [
-                      ButtonImage(text: "TKB ngày",onPressed: (){print("TKB ngày");},imagePath: "assets/calendar.png",size: 40),
-                      ButtonImage(text: "Lịch thi",onPressed: (){print("Lịch thi");},imagePath: "assets/schedule.png",size: 40),
-                      ButtonImage(text: "ĐKMH",onPressed: (){print("ĐKMH");},imagePath: "assets/text-books.png",size: 40),
-                      ButtonImage(text: "Hồ sơ",onPressed: (){print("Hồ sơ");},imagePath: "assets/profile.png",size: 40),
-                      ButtonImage(text: "Điểm thi",onPressed: (){print("Điểm thi");},imagePath: "assets/score.png",size: 40),
-                      ButtonImage(text: "Thêm",onPressed: (){print("Thêm");},imagePath: "assets/plus.png",size: 40),
+                      ButtonImage(
+                        text: "TKB ngày",
+                        onPressed: () {
+                          print("TKB ngày");
+                        },
+                        imagePath: "assets/calendar.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "Lịch thi",
+                        onPressed: () {
+                          print("Lịch thi");
+                        },
+                        imagePath: "assets/schedule.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "ĐKMH",
+                        onPressed: () {
+                          print("ĐKMH");
+                        },
+                        imagePath: "assets/text-books.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "Hồ sơ",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => InforStudentView(),
+                            ),
+                          );
+                        },
+                        imagePath: "assets/profile.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "Điểm thi",
+                        onPressed: () {
+                          print("Điểm thi");
+                        },
+                        imagePath: "assets/score.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "Thêm",
+                        onPressed: () {
+                          print("Thêm");
+                        },
+                        imagePath: "assets/plus.png",
+                        size: 40,
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ],
