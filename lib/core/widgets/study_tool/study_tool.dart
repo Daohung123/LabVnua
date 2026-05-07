@@ -3,6 +3,7 @@ import 'package:aqedu/core/constants/UI/sizes/size_function.dart';
 import 'package:aqedu/core/widgets/Button/btn_Icon.dart';
 import 'package:aqedu/core/widgets/Text/text_common.dart';
 import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
+import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 
 class StudyTool extends StatefulWidget {
@@ -77,6 +78,20 @@ class _StudyToolState extends State<StudyTool> {
                         text: "Điểm thi",
                         onPressed: () {
                           print("Điểm thi");
+                        },
+                        imagePath: "assets/score.png",
+                        size: 40,
+                      ),
+                      ButtonImage(
+                        text: "Học phí",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TuitionView(hocPhiResponse: null),
+                            ),
+                          );
                         },
                         imagePath: "assets/score.png",
                         size: 40,
