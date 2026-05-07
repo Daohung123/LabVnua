@@ -11,7 +11,7 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Text("Tro chuyen")
+      child: Text("Dev đang phát triển chức năng này, mong bạn thông cảm!"),
     );
   }
 }

@@ -11,6 +11,6 @@ import 'app.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
-  runApp( MaterialApp(home: ScoreView()));
+  runApp( MaterialApp( debugShowCheckedModeBanner: false,home: MyWidget()));
 }
 
