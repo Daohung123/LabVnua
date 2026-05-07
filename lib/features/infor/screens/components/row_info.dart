@@ -27,7 +27,6 @@ class RowInfo extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Text(
               right,

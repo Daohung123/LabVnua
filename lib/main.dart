@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:flutter/material.dart';
 import './config/http_override.dart';
 import 'app.dart';
@@ -9,6 +10,6 @@ import 'app.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
-  runApp( MaterialApp(home: MyWidget()));
+  runApp( MaterialApp(home: InforStudentView()));
 }
 

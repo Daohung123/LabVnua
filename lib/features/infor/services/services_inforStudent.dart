@@ -1,4 +1,5 @@
 import '../models/models_inforStudent.dart';
+import '../models/model_inforStudentFill.dart';
 
 class StudentStaticData {
   static StudentResponse getStudent() {
@@ -95,7 +96,7 @@ class StudentStaticData {
         isCvhtDangNhap: false,
         isPhuHuynhDangNhap: false,
         intHienDienSv: 1,
-        hienDienSv: "",
+        hienDienSv: "Đang học",
         hienDienSvEg: "",
         hienDienSvNg2: "",
         intHienDienDkmh: 1,
@@ -114,6 +115,27 @@ class StudentStaticData {
         soQdTotNghiep: "",
         ngayQdTotNghiep: "",
         isXacNhanEmail: true,
+      ),
+    );
+  }
+
+  static InforStudentFillResponse getInforStudentFill() {
+    final student = getStudent().data;
+
+    return InforStudentFillResponse(
+      result: true,
+      code: 200,
+      data: InforStudentFillData(
+        name: student.tenDayDu,
+        maSv: student.maSv,
+        ngaySinh: student.ngaySinh,
+        gioiTinh: student.gioiTinh,
+        lop: student.lop,
+        khoa: student.khoa,
+        heDaoTao: student.bacHeDaoTao,
+        nganh: student.nganh,
+        nienKhoa: student.nienKhoa,
+        trangThai: student.hienDienSv,
       ),
     );
   }

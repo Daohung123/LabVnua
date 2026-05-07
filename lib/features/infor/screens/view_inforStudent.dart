@@ -14,7 +14,7 @@ class InforStudentView extends StatefulWidget {
 class _InforStudentViewState extends State<InforStudentView> {
   final StudentController controller = StudentController();
 
-  Map<String, String>? student;
+  dynamic student;
   bool isLoading = true;
 
   @override
@@ -36,15 +36,12 @@ class _InforStudentViewState extends State<InforStudentView> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       backgroundColor: bg_color,
-
       appBar: AppBar(
         backgroundColor: primaryColor,
         title: const Text(
@@ -52,20 +49,14 @@ class _InforStudentViewState extends State<InforStudentView> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(14),
-
           child: Column(
             children: [
-
-              ProfileCard(student: student!),
-
+              ProfileCard(student: student),
               const SizedBox(height: 16),
-
-              StudentInfoCard(student: student!),
-
+              StudentInfoCard(student: student),
             ],
           ),
         ),
