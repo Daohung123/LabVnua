@@ -1,4 +1,4 @@
-import 'package:aqedu/features/tuition/ctrls/controller_tuition_student.dart';
+import 'package:aqedu/features/tuition/controllers/controller_tuition_student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -17,8 +17,8 @@ class TuitionView extends StatelessWidget {
     double totalPaid = 0;
 
     for (var item in tuitionList) {
-      totalRequired += item.phaiThu as double;
-      totalPaid += item.daThu as double;
+      totalRequired += double.tryParse(item.phaiThu) ?? 0.0;
+      totalPaid += double.tryParse(item.daThu) ?? 0.0;
     }
 
     final totalDebt = totalRequired - totalPaid;
@@ -180,7 +180,7 @@ class TuitionView extends StatelessWidget {
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   TextSpan(
-                                    text: formatMoney(item.phaiThu as double),
+                                    text: formatMoney(double.tryParse(item.phaiThu) ?? 0.0),
                                     style: const TextStyle(
                                       color: Color(0xff86bc4a),
                                       fontWeight: FontWeight.w600,
@@ -205,7 +205,7 @@ class TuitionView extends StatelessWidget {
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   TextSpan(
-                                    text: formatMoney(item.daThu as double),
+                                    text: formatMoney(double.tryParse(item.daThu) ?? 0.0),
                                     style: const TextStyle(
                                       color: Color(0xffcc7a50),
                                       fontWeight: FontWeight.w600,

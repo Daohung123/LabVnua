@@ -22,7 +22,6 @@ class TkbService {
     cookie,
     token,
   ) async {
-    //Lay tat ca tiet trong 1 ky
     try {
       TkbResponse? tkb = await core_services_get_TkbResponse(cookie, token);
       if (tkb == null) return [];
@@ -42,28 +41,27 @@ class TkbService {
 
   static Future<List<ThoiKhoaBieu>> getSchedureInWeek(TkbResponse tkb) async {
     try {
-      //Lấy tuần học hiện tại
       final fomatTime = DateFormat('dd/MM/yyyy');
       DateTime now = DateTime.now();
       DateTime today = DateTime(now.year, now.month, now.day);
-      final dsTkbTuan = await tkb.dsTuanTkb;
+      final dsTkbTuan = tkb.dsTuanTkb;
 
       for (var item in dsTkbTuan) {
         DateTime startDate = fomatTime.parse(item.ngayBatDau);
         DateTime endDate = fomatTime.parse(item.ngayKetThuc);
-        //tranh bug gio 00:00
+        // Tránh bug giờ 00:00
         startDate = DateTime(startDate.year, startDate.month, startDate.day);
         endDate = DateTime(endDate.year, endDate.month, endDate.day);
         bool isInRange = !today.isBefore(startDate) && !today.isAfter(endDate);
         if (isInRange) {
-          print("Tuan thu: ${item.tuanHocKy}");
+          print("Tuần thứ: ${item.tuanHocKy}");
           return item.dsThoiKhoaBieu;
         }
       }
 
       return [];
     } catch (e) {
-      print("Lỗi: $e");
+      print("Lỗi getSchedureInWeek: $e");
       return [];
     }
   }
@@ -72,22 +70,36 @@ class TkbService {
     List<ThoiKhoaBieu> schedureWeek,
   ) async {
     try {
-      //Lấy tuần học hiện tại
+      // ✅ FIX: So sánh trực tiếp theo ngayhoc thay vì dùng thu + weekday
+      //
+      // BUG CŨ: int thuHomNay = now.weekday + 1;
+      //   → Dart weekday: 1=Mon ... 7=Sun
+      //   → Cộng 1 → Chủ Nhật = 8
+      //   → Nhưng hệ thống VN dùng Chủ Nhật = 1 → không bao giờ khớp
+      //   → Chủ Nhật luôn trả về rỗng dù có lịch
+      //
+      // FIX MỚI: Parse ngayhoc ("dd/MM/yyyy") rồi so sánh với ngày hôm nay
+      //   → Chính xác 100%, không phụ thuộc cách encode "thu" của server
       final fomatTime = DateFormat('dd/MM/yyyy');
       DateTime now = DateTime.now();
-      int thuHomNay = now.weekday + 1;
+      DateTime today = DateTime(now.year, now.month, now.day);
+
       List<ThoiKhoaBieu> schedureDay = [];
       for (var item in schedureWeek) {
-        //test xem thử thời khóa biểu thứ 7
-        print(thuHomNay);
-        if (item.thu == thuHomNay) {
-          schedureDay.add(item);
+        try {
+          final ngay = fomatTime.parse(item.ngayhoc);
+          final ngayOnly = DateTime(ngay.year, ngay.month, ngay.day);
+          if (ngayOnly == today) {
+            schedureDay.add(item);
+          }
+        } catch (_) {
+          // Bỏ qua item có ngayhoc không parse được
         }
       }
 
       return schedureDay;
     } catch (e) {
-      print("Lỗi: $e");
+      print("Lỗi getSchedureInDay: $e");
       return [];
     }
   }

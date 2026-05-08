@@ -1,39 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/core/constants/env.dart';
-class Avatar extends StatefulWidget {
-  const Avatar({super.key});
+import '../../theme/app_theme.dart';
 
-  @override
-  State<Avatar> createState() => _AvatarState();
-}
+/// User Avatar - Circular profile image with border
+class UserAvatar extends StatelessWidget {
+  final String imagePath;
+  final double radius;
+  final VoidCallback? onTap;
+  final Color borderColor;
+  final double borderWidth;
 
-class _AvatarState extends State<Avatar> {
+  const UserAvatar({
+    super.key,
+    required this.imagePath,
+    this.radius = 20,
+    this.onTap,
+    this.borderColor = Colors.white,
+    this.borderWidth = 2,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsetsGeometry.all(0),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white38, width: 2),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            print('Click avt');
-          },
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.transparent,
-            child: ClipOval(
-              child: Image.asset(
-                avt,
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
-                alignment: Alignment(0, 0),
-              ),
-            ),
+    Widget avatar = Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.transparent,
+        child: ClipOval(
+          child: Image.asset(
+            imagePath,
+            width: radius * 2,
+            height: radius * 2,
+            fit: BoxFit.cover,
           ),
-        )
+        ),
+      ),
     );
+
+    if (onTap != null) {
+      avatar = GestureDetector(onTap: onTap, child: avatar);
+    }
+
+    return avatar;
   }
 }

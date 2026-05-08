@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/core/constants/env.dart';
-class NameUser extends StatefulWidget {
-  const NameUser({super.key});
+import '../../theme/app_text_widgets.dart';
 
-  @override
-  State<NameUser> createState() => _NameUserState();
-}
+/// User Greeting - Personalized greeting message with emoji
+class UserGreeting extends StatelessWidget {
+  final String firstName;
+  final String middleName;
+  final String lastName;
+  final bool showEmoji;
+  final TextStyle? textStyle;
 
-class _NameUserState extends State<NameUser> {
-
+  const UserGreeting({
+    super.key,
+    required this.firstName,
+    required this.middleName,
+    required this.lastName,
+    this.showEmoji = true,
+    this.textStyle,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Text("Hi, $Lastname $MiddleName $FirstName 👋",style: TextStyle(color: Colors.white));
+    final name = '$lastName $middleName $firstName'.trim();
+    final greeting = showEmoji ? 'Hi, $name 👋' : 'Hi, $name';
 
+    return AppText.heroSubtitle(greeting, color: Colors.white);
   }
 }

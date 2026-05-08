@@ -1,6 +1,6 @@
 import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
-import 'package:aqedu/features/notification/ctrls/ctrl_noti_student.dart';
+import 'package:aqedu/features/notification/controllers/ctrl_noti_student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_html/flutter_html.dart';

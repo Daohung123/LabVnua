@@ -6,7 +6,7 @@ import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 
 import 'package:flutter/material.dart';
-import '../../ctrls/ctrl_schedure.dart';
+import '../../controllers/ctrl_schedure.dart';
 
 class Schedure extends StatefulWidget {
   const Schedure({super.key});

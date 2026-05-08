@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../ctrls/ctrl_score_student.dart';
+import '../controllers/ctrl_score_student.dart';
 import '../models/model_score_student.dart';
 import 'components/score_dropdown.dart';
 import 'components/score_subject_card.dart';

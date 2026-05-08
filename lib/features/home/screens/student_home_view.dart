@@ -1,6 +1,9 @@
 import 'package:aqedu/features/home/screens/student_chat_view.dart';
+import 'package:aqedu/features/notification/screens/view_noti_student.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
+import 'package:aqedu/features/schedure/screens/today_schedule_view.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
+import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/core/widgets/appBar/avt.dart';
 import 'package:aqedu/core/widgets/appBar/name_user.dart';
@@ -8,35 +11,24 @@ import 'package:aqedu/core/widgets/appBar/notification.dart';
 import 'package:aqedu/core/widgets/appBar/scan.dart';
 import 'package:aqedu/core/widgets/appBar/time_fomat.dart';
 import 'package:aqedu/features/schedure/screens/components/schedure.dart';
-import 'package:aqedu/core/widgets/study_tool/study_tool.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
 import 'package:aqedu/core/widgets/components/app_section_header.dart';
 
 /// ========================================
-/// HOME STUDENT VIEW - Main Dashboard
+/// HOME STUDENT VIEW — Main Dashboard (v2)
 /// ========================================
 ///
-/// The primary dashboard screen for students featuring:
-/// - Hero welcome header with gradient
-/// - Quick summary cards (schedule, notifications, education status)
-/// - Quick action shortcuts
-/// - Today's information banner
-/// - Schedule (Thời khóa biểu) section
-/// - Study tools section
-///
-/// This screen now uses the centralized design system:
-/// - AppColors for consistent color theming
-/// - AppSpacing for consistent spacing
-/// - AppCard component for unified card styling
-/// - AppTextStyles for consistent typography
-///
-/// Benefits:
-/// - Maintains state better across tab switches
-/// - Professional, modern appearance
-/// - Easy to maintain and update globally
-/// - Fully documented with clear comments
+/// Improvements over v1:
+/// - All text nodes have overflow / maxLines guards
+/// - Summary cards use FittedBox so values never wrap
+/// - Quick-action shortcuts use a fixed-height tile with
+///   TextOverflow.ellipsis — no more runaway labels
+/// - Hero greeting uses softWrap + maxLines: 1
+/// - AppBar title has overflow: TextOverflow.ellipsis
+/// - Section headers pass through to AppSectionHeader unchanged
+///   (no regression on existing widget contracts)
 
 class HomeStudent extends StatelessWidget {
   const HomeStudent({super.key});
@@ -44,47 +36,34 @@ class HomeStudent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /// Background color uses centralized AppColors
       backgroundColor: AppColors.background,
-
-      /// Custom AppBar with notification and scan buttons
-      appBar: _buildAppBar(),
-
-      /// Main content using ListView for vertical scrolling
+      appBar: _buildAppBar(context),
       body: SafeArea(
         child: ListView(
-          /// Standard screen padding from theme system
           padding: AppSpacing.screenPadding,
           children: [
-            /// 1. Hero welcome header with gradient
             _buildHeroHeader(),
             SizedBox(height: AppSpacing.xl),
 
-            /// 2. Quick summary cards (3-column grid)
-            _buildQuickSummary(),
+            _buildQuickSummary(context),
             SizedBox(height: AppSpacing.xl),
 
-            /// 3. Quick action shortcuts
-            _buildQuickActions(),
+            _buildQuickActions(context), // <-- pass context here
             SizedBox(height: AppSpacing.xxl),
 
-            /// 4. Today's section header
             AppSectionHeader(
               title: 'Hôm nay',
               subtitle: 'Những thông tin bạn cần xem trước khi bắt đầu',
             ),
 
-            /// 5. Information banner
             _buildInfoBanner(),
             SizedBox(height: AppSpacing.xl),
 
-            /// 6. Schedule section
             AppSectionHeader(
               title: 'Thời khóa biểu',
               subtitle: 'Theo dõi lịch học và lịch làm việc trong ngày',
             ),
 
-            /// Schedule widget inside a modernized card
             AppCard(
               borderRadius: AppRadius.xl,
               padding: EdgeInsets.all(AppSpacing.lg),
@@ -92,17 +71,9 @@ class HomeStudent extends StatelessWidget {
             ),
             SizedBox(height: AppSpacing.xl),
 
-            /// 7. Study tools section
             AppSectionHeader(
               title: 'Công cụ học tập',
               subtitle: 'Các tiện ích hỗ trợ sinh viên trong quá trình học',
-            ),
-
-            /// Study tools widget inside a modernized card
-            AppCard(
-              borderRadius: AppRadius.xl,
-              padding: EdgeInsets.all(AppSpacing.lg),
-              child: const StudyTool(),
             ),
           ],
         ),
@@ -110,82 +81,73 @@ class HomeStudent extends StatelessWidget {
     );
   }
 
-  /// ========================================
-  /// APP BAR - Top navigation bar
-  /// ========================================
-  ///
-  /// Displays home title with notification and QR scan buttons.
-  /// Uses primary blue color from centralized theme.
-  PreferredSizeWidget _buildAppBar() {
+  // ─────────────────────────────────────────
+  // APP BAR
+  // ─────────────────────────────────────────
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      /// No shadow for flat modern design
       elevation: 0,
-
-      /// Centered alignment
       centerTitle: false,
-
-      /// Primary blue color from theme
       backgroundColor: AppColors.primary,
-
-      /// Transparent tint for clean look
       surfaceTintColor: Colors.transparent,
-
-      /// Spacing from left edge
       titleSpacing: AppSpacing.lg,
-
-      /// Title using headline style
       title: Text(
         'Trang chủ',
+        overflow: TextOverflow.ellipsis, // FIX: prevent rare overflow
         style: AppTextStyles.heroTitle.copyWith(
           fontSize: 20,
           letterSpacing: 0.2,
         ),
       ),
-
-      /// Action buttons (notification + QR scan)
-      actions: const [
+      actions: [
         Padding(
           padding: EdgeInsets.only(right: 8),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [Noti(), SizedBox(width: 4), Scan(), SizedBox(width: 8)],
+            children: [
+              NotificationButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationView(),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(width: 4),
+              QRScanButton(
+                onPressed: () {
+                  // Handle QR scan button press
+                  print("Đang mở chức năng quét QR...");
+                },
+              ),
+              SizedBox(width: 8),
+            ],
           ),
         ),
       ],
     );
   }
 
-  /// ========================================
-  /// HERO HEADER - Welcome section
-  /// ========================================
-  ///
-  /// Large gradient header featuring:
-  /// - User avatar
-  /// - User greeting
-  /// - Status chips (active, synced)
-  /// - Current time
-  ///
-  /// Uses the professional blue gradient from AppGradients
+  // ─────────────────────────────────────────
+  // HERO HEADER
+  // ─────────────────────────────────────────
   Widget _buildHeroHeader() {
     return Container(
-      /// Padding inside header
       padding: EdgeInsets.all(AppSpacing.lg),
-
-      /// Gradient background + shadow
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.xxl),
         gradient: AppGradients.heroGradient,
         boxShadow: AppShadows.heroShadow,
       ),
-
-      /// Main content
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Row: Avatar + User info
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// User avatar in circular container
+              // Avatar
               Container(
                 padding: EdgeInsets.all(AppSpacing.xs),
                 decoration: BoxDecoration(
@@ -196,30 +158,33 @@ class HomeStudent extends StatelessWidget {
                     width: 1.3,
                   ),
                 ),
-                child: const Avatar(),
+                child: const UserAvatar(imagePath: 'assets/avt.jpg'),
               ),
 
               SizedBox(width: AppSpacing.lg),
 
-              /// User greeting + time
+              // User info — Expanded prevents overflow
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// User name
-                    const NameUser(),
-
+                    const UserGreeting(
+                      firstName: '',
+                      middleName: '',
+                      lastName: '',
+                    ),
                     SizedBox(height: AppSpacing.sm),
 
-                    /// Greeting message
+                    // FIX: greeting limited to 1 line with ellipsis
                     Text(
-                      'Chúc bạn học tập hiệu quả hôm nay',
+                      'Chúc bạn học tập hiệu quả',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.heroSubtitle,
                     ),
 
                     SizedBox(height: AppSpacing.lg),
 
-                    /// Current time display
                     const TimeFormat(
                       leading: Icon(
                         Icons.access_time_rounded,
@@ -241,7 +206,7 @@ class HomeStudent extends StatelessWidget {
 
           SizedBox(height: AppSpacing.lg),
 
-          /// Status chips (active, synced)
+          // Status chips
           Row(
             children: [
               _chip('Đang hoạt động'),
@@ -254,12 +219,6 @@ class HomeStudent extends StatelessWidget {
     );
   }
 
-  /// ========================================
-  /// CHIP WIDGET - Status badge
-  /// ========================================
-  ///
-  /// Small rounded badge showing status information.
-  /// Used for "active", "synced", etc.
   Widget _chip(String text) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -273,6 +232,8 @@ class HomeStudent extends StatelessWidget {
       ),
       child: Text(
         text,
+        maxLines: 1, // FIX
+        overflow: TextOverflow.ellipsis, // FIX
         style: AppTextStyles.chipText.copyWith(
           fontSize: 11.5,
           letterSpacing: 0.2,
@@ -281,237 +242,116 @@ class HomeStudent extends StatelessWidget {
     );
   }
 
-  /// ========================================
-  /// QUICK SUMMARY - 3-card stats row
-  /// ========================================
-  ///
-  /// Displays three key metrics:
-  /// - Schedule (today)
-  /// - Notifications (new count)
-  /// - Education status (open/closed)
-  ///
-  /// Each card has an icon, value, and label.
-  Widget _buildQuickSummary() {
-    return Row(
-      children: [
-        /// Card 1: Schedule
-        Expanded(
-          child: _summaryCard(
-            icon: Icons.calendar_month_outlined,
-            title: 'Lịch học',
-            value: 'Hôm nay',
-            color: AppColors.scheduleColor,
-          ),
-        ),
-
-        SizedBox(width: AppSpacing.lg),
-
-        /// Card 2: Notifications
-        Expanded(
-          child: _summaryCard(
-            icon: Icons.notifications_active_outlined,
-            title: 'Thông báo',
-            value: '3 mới',
-            color: AppColors.notificationColor,
-          ),
-        ),
-
-        SizedBox(width: AppSpacing.lg),
-
-        /// Card 3: Education (học vụ)
-        Expanded(
-          child: _summaryCard(
-            icon: Icons.school_outlined,
-            title: 'Học tập',
-            value: 'Mở',
-            color: AppColors.tuitionColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// ========================================
-  /// SUMMARY CARD - Metric display
-  /// ========================================
-  ///
-  /// Individual summary card component.
-  /// Shows icon, metric value, and label with semantic color.
-  Widget _summaryCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color color,
-  }) {
-    return Container(
-      /// Inner padding
+  // ─────────────────────────────────────────
+  // QUICK SUMMARY — 3-card row
+  // ─────────────────────────────────────────
+  // ─────────────────────────────────────────
+  // QUICK SUMMARY — tổng quan nhanh
+  // ─────────────────────────────────────────
+  Widget _buildQuickSummary(BuildContext context) {
+    return AppCard(
+      borderRadius: AppRadius.xl,
       padding: EdgeInsets.all(AppSpacing.lg),
-
-      /// Card styling from theme
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.border),
-        boxShadow: AppShadows.lightShadow,
-      ),
-
-      /// Main content
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Icon container with semantic color
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: color.withOpacity(AppOpacity.bg14),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: Icon(icon, color: color, size: 22),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Tổng quan nhanh', style: AppTextStyles.sectionTitle),
+                    SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Xem nhanh các mục quan trọng trước khi bắt đầu ngày học',
+                      style: AppTextStyles.sectionSubtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(AppOpacity.bg12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                child: const Icon(
+                  Icons.dashboard_outlined,
+                  color: AppColors.primary,
+                  size: 22,
+                ),
+              ),
+            ],
           ),
 
           SizedBox(height: AppSpacing.lg),
 
-          /// Metric value (large, bold)
-          Text(value, style: AppTextStyles.cardValue),
+          _overviewItem(
+            context: context,
+            icon: Icons.calendar_month_outlined,
+            title: 'Lịch học hôm nay',
+            value: '4 tiết đang chờ',
+            color: AppColors.scheduleColor,
+            destination: TodayScheduleView(),
+          ),
 
-          SizedBox(height: AppSpacing.sm),
+          SizedBox(height: AppSpacing.md),
 
-          /// Metric label
-          Text(title, style: AppTextStyles.cardSubtitle),
+          _overviewItem(
+            context: context,
+            icon: Icons.notifications_active_outlined,
+            title: 'Thông báo mới',
+            value: '3 thông báo chưa xem',
+            color: AppColors.notificationColor,
+            destination: NotificationView(),
+          ),
+
+          SizedBox(height: AppSpacing.md),
+
+          _overviewItem(
+            context: context,
+            icon: Icons.payments_outlined,
+            title: 'Học phí',
+            value: 'Xem chi tiết công nợ',
+            color: AppColors.tuitionColor,
+            destination: TuitionView(),
+          ),
         ],
       ),
     );
   }
 
-  /// ========================================
-  /// QUICK ACTIONS - Shortcut buttons
-  /// ========================================
-  ///
-  /// 2x2 grid of quick access buttons:
-  /// - Daily schedule
-  /// - View grades
-  /// - Tuition info
-  /// - Learning materials
-  ///
-  /// Uses AppCard for consistent styling.
-  Widget _buildQuickActions() {
-    return AppCard(
-      borderRadius: AppRadius.xl,
-      padding: EdgeInsets.all(AppSpacing.lg),
-
-      /// Main content
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          /// Calculate width for 2-column layout with spacing
-          final width = (constraints.maxWidth - AppSpacing.md) / 2;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Header
-              Text('Lối tắt', style: AppTextStyles.sectionTitle),
-
-              SizedBox(height: AppSpacing.sm),
-
-              /// Subtitle
-              Text(
-                'Truy cập nhanh những chức năng bạn dùng nhiều nhất',
-                style: AppTextStyles.sectionSubtitle,
-              ),
-
-              SizedBox(height: AppSpacing.lg),
-
-              /// 2x2 grid of shortcuts
-              Wrap(
-                spacing: AppSpacing.md,
-                runSpacing: AppSpacing.md,
-                children: [
-                  _shortcut(
-                    context,
-                    width,
-                    Icons.today_outlined,
-                    'TKB ngày',
-                    AppColors.scheduleColor,
-                    StudyViewDayMoth(),
-                  ),
-                  _shortcut(
-                    context,
-                    width,
-                    Icons.grade_outlined,
-                    'Xem điểm',
-                    AppColors.scoreColor,
-                    ScoreView(),
-                  ),
-                  _shortcut(
-                    context,
-                    width,
-                    Icons.payments_outlined,
-                    'Học phí',
-                    AppColors.tuitionColor,
-                    ScoreView(),
-                  ),
-                  _shortcut(
-                    context,
-                    width,
-                    Icons.menu_book_outlined,
-                    'Học liệu',
-                    AppColors.materialsColor,
-                    Chat(),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  /// ========================================
-  /// SHORTCUT - Individual action button
-  /// ========================================
-  ///
-  /// Clickable shortcut button with icon and label.
-  /// Uses semantic color coding for visual meaning.
-  Widget _shortcut(
-    BuildContext context,
-    double width,
-    IconData icon,
-    String label,
-    Color color,
-    Object NextPage,
-  ) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-
-      /// On tap handler (placeholder for now)
+  Widget _overviewItem({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+    required Widget destination, // 👈 thêm cái này
+  }) {
+    return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NextPage as Widget),
+          MaterialPageRoute(builder: (context) => destination),
         );
       },
-
-      /// Button container
       child: Container(
-        width: width,
-        padding: EdgeInsets.all(AppSpacing.lg),
-
-        /// Styling with semantic color
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: color.withOpacity(AppOpacity.bg10),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: color.withOpacity(AppOpacity.bg12)),
         ),
-
-        /// Content: icon + label
         child: Row(
           children: [
-            /// Icon container
             Container(
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
                 color: color.withOpacity(AppOpacity.bg18),
                 borderRadius: BorderRadius.circular(AppRadius.md),
@@ -519,38 +359,218 @@ class HomeStudent extends StatelessWidget {
               child: Icon(icon, color: color, size: 22),
             ),
 
-            SizedBox(width: AppSpacing.lg),
+            SizedBox(width: AppSpacing.md),
 
-            /// Label text
-            Expanded(child: Text(label, style: AppTextStyles.actionTileTitle)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.actionTileTitle,
+                  ),
+                  SizedBox(height: AppSpacing.xs),
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.actionTileSubtitle,
+                  ),
+                ],
+              ),
+            ),
+
+            Icon(Icons.chevron_right_rounded, color: color, size: 24),
           ],
         ),
       ),
     );
   }
 
-  /// ========================================
-  /// INFO BANNER - Alert/notification area
-  /// ========================================
-  ///
-  /// Displays important information banner.
-  /// Currently shows "No urgent notifications".
-  /// Uses info color semantic styling.
+  Widget _summaryCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.lg,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.lightShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Icon
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color.withOpacity(AppOpacity.bg14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+
+          SizedBox(height: AppSpacing.md),
+
+          // FIX: FittedBox shrinks the text to fit, so it never wraps
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value, style: AppTextStyles.cardValue),
+          ),
+
+          SizedBox(height: AppSpacing.xs),
+
+          // FIX: label is 1 line with ellipsis
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.cardSubtitle,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────
+  // QUICK ACTIONS — shortcut grid
+  // ─────────────────────────────────────────
+  //
+  // Changed from LayoutBuilder+Wrap to a proper 2×2 GridView so that
+  // each cell is the exact same size regardless of content, and text
+  // can never break the layout.
+  Widget _buildQuickActions(BuildContext context) {
+    final shortcuts = [
+      _ShortcutData(
+        Icons.today_outlined,
+        'TKB ngày',
+        AppColors.scheduleColor,
+        StudyViewDayMoth(),
+      ),
+      _ShortcutData(
+        Icons.grade_outlined,
+        'Xem điểm',
+        AppColors.scoreColor,
+        ScoreView(),
+      ),
+      _ShortcutData(
+        Icons.payments_outlined,
+        'Học phí',
+        AppColors.tuitionColor,
+        TuitionView(),
+      ),
+      _ShortcutData(
+        Icons.menu_book_outlined,
+        'Học liệu',
+        AppColors.materialsColor,
+        Chat(),
+      ),
+    ];
+
+    return AppCard(
+      borderRadius: AppRadius.xl,
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Lối tắt', style: AppTextStyles.sectionTitle),
+          SizedBox(height: AppSpacing.xs),
+          Text(
+            'Truy cập nhanh những chức năng bạn dùng nhiều nhất',
+            style: AppTextStyles.sectionSubtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: AppSpacing.lg),
+
+          // 2-column grid — each tile has a fixed aspect ratio
+          GridView.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: AppSpacing.md,
+            mainAxisSpacing: AppSpacing.md,
+            childAspectRatio: 3.0, // wide tile, matches the icon+label row
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: shortcuts.map((s) => _shortcutTile(context, s)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _shortcutTile(BuildContext context, _ShortcutData s) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => s.page as Widget),
+      ),
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: s.color.withOpacity(AppOpacity.bg10),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          border: Border.all(color: s.color.withOpacity(AppOpacity.bg12)),
+        ),
+        child: Row(
+          children: [
+            // Icon box — fixed size so it never pushes text
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: s.color.withOpacity(AppOpacity.bg18),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+              child: Icon(s.icon, color: s.color, size: 20),
+            ),
+
+            SizedBox(width: AppSpacing.md),
+
+            // FIX: Flexible + ellipsis — label will never overflow
+            Flexible(
+              child: Text(
+                s.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.actionTileTitle,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─────────────────────────────────────────
+  // INFO BANNER
+  // ─────────────────────────────────────────
   Widget _buildInfoBanner() {
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
-
-      /// Light info background with border
       decoration: BoxDecoration(
         color: AppColors.infoLight,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.info.withOpacity(0.3)),
       ),
-
-      /// Banner content
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          /// Info icon
+          // Icon
           Container(
             width: 46,
             height: 46,
@@ -567,25 +587,23 @@ class HomeStudent extends StatelessWidget {
 
           SizedBox(width: AppSpacing.lg),
 
-          /// Text content
+          // FIX: Expanded prevents banner text from overflowing
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Title
                 Text(
                   'Không có thông báo khẩn',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.actionTileTitle,
                 ),
-
-                SizedBox(height: AppSpacing.sm),
-
-                /// Subtitle
+                SizedBox(height: AppSpacing.xs),
                 Text(
                   'Bạn có thể kiểm tra lịch học và học phí ngay bên dưới.',
-                  style: AppTextStyles.actionTileSubtitle,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.actionTileSubtitle,
                 ),
               ],
             ),
@@ -594,4 +612,18 @@ class HomeStudent extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─────────────────────────────────────────
+// PRIVATE HELPER — shortcut data model
+// ─────────────────────────────────────────
+//
+// Using a simple value object avoids passing 6 positional arguments
+// and makes the grid list easy to read at a glance.
+class _ShortcutData {
+  const _ShortcutData(this.icon, this.label, this.color, this.page);
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Object page;
 }

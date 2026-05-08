@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Deprecated: Use AppIconButton instead
+/// Image-based button component kept for backward compatibility
+@Deprecated('Use AppIconButton or AppButton.small() with icon instead')
 class ButtonImage extends StatelessWidget {
   final String imagePath;
   final VoidCallback onPressed;
@@ -11,7 +14,7 @@ class ButtonImage extends StatelessWidget {
     required this.imagePath,
     required this.onPressed,
     required this.text,
-    required this.size ,
+    required this.size,
   });
 
   @override

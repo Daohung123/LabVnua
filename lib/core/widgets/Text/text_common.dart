@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-class TextCommon extends StatefulWidget {
+import '../../theme/app_text_widgets.dart';
+
+/// Deprecated: Use AppText.sectionTitle() or AppText.bodyLarge() instead
+/// This widget is kept for backward compatibility but should not be used in new code
+@Deprecated('Use AppText.sectionTitle() instead')
+class TextCommon extends StatelessWidget {
   final String txt;
-  const TextCommon({super.key,required this.txt});
+
+  const TextCommon({super.key, required this.txt});
 
   @override
-  State<TextCommon> createState() => _TextCommonState();
-}
-
-class _TextCommonState extends State<TextCommon> {
-  @override
-  Widget build(BuildContext context) {
-    return Text(widget.txt, style: TextStyle(
-      color: Color(0xFF104492),
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-    ),);
-  }
+  Widget build(BuildContext context) => AppText.sectionTitle(txt);
 }

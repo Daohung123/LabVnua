@@ -1,4 +1,4 @@
-import 'package:aqedu/features/schedure/ctrls/ctrl_schedure.dart';
+import 'package:aqedu/features/schedure/controllers/ctrl_schedure.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
