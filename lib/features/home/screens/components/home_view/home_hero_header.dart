@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+import 'package:aqedu/core/theme/app_theme.dart';
+import 'package:aqedu/core/theme/app_text_styles.dart';
+import 'package:aqedu/core/widgets/appBar/avt.dart';
+import 'package:aqedu/core/widgets/appBar/name_user.dart';
+import 'package:aqedu/core/widgets/appBar/time_fomat.dart';
+
+/// Hero Header component — phần chào mừng với avatar, tên user và thời gian
+class HomeHeroHeader extends StatelessWidget {
+  const HomeHeroHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.xxl),
+        gradient: AppGradients.heroGradient,
+        boxShadow: AppShadows.heroShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Avatar
+              Container(
+                padding: EdgeInsets.all(AppSpacing.xs),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(AppOpacity.bg12),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(AppOpacity.bg14),
+                    width: 1.3,
+                  ),
+                ),
+                child: const UserAvatar(imagePath: 'assets/avt.jpg'),
+              ),
+
+              SizedBox(width: AppSpacing.lg),
+
+              // User info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const UserGreeting(
+                      firstName: '',
+                      middleName: '',
+                      lastName: '',
+                    ),
+                    SizedBox(height: AppSpacing.sm),
+
+                    Text(
+                      'Chúc bạn học tập hiệu quả',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.heroSubtitle,
+                    ),
+
+                    SizedBox(height: AppSpacing.lg),
+
+                    const TimeFormat(
+                      leading: Icon(
+                        Icons.access_time_rounded,
+                        size: 18,
+                        color: Colors.black,
+                      ),
+                      backgroundColor: Colors.white,
+                      textStyle: TextStyle(
+                        fontSize: 11,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: AppSpacing.lg),
+
+          // Status chips
+          Row(
+            children: [
+              _buildStatusChip('Đang hoạt động'),
+              SizedBox(width: AppSpacing.sm),
+              _buildStatusChip('Đã đồng bộ'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Widget nhỏ cho status chip
+  Widget _buildStatusChip(String text) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(AppOpacity.bg10),
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        border: Border.all(color: Colors.white.withOpacity(AppOpacity.bg12)),
+      ),
+      child: Text(
+        text,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.chipText.copyWith(
+          fontSize: 11.5,
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
+  }
+}

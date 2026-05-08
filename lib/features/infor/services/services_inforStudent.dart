@@ -18,20 +18,22 @@ class ServiceInforStudent {
         return null;
       }
 
-      StudentData studentDataFill = studentResponse.data;
-
+      StudentData studentData = studentResponse.data;
+      print("Thông tin sinh viên đã lấy được:");
+      print(studentData);
       InforStudentFillData? student = InforStudentFillData(
-        name: studentDataFill.tenDayDu,
-        maSv: studentDataFill.maSv,
-        ngaySinh: studentDataFill.ngaySinh,
-        gioiTinh: studentDataFill.gioiTinh,
-        lop: studentDataFill.lop,
-        khoa: studentDataFill.khoa,
-        heDaoTao: studentDataFill.bacHeDaoTao,
-        nganh: studentDataFill.nganh,
-        nienKhoa: studentDataFill.nienKhoa,
-        trangThai: studentDataFill.hienDienSv,
+        name: studentData.tenDayDu,
+        maSv: studentData.maSv,
+        ngaySinh: studentData.ngaySinh,
+        gioiTinh: studentData.gioiTinh,
+        lop: studentData.lop,
+        khoa: studentData.khoa,
+        heDaoTao: studentData.bacHeDaoTao,
+        nganh: studentData.nganh,
+        nienKhoa: studentData.nienKhoa,
+        trangThai: studentData.hienDienSv,
       );
+      print(student);
 
       return student;
     } catch (e) {

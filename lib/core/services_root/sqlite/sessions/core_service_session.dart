@@ -2,12 +2,13 @@ import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../../../config/config_DB.dart';
 
-class SqliteServices extends DBHelper{
+class SqliteServices extends DBHelper {
   @override
   bool operator ==(Object other) {
     // TODO: implement ==
     return super == other;
   }
+
   /// Lưu session
   Future<void> saveSession(SessionModel session) async {
     final db = await database;
@@ -44,5 +45,4 @@ class SqliteServices extends DBHelper{
 
     await db.delete('session');
   }
-
 }

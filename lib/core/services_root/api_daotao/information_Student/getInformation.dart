@@ -7,97 +7,139 @@ import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/infor/models/models_inforStudent.dart';
 
-
 Future<StudentResponse?> getInformationResponse(
   String cookie,
   String token, {
   int retry = 0,
 }) async {
   try {
-    //kiểm tra
+    /// retry max
     if (retry > 2) {
       print("Retry quá số lần cho phép");
       return null;
     }
 
-    //khai bao doi tuong api với token và cookiee
+    /// init api
     final api = ApiHelper.withSession(cookie, token);
-    final payload = {
-    };
 
-    //goi phuong thuc post
+    final payload = {};
+
+    /// call api
     final res = await api.post(APIINFORMATION, payload);
 
-    /// debug
+    print("========== RESPONSE ==========");
+    print(res);
     print("TYPE: ${res.runtimeType}");
-    print("BODY: $res");
 
-    /// ❌ HTML (hết session)
-    /// Nếu session còn thì sẽ trả về json nhưng nếu session hết hạn thì sẽ trả về html
-    if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn (HTML response)");
-      print("Login lại...");
-      bool kt = await reLogin();
-      if (kt == false) {
-        print("Lỗi đăng nhập");
-        return null;
-      }
-      SqliteServices db = SqliteServices();
-      SessionModel? sqlite = await db.getSession();
-      if (sqlite == null) {
-        print("Không lấy được session");
-        return null;
-      }
-      return getInformationResponse(
-        sqlite.cookie,
-        sqlite.token,
-        retry: retry + 1,
-      );
+    /// response null
+    if (res == null) {
+      print("Response null");
+      return null;
     }
 
-    /// parse json
-    final jsonData = res is String
-        ? jsonDecode(res)
-        : res as Map<String, dynamic>;
+    /// session expired -> html
+    if (res.toString().contains("<!DOCTYPE")) {
+      print("Session hết hạn (HTML response)");
+      return await _handleRelogin(retry);
+    }
 
-    /// ❌ API báo lỗi
+    /// parse json safely
+    dynamic decoded;
+
+    try {
+      decoded = res is String ? jsonDecode(res) : res;
+    } catch (e) {
+      print("JSON decode error");
+      print(e);
+      return null;
+    }
+
+    /// check map
+    if (decoded is! Map<String, dynamic>) {
+      print("Response không phải Map<String,dynamic>");
+      print(decoded.runtimeType);
+      return null;
+    }
+
+    final Map<String, dynamic> jsonData = decoded;
+
+    print("========== JSON ==========");
+    print(jsonEncode(jsonData));
+
+    /// api result false
     if (jsonData["result"] == false) {
       print("API lỗi: ${jsonData["message"]}");
 
-      /// 🔥 xử lý riêng expired
-      if (jsonData["message"] == "expired") {
-        print("Token hết hạn → cần login lại");
-        print("Login lại...");
-        bool kt = await reLogin();
-        if (kt == false) {
-          print("Lỗi đăng nhập");
-          return null;
-        }
-        SqliteServices db = SqliteServices();
-        SessionModel? sqlite = await db.getSession();
-        if (sqlite == null) {
-          print("Không lấy được session");
-          return null;
-        }
-        return getInformationResponse(
-          sqlite.cookie,
-          sqlite.token,
-          retry: retry + 1,
-        );
+      /// token expired
+      if (jsonData["message"]?.toString().toLowerCase() ==
+          "expired") {
+        print("Token hết hạn");
+        return await _handleRelogin(retry);
       }
 
       return null;
     }
 
-    /// ❌ data null
-    if (jsonData["data"] == null) {
+    /// data null
+    final data = jsonData["data"];
+
+    if (data == null) {
       print("Data null");
       return null;
     }
 
-    return StudentResponse.fromJson(jsonData["data"]);
+    /// data not map
+    if (data is! Map<String, dynamic>) {
+      print("Data không đúng format");
+      print("TYPE DATA: ${data.runtimeType}");
+      print(data);
+      return null;
+    }
+
+    /// parse model
+    try {
+      return StudentResponse.fromJson(jsonData);
+    } catch (e) {
+      print("Parse StudentResponse lỗi");
+      print(e);
+      return null;
+    }
+  } catch (e, stackTrace) {
+    print("========== ERROR ==========");
+    print(e);
+    print(stackTrace);
+    return null;
+  }
+}
+
+/// handle relogin
+Future<StudentResponse?> _handleRelogin(int retry) async {
+  try {
+    print("Login lại...");
+
+    bool kt = await reLogin();
+
+    if (!kt) {
+      print("Lỗi đăng nhập");
+      return null;
+    }
+
+    SqliteServices db = SqliteServices();
+
+    SessionModel? sqlite = await db.getSession();
+
+    if (sqlite == null) {
+      print("Không lấy được session");
+      return null;
+    }
+
+    return await getInformationResponse(
+      sqlite.cookie,
+      sqlite.token,
+      retry: retry + 1,
+    );
   } catch (e) {
-    print("Hey ERROR");
+    print("Relogin error");
     print(e);
     return null;
   }
