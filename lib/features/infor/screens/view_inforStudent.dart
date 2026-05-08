@@ -1,5 +1,5 @@
+import 'package:aqedu/features/infor/ctrls/ctrls_inforStudent.dart';
 import 'package:flutter/material.dart';
-import '../controllers/ctrls_inforStudent.dart';
 import '../screens/components/profile_card.dart';
 import '../screens/components/student_info_card.dart';
 import '../../../core/constants/UI/styles/colors.dart';
