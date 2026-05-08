@@ -179,11 +179,11 @@ class StaggeredListAnimationBuilder extends StatelessWidget {
   final Duration itemDelay;
 
   const StaggeredListAnimationBuilder({
-    Key? key,
+    super.key,
     required this.children,
     this.initialDelay = const Duration(milliseconds: 100),
     this.itemDelay = const Duration(milliseconds: 50),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -262,12 +262,12 @@ class AnimatedButton extends StatefulWidget {
   final Curve curve;
 
   const AnimatedButton({
-    Key? key,
+    super.key,
     required this.child,
     required this.onPressed,
     this.duration = AppAnimations.durationShort,
     this.curve = Curves.easeInOut,
-  }) : super(key: key);
+  });
 
   @override
   State<AnimatedButton> createState() => _AnimatedButtonState();

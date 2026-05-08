@@ -35,7 +35,7 @@ class AppButton extends StatelessWidget {
   final double elevation;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.onLongPress,
@@ -51,7 +51,7 @@ class AppButton extends StatelessWidget {
     this.foregroundColor = Colors.white,
     this.textStyle,
     this.elevation = 2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -315,7 +315,7 @@ class AppIconButton extends StatelessWidget {
   final EdgeInsets padding;
 
   const AppIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.onPressed,
     this.iconColor = AppColors.primary,
@@ -325,7 +325,7 @@ class AppIconButton extends StatelessWidget {
     this.tooltip,
     this.isEnabled = true,
     this.padding = const EdgeInsets.all(8),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +400,7 @@ class AppChip extends StatelessWidget {
   final TextStyle? textStyle;
 
   const AppChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.onPressed,
     this.onRemoved,
@@ -409,7 +409,7 @@ class AppChip extends StatelessWidget {
     this.labelColor,
     this.isSelected = false,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

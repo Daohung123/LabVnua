@@ -513,7 +513,7 @@ class _SettingsViewState extends State<SettingsView> {
           style: TextStyle(color: mutedTextColor, fontSize: 12.5, height: 1.3),
         ),
       ),
-      activeColor: primaryColor,
+      activeThumbColor: primaryColor,
       inactiveThumbColor: Colors.grey.shade500,
       inactiveTrackColor: Colors.grey.shade300,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

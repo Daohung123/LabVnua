@@ -24,6 +24,7 @@
 /// - Containers: Boxes, status badges, dividers
 /// - Cards: AppCard with variants
 /// - Headers: Section headers
+library;
 
 // ========================================
 // DESIGN TOKENS

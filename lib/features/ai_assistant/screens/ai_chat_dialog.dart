@@ -32,11 +32,11 @@ class AIChatDialog extends StatefulWidget {
   final Function(String)? onMessageSent;
 
   const AIChatDialog({
-    Key? key,
+    super.key,
     this.title = 'AI Assistant',
     this.initialMessage,
     this.onMessageSent,
-  }) : super(key: key);
+  });
 
   @override
   State<AIChatDialog> createState() => _AIChatDialogState();

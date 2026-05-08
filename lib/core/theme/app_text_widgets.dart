@@ -27,14 +27,14 @@ class AppText extends StatelessWidget {
 
   const AppText(
     this.text, {
-    Key? key,
+    super.key,
     this.style = AppTextStyles.bodyMedium,
     this.textAlign = TextAlign.start,
     this.maxLines,
     this.overflow = TextOverflow.clip,
     this.color,
     this.decoration,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -275,12 +275,12 @@ class AppRichText extends StatelessWidget {
   final TextOverflow overflow;
 
   const AppRichText({
-    Key? key,
+    super.key,
     required this.spans,
     this.textAlign = TextAlign.start,
     this.maxLines,
     this.overflow = TextOverflow.clip,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +319,7 @@ class AppBadgeText extends StatelessWidget {
   final Border? border;
 
   const AppBadgeText({
-    Key? key,
+    super.key,
     required this.label,
     this.backgroundColor = AppColors.primary,
     this.textColor = Colors.white,
@@ -327,7 +327,7 @@ class AppBadgeText extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     this.borderRadius = AppRadius.full,
     this.border,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

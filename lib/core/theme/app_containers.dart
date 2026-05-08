@@ -28,7 +28,7 @@ class AppContainer extends StatelessWidget {
   final double? height;
 
   const AppContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.backgroundColor = AppColors.surface,
     this.border,
@@ -40,7 +40,7 @@ class AppContainer extends StatelessWidget {
     this.gradient,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -219,14 +219,14 @@ class AppStatusBadge extends StatelessWidget {
   final double borderRadius;
 
   const AppStatusBadge({
-    Key? key,
+    super.key,
     required this.label,
     required this.backgroundColor,
     required this.textColor,
     this.icon,
     this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     this.borderRadius = AppRadius.full,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -302,14 +302,14 @@ class AppDivider extends StatelessWidget {
   final Axis direction;
 
   const AppDivider({
-    Key? key,
+    super.key,
     this.color = AppColors.divider,
     this.height = 1.0,
     this.thickness = 1.0,
     this.indent,
     this.endIndent,
     this.direction = Axis.horizontal,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -348,13 +348,13 @@ class AppSpacer extends StatelessWidget {
   final double width;
   final double height;
 
-  const AppSpacer.horizontal(this.width) : height = 0;
+  const AppSpacer.horizontal(this.width, {super.key}) : height = 0;
 
-  const AppSpacer.vertical(this.height) : width = 0;
+  const AppSpacer.vertical(this.height, {super.key}) : width = 0;
 
-  AppSpacer.all(double size) : width = size, height = size;
+  const AppSpacer.all(double size, {super.key}) : width = size, height = size;
 
-  const AppSpacer({this.width = 0, this.height = 0});
+  const AppSpacer({super.key, this.width = 0, this.height = 0});
 
   @override
   Widget build(BuildContext context) {

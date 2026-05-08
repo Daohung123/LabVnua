@@ -49,7 +49,7 @@ class AppCard extends StatelessWidget {
   final bool clipContent;
 
   const AppCard({
-    Key? key,
+    super.key,
     required this.child,
     this.padding = const EdgeInsets.all(14),
     this.borderRadius = AppRadius.xl,
@@ -58,7 +58,7 @@ class AppCard extends StatelessWidget {
     this.border,
     this.decoration,
     this.clipContent = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

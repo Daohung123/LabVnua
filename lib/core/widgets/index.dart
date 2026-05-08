@@ -5,6 +5,7 @@
 /// ```
 /// import 'package:aqedu/core/theme/app_components.dart';
 /// ```
+library;
 
 // AppBar components
 export 'appBar/avt.dart';

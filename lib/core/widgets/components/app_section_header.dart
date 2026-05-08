@@ -52,7 +52,7 @@ class AppSectionHeader extends StatelessWidget {
   final double spaceBetween;
 
   const AppSectionHeader({
-    Key? key,
+    super.key,
     required this.title,
     this.subtitle,
     this.trailing,
@@ -62,7 +62,7 @@ class AppSectionHeader extends StatelessWidget {
     this.titleStyle,
     this.subtitleStyle,
     this.spaceBetween = 4,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

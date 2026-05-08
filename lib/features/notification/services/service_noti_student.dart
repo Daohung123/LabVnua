@@ -28,7 +28,7 @@ class ServiceNotiStudent {
       }
       return list;
     } catch (e) {
-      print("service_notification_error: ${e}");
+      print("service_notification_error: $e");
       return [];
     }
   }

@@ -3,7 +3,6 @@ import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'dart:math' as math;
 
 // ─────────────────────────────────────────────
 //  Palette & helpers

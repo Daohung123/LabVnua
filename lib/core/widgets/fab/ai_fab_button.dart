@@ -58,7 +58,7 @@ class AIFabButton extends StatefulWidget {
   final bool enabled;
 
   const AIFabButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.heroTag = 'ai-fab',
     this.tooltip = 'AI Assistant',
@@ -68,7 +68,7 @@ class AIFabButton extends StatefulWidget {
     this.backgroundColor,
     this.foregroundColor = Colors.white,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   @override
   State<AIFabButton> createState() => _AIFabButtonState();
@@ -165,11 +165,11 @@ class ContextAwareFabButton extends StatelessWidget {
   final String? heroTag;
 
   const ContextAwareFabButton({
-    Key? key,
+    super.key,
     required this.currentTabIndex,
     required this.onFabPressed,
     this.heroTag,
-  }) : super(key: key);
+  });
 
   /// Get icon based on current tab
   IconData _getIconForTab(int index) {
@@ -242,14 +242,14 @@ class MiniFabButton extends StatelessWidget {
   final String tooltip;
 
   const MiniFabButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.icon,
     this.backgroundColor,
     this.foregroundColor = Colors.white,
     this.label,
     this.tooltip = '',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -281,12 +281,12 @@ class FABSpeedDial extends StatefulWidget {
   final VoidCallback? onMainFabPressed;
 
   const FABSpeedDial({
-    Key? key,
+    super.key,
     required this.actions,
     this.icon = Icons.add,
     this.heroTag = 'speed-dial',
     this.onMainFabPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<FABSpeedDial> createState() => _FABSpeedDialState();

@@ -6,7 +6,7 @@ Future<bool> checkLogin() async {
   SqliteServices db = SqliteServices();
   SessionModel? customer = await db.getSession();
   if (customer == null) return false;
-  print("user: ${customer!.user}");
+  print("user: ${customer.user}");
   print("pass: ${customer.pass}");
   print("cookie: ${customer.cookie}");
   print("token: ${customer.token}");

@@ -16,7 +16,7 @@ class WidgetTimeSchedure extends StatefulWidget {
 class _WidgetTimeSchedureState extends State<WidgetTimeSchedure> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: width_screen_percent(context, 0.8),
       height: height_time_schedure,
       child: Padding(
@@ -32,14 +32,14 @@ class _WidgetTimeSchedureState extends State<WidgetTimeSchedure> {
               ),
             ),
             Text(
-              "${widget.start_time}",
+              widget.start_time,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: font_time_schedure,
               ),
             ),
             Text(
-              "${widget.end_time}",
+              widget.end_time,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: font_time_schedure,

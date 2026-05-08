@@ -1,4 +1,3 @@
-import "package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart";
 import "package:aqedu/features/notification/services/service_noti_student.dart";
 
 import "../models/notification_student.dart";

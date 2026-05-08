@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
 
 /// User Avatar - Circular profile image with border
 class UserAvatar extends StatelessWidget {
