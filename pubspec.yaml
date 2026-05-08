@@ -1,12 +1,11 @@
 name: aqedu
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
   sdk: ^3.9.2
-
 
 dependencies:
   flutter_html: ^3.0.0
@@ -21,6 +20,7 @@ dependencies:
   intl: ^0.20.2
 
 dev_dependencies:
+  rename: ^2.1.1
   flutter_test:
     sdk: flutter
 
@@ -33,5 +33,4 @@ flutter:
 flutter_icons:
   android: true
   ios: false
-  image_path: "assets/icon.jpg"
-
+  image_path: "assets/logo.png"
