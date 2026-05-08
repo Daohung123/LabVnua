@@ -1,3 +1,39 @@
+String _parseString(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value == null) return '';
+  return value.toString();
+}
+
+bool _parseBool(Map<String, dynamic> json, String key, {bool defaultValue = false}) {
+  final value = json[key];
+  if (value is bool) return value;
+  if (value is String) {
+    return value.toLowerCase() == 'true';
+  }
+  if (value is num) return value != 0;
+  return defaultValue;
+}
+
+int _parseInt(Map<String, dynamic> json, String key, {int defaultValue = 0}) {
+  final value = json[key];
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value) ?? defaultValue;
+  return defaultValue;
+}
+
+List<dynamic> _parseList(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value is List) return value;
+  return [];
+}
+
+Map<String, dynamic>? _parseMap(Map<String, dynamic> json, String key) {
+  final value = json[key];
+  if (value is Map<String, dynamic>) return value;
+  return null;
+}
+
 class StudentResponse {
   final StudentData data;
   final bool result;
@@ -10,10 +46,15 @@ class StudentResponse {
   });
 
   factory StudentResponse.fromJson(Map<String, dynamic> json) {
+    final dataJson = _parseMap(json, 'data');
+    if (dataJson == null) {
+      throw FormatException('StudentResponse.data must be a JSON object');
+    }
+
     return StudentResponse(
-      data: StudentData.fromJson(json['data']),
-      result: json['result'],
-      code: json['code'],
+      data: StudentData.fromJson(dataJson),
+      result: json.containsKey('result') ? _parseBool(json, 'result') : true,
+      code: json.containsKey('code') ? _parseInt(json, 'code') : 0,
     );
   }
 
@@ -245,114 +286,114 @@ class StudentData {
 
   factory StudentData.fromJson(Map<String, dynamic> json) {
     return StudentData(
-      thoiGianGetData: json['thoi_gian_get_data'],
-      maSv: json['ma_sv'],
-      tenDayDu: json['ten_day_du'],
-      tenDayDuEg: json['ten_day_du_eg'],
-      gioiTinh: json['gioi_tinh'],
-      gioiTinhEg: json['gioi_tinh_eg'],
-      ngaySinh: json['ngay_sinh'],
-      noiSinh: json['noi_sinh'],
-      noiSinhEg: json['noi_sinh_eg'],
-      danToc: json['dan_toc'],
-      danTocEg: json['dan_toc_eg'],
-      tonGiao: json['ton_giao'],
-      tonGiaoEg: json['ton_giao_eg'],
-      quocTich: json['quoc_tich'],
-      quocTichEg: json['quoc_tich_eg'],
-      dienThoai: json['dien_thoai'],
-      email: json['email'],
-      dienThoai2: json['dien_thoai2'],
-      email2: json['email2'],
-      doiMatKhau: json['doi_mat_khau'],
-      soCmnd: json['so_cmnd'],
-      ngayCapCmnd: json['ngay_cap_cmnd'],
-      noiCapCmnd: json['noi_cap_cmnd'],
-      hoKhauThuongTruGd: json['ho_khau_thuong_tru_gd'],
-      hoKhauThuongTruGdEg: json['ho_khau_thuong_tru_gd_eg'],
-      hoKhauQuanHuyen: json['ho_khau_quan_huyen'],
-      hoKhauTinhThanh: json['ho_khau_tinh_thanh'],
-      soTk: json['so_tk'],
-      lop: json['lop'],
-      khuVuc: json['khu_vuc'],
-      doiTuongUuTien: json['doi_tuong_uu_tien'],
-      doiTuongXetTn: json['doi_tuong_xet_TN'],
-      khoi: json['khoi'],
-      idNganh: json['id_nganh'],
-      nganh: json['nganh'],
-      nganheg: json['nganheg'],
-      chuyenNganh: json['chuyen_nganh'],
-      chuyenNganhEg: json['chuyen_nganh_eg'],
-      idChuyenNganh: json['id_chuyen_nganh'],
-      khoa: json['khoa'],
-      khoaEg: json['khoa_eg'],
-      bacHeDaoTao: json['bac_he_dao_tao'],
-      bacHeDaoTaoEg: json['bac_he_dao_tao_eg'],
-      nienKhoa: json['nien_khoa'],
-      maCvht: json['ma_cvht'],
-      hoTenCvht: json['ho_ten_cvht'],
-      hoTenCvhtEg: json['ho_ten_cvht_eg'],
-      emailCvht: json['email_cvht'],
-      dienThoaiCvht: json['dien_thoai_cvht'],
-      maCvhtNg2: json['ma_cvht_ng2'],
-      hoTenCvhtNg2: json['ho_ten_cvht_ng2'],
-      hoTenCvhtNg2Eg: json['ho_ten_cvht_ng2_eg'],
-      emailCvhtNg2: json['email_cvht_ng2'],
-      dienThoaiCvhtNg2: json['dien_thoai_cvht_ng2'],
-      maTruong: json['ma_truong'],
-      tenTruong: json['ten_truong'],
-      idDiaPhuong: json['id_dia_phuong'],
-      idKhoa: json['id_khoa'],
-      idSinhVien: json['id_sinh_vien'],
-      idLop: json['id_lop'],
-      idKhoi: json['id_khoi'],
-      idBacHeNganh: json['id_bac_he_nganh'],
-      idBacHe: json['id_bac_he'],
-      idHe: json['id_he'],
-      idQuyChe: json['id_quy_che'],
-      idQuyCheP: json['id_quy_che_P'],
-      idHocChe: json['id_hoc_che'],
-      idDonViPhanCap: json['id_don_vi_phan_cap'],
-      idCoSoLop: json['id_co_so_lop'],
-      nhhkVao: json['nhhk_vao'],
-      nhhkRa: json['nhhk_ra'],
-      strNhhkVao: json['str_nhhk_vao'],
-      strNhhkRa: json['str_nhhk_ra'],
-      idLop2: json['id_lop2'],
-      idKhoi2: json['id_khoi2'],
-      idKhoa2: json['id_khoa2'],
-      idBacHeNganh2: json['id_bac_he_nganh2'],
-      idBacHe2: json['id_bac_he2'],
-      idHe2: json['id_he2'],
-      idQuyChe2: json['id_quy_che2'],
-      idQuyCheP2: json['id_quy_che_P2'],
-      idHocChe2: json['id_hoc_che2'],
-      chuyenNganh2Eg: json['chuyen_nganh2_eg'],
-      strNhhkVao2: json['str_nhhk_vao2'],
-      strNhhkRa2: json['str_nhhk_ra2'],
-      isMasterPass: json['is_master_pass'],
-      isCvhtDangNhap: json['is_cvht_dang_nhap'],
-      isPhuHuynhDangNhap: json['is_phu_huynh_dang_nhap'],
-      intHienDienSv: json['int_hien_dien_sv'],
-      hienDienSv: json['hien_dien_sv'],
-      hienDienSvEg: json['hien_dien_sv_eg'],
-      hienDienSvNg2: json['hien_dien_sv_ng2'],
-      intHienDienDkmh: json['int_hien_dien_dkmh'],
-      soHkMaxSv: json['so_hk_max_sv'],
-      dsMenuCamXem: json['ds_menu_cam_xem'] ?? [],
-      strHoanThanhDgrl: json['str_hoan_thanh_dgrl'],
-      urlNetweb: json['url_netweb'],
-      canhCaoTool: json['canh_cao_tool'],
-      strCanhCao: json['str_canh_cao'],
-      ghiChu: json['ghi_chu'],
-      isNhapDiaChiMoi: json['is_nhap_dia_chi_moi'],
-      loTrinhTiengAnh: json['lo_trinh_tieng_anh'],
-      nhhkCuoi: json['nhhk_cuoi'],
-      soQdVaoMoi: json['so_qd_vao_moi'],
-      ngayQdVaoMoi: json['ngay_qd_vao_moi'],
-      soQdTotNghiep: json['so_qd_tot_nghiep'],
-      ngayQdTotNghiep: json['ngay_qd_tot_nghiep'],
-      isXacNhanEmail: json['is_xac_nhan_email'],
+      thoiGianGetData: _parseString(json, 'thoi_gian_get_data'),
+      maSv: _parseString(json, 'ma_sv'),
+      tenDayDu: _parseString(json, 'ten_day_du'),
+      tenDayDuEg: _parseString(json, 'ten_day_du_eg'),
+      gioiTinh: _parseString(json, 'gioi_tinh'),
+      gioiTinhEg: _parseString(json, 'gioi_tinh_eg'),
+      ngaySinh: _parseString(json, 'ngay_sinh'),
+      noiSinh: _parseString(json, 'noi_sinh'),
+      noiSinhEg: _parseString(json, 'noi_sinh_eg'),
+      danToc: _parseString(json, 'dan_toc'),
+      danTocEg: _parseString(json, 'dan_toc_eg'),
+      tonGiao: _parseString(json, 'ton_giao'),
+      tonGiaoEg: _parseString(json, 'ton_giao_eg'),
+      quocTich: _parseString(json, 'quoc_tich'),
+      quocTichEg: _parseString(json, 'quoc_tich_eg'),
+      dienThoai: _parseString(json, 'dien_thoai'),
+      email: _parseString(json, 'email'),
+      dienThoai2: _parseString(json, 'dien_thoai2'),
+      email2: _parseString(json, 'email2'),
+      doiMatKhau: _parseBool(json, 'doi_mat_khau'),
+      soCmnd: _parseString(json, 'so_cmnd'),
+      ngayCapCmnd: _parseString(json, 'ngay_cap_cmnd'),
+      noiCapCmnd: _parseString(json, 'noi_cap_cmnd'),
+      hoKhauThuongTruGd: _parseString(json, 'ho_khau_thuong_tru_gd'),
+      hoKhauThuongTruGdEg: _parseString(json, 'ho_khau_thuong_tru_gd_eg'),
+      hoKhauQuanHuyen: _parseString(json, 'ho_khau_quan_huyen'),
+      hoKhauTinhThanh: _parseString(json, 'ho_khau_tinh_thanh'),
+      soTk: _parseString(json, 'so_tk'),
+      lop: _parseString(json, 'lop'),
+      khuVuc: _parseString(json, 'khu_vuc'),
+      doiTuongUuTien: _parseString(json, 'doi_tuong_uu_tien'),
+      doiTuongXetTn: _parseString(json, 'doi_tuong_xet_TN'),
+      khoi: _parseString(json, 'khoi'),
+      idNganh: _parseString(json, 'id_nganh'),
+      nganh: _parseString(json, 'nganh'),
+      nganheg: _parseString(json, 'nganheg'),
+      chuyenNganh: _parseString(json, 'chuyen_nganh'),
+      chuyenNganhEg: _parseString(json, 'chuyen_nganh_eg'),
+      idChuyenNganh: _parseString(json, 'id_chuyen_nganh'),
+      khoa: _parseString(json, 'khoa'),
+      khoaEg: _parseString(json, 'khoa_eg'),
+      bacHeDaoTao: _parseString(json, 'bac_he_dao_tao'),
+      bacHeDaoTaoEg: _parseString(json, 'bac_he_dao_tao_eg'),
+      nienKhoa: _parseString(json, 'nien_khoa'),
+      maCvht: _parseString(json, 'ma_cvht'),
+      hoTenCvht: _parseString(json, 'ho_ten_cvht'),
+      hoTenCvhtEg: _parseString(json, 'ho_ten_cvht_eg'),
+      emailCvht: _parseString(json, 'email_cvht'),
+      dienThoaiCvht: _parseString(json, 'dien_thoai_cvht'),
+      maCvhtNg2: _parseString(json, 'ma_cvht_ng2'),
+      hoTenCvhtNg2: _parseString(json, 'ho_ten_cvht_ng2'),
+      hoTenCvhtNg2Eg: _parseString(json, 'ho_ten_cvht_ng2_eg'),
+      emailCvhtNg2: _parseString(json, 'email_cvht_ng2'),
+      dienThoaiCvhtNg2: _parseString(json, 'dien_thoai_cvht_ng2'),
+      maTruong: _parseString(json, 'ma_truong'),
+      tenTruong: _parseString(json, 'ten_truong'),
+      idDiaPhuong: _parseString(json, 'id_dia_phuong'),
+      idKhoa: _parseString(json, 'id_khoa'),
+      idSinhVien: _parseString(json, 'id_sinh_vien'),
+      idLop: _parseString(json, 'id_lop'),
+      idKhoi: _parseString(json, 'id_khoi'),
+      idBacHeNganh: _parseString(json, 'id_bac_he_nganh'),
+      idBacHe: _parseString(json, 'id_bac_he'),
+      idHe: _parseString(json, 'id_he'),
+      idQuyChe: _parseString(json, 'id_quy_che'),
+      idQuyCheP: _parseString(json, 'id_quy_che_P'),
+      idHocChe: _parseString(json, 'id_hoc_che'),
+      idDonViPhanCap: _parseString(json, 'id_don_vi_phan_cap'),
+      idCoSoLop: _parseString(json, 'id_co_so_lop'),
+      nhhkVao: _parseInt(json, 'nhhk_vao'),
+      nhhkRa: _parseInt(json, 'nhhk_ra'),
+      strNhhkVao: _parseString(json, 'str_nhhk_vao'),
+      strNhhkRa: _parseString(json, 'str_nhhk_ra'),
+      idLop2: _parseString(json, 'id_lop2'),
+      idKhoi2: _parseString(json, 'id_khoi2'),
+      idKhoa2: _parseString(json, 'id_khoa2'),
+      idBacHeNganh2: _parseString(json, 'id_bac_he_nganh2'),
+      idBacHe2: _parseString(json, 'id_bac_he2'),
+      idHe2: _parseString(json, 'id_he2'),
+      idQuyChe2: _parseString(json, 'id_quy_che2'),
+      idQuyCheP2: _parseString(json, 'id_quy_che_P2'),
+      idHocChe2: _parseString(json, 'id_hoc_che2'),
+      chuyenNganh2Eg: _parseString(json, 'chuyen_nganh2_eg'),
+      strNhhkVao2: _parseString(json, 'str_nhhk_vao2'),
+      strNhhkRa2: _parseString(json, 'str_nhhk_ra2'),
+      isMasterPass: _parseBool(json, 'is_master_pass'),
+      isCvhtDangNhap: _parseBool(json, 'is_cvht_dang_nhap'),
+      isPhuHuynhDangNhap: _parseBool(json, 'is_phu_huynh_dang_nhap'),
+      intHienDienSv: _parseInt(json, 'int_hien_dien_sv'),
+      hienDienSv: _parseString(json, 'hien_dien_sv'),
+      hienDienSvEg: _parseString(json, 'hien_dien_sv_eg'),
+      hienDienSvNg2: _parseString(json, 'hien_dien_sv_ng2'),
+      intHienDienDkmh: _parseInt(json, 'int_hien_dien_dkmh'),
+      soHkMaxSv: _parseInt(json, 'so_hk_max_sv'),
+      dsMenuCamXem: _parseList(json, 'ds_menu_cam_xem'),
+      strHoanThanhDgrl: _parseString(json, 'str_hoan_thanh_dgrl'),
+      urlNetweb: _parseString(json, 'url_netweb'),
+      canhCaoTool: _parseString(json, 'canh_cao_tool'),
+      strCanhCao: _parseString(json, 'str_canh_cao'),
+      ghiChu: _parseString(json, 'ghi_chu'),
+      isNhapDiaChiMoi: _parseBool(json, 'is_nhap_dia_chi_moi'),
+      loTrinhTiengAnh: _parseString(json, 'lo_trinh_tieng_anh'),
+      nhhkCuoi: _parseString(json, 'nhhk_cuoi'),
+      soQdVaoMoi: _parseString(json, 'so_qd_vao_moi'),
+      ngayQdVaoMoi: _parseString(json, 'ngay_qd_vao_moi'),
+      soQdTotNghiep: _parseString(json, 'so_qd_tot_nghiep'),
+      ngayQdTotNghiep: _parseString(json, 'ngay_qd_tot_nghiep'),
+      isXacNhanEmail: _parseBool(json, 'is_xac_nhan_email'),
     );
   }
 
