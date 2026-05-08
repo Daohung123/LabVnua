@@ -1,8 +1,9 @@
+import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
 import 'package:flutter/material.dart';
 import 'row_info.dart';
 
 class StudentInfoCard extends StatelessWidget {
-  final dynamic student;
+  final InforStudentFillData student;
 
   const StudentInfoCard({
     super.key,

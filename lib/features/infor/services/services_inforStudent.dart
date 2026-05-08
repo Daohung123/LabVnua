@@ -1,142 +1,42 @@
+import 'package:aqedu/core/services_root/api_daotao/information_Student/getInformation.dart';
+
 import '../models/models_inforStudent.dart';
 import '../models/model_inforStudentFill.dart';
 
-class StudentStaticData {
-  static StudentResponse getStudent() {
-    return StudentResponse(
-      result: true,
-      code: 200,
-      data: StudentData(
-        thoiGianGetData: "28/04/2026",
-        maSv: "22123456",
-        tenDayDu: "Nguyễn Anh Đức",
-        tenDayDuEg: "Nguyen Anh Duc",
-        gioiTinh: "Nam",
-        gioiTinhEg: "Male",
-        ngaySinh: "01/01/2004",
-        noiSinh: "Hà Nội",
-        noiSinhEg: "Ha Noi",
-        danToc: "Kinh",
-        danTocEg: "Kinh",
-        tonGiao: "",
-        tonGiaoEg: "",
-        quocTich: "Việt Nam",
-        quocTichEg: "Vietnam",
-        dienThoai: "0123456789",
-        email: "anhduc@gmail.com",
-        dienThoai2: "",
-        email2: "",
-        doiMatKhau: false,
-        soCmnd: "00123456789",
-        ngayCapCmnd: "",
-        noiCapCmnd: "",
-        hoKhauThuongTruGd: "Hà Nội",
-        hoKhauThuongTruGdEg: "Ha Noi",
-        hoKhauQuanHuyen: "Hoàn Kiếm",
-        hoKhauTinhThanh: "Hà Nội",
-        soTk: "",
-        lop: "CNTT01",
-        khuVuc: "",
-        doiTuongUuTien: "",
-        doiTuongXetTn: "",
-        khoi: "",
-        idNganh: "1",
-        nganh: "Công nghệ thông tin",
-        nganheg: "IT",
-        chuyenNganh: "Lập trình",
-        chuyenNganhEg: "Programming",
-        idChuyenNganh: "1",
-        khoa: "CNTT",
-        khoaEg: "IT",
-        bacHeDaoTao: "Đại học",
-        bacHeDaoTaoEg: "University",
-        nienKhoa: "2022-2026",
-        maCvht: "",
-        hoTenCvht: "Nguyễn Văn B",
-        hoTenCvhtEg: "",
-        emailCvht: "",
-        dienThoaiCvht: "",
-        maCvhtNg2: "",
-        hoTenCvhtNg2: "",
-        hoTenCvhtNg2Eg: "",
-        emailCvhtNg2: "",
-        dienThoaiCvhtNg2: "",
-        maTruong: "",
-        tenTruong: "",
-        idDiaPhuong: "",
-        idKhoa: "",
-        idSinhVien: "",
-        idLop: "",
-        idKhoi: "",
-        idBacHeNganh: "",
-        idBacHe: "",
-        idHe: "",
-        idQuyChe: "",
-        idQuyCheP: "",
-        idHocChe: "",
-        idDonViPhanCap: "",
-        idCoSoLop: "",
-        nhhkVao: 20221,
-        nhhkRa: 20261,
-        strNhhkVao: "",
-        strNhhkRa: "",
-        idLop2: "",
-        idKhoi2: "",
-        idKhoa2: "",
-        idBacHeNganh2: "",
-        idBacHe2: "",
-        idHe2: "",
-        idQuyChe2: "",
-        idQuyCheP2: "",
-        idHocChe2: "",
-        chuyenNganh2Eg: "",
-        strNhhkVao2: "",
-        strNhhkRa2: "",
-        isMasterPass: false,
-        isCvhtDangNhap: false,
-        isPhuHuynhDangNhap: false,
-        intHienDienSv: 1,
-        hienDienSv: "Đang học",
-        hienDienSvEg: "",
-        hienDienSvNg2: "",
-        intHienDienDkmh: 1,
-        soHkMaxSv: 8,
-        dsMenuCamXem: [],
-        strHoanThanhDgrl: "",
-        urlNetweb: "",
-        canhCaoTool: "",
-        strCanhCao: "",
-        ghiChu: "",
-        isNhapDiaChiMoi: false,
-        loTrinhTiengAnh: "",
-        nhhkCuoi: "",
-        soQdVaoMoi: "",
-        ngayQdVaoMoi: "",
-        soQdTotNghiep: "",
-        ngayQdTotNghiep: "",
-        isXacNhanEmail: true,
-      ),
-    );
-  }
+class ServiceInforStudent {
+  static Future<InforStudentFillData?> getInforStudentFill(
+    String cookie,
+    String token,
+  ) async {
+    try {
+      StudentResponse? studentResponse = await getInformationResponse(
+        cookie,
+        token,
+      );
+      if (studentResponse == null) {
+        print("Lỗi lấy thông tin sinh viên");
+        return null;
+      }
 
-  static InforStudentFillResponse getInforStudentFill() {
-    final student = getStudent().data;
+      StudentData studentDataFill = studentResponse.data;
 
-    return InforStudentFillResponse(
-      result: true,
-      code: 200,
-      data: InforStudentFillData(
-        name: student.tenDayDu,
-        maSv: student.maSv,
-        ngaySinh: student.ngaySinh,
-        gioiTinh: student.gioiTinh,
-        lop: student.lop,
-        khoa: student.khoa,
-        heDaoTao: student.bacHeDaoTao,
-        nganh: student.nganh,
-        nienKhoa: student.nienKhoa,
-        trangThai: student.hienDienSv,
-      ),
-    );
+      InforStudentFillData? student = InforStudentFillData(
+        name: studentDataFill.tenDayDu,
+        maSv: studentDataFill.maSv,
+        ngaySinh: studentDataFill.ngaySinh,
+        gioiTinh: studentDataFill.gioiTinh,
+        lop: studentDataFill.lop,
+        khoa: studentDataFill.khoa,
+        heDaoTao: studentDataFill.bacHeDaoTao,
+        nganh: studentDataFill.nganh,
+        nienKhoa: studentDataFill.nienKhoa,
+        trangThai: studentDataFill.hienDienSv,
+      );
+
+      return student;
+    } catch (e) {
+      print("Lỗi getInforStudentFill: $e");
+      return null;
+    }
   }
 }

@@ -1,31 +1,3 @@
-class InforStudentFillResponse {
-  final InforStudentFillData data;
-  final bool result;
-  final int code;
-
-  InforStudentFillResponse({
-    required this.data,
-    required this.result,
-    required this.code,
-  });
-
-  factory InforStudentFillResponse.fromJson(Map<String, dynamic> json) {
-    return InforStudentFillResponse(
-      data: InforStudentFillData.fromJson(json['data']),
-      result: json['result'],
-      code: json['code'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'data': data.toJson(),
-      'result': result,
-      'code': code,
-    };
-  }
-}
-
 class InforStudentFillData {
   final String name;
   final String maSv;

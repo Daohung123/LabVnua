@@ -1,8 +1,9 @@
+import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/UI/styles/colors.dart';
 
 class ProfileCard extends StatelessWidget {
-  final dynamic student;
+  final InforStudentFillData student;
 
   const ProfileCard({super.key, required this.student});
 

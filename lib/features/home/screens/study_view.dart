@@ -1,3 +1,4 @@
+import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:flutter/material.dart';
 
 class HocTapView extends StatelessWidget {
@@ -194,7 +195,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Xem và cập nhật thông tin cá nhân',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const InforStudentView(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

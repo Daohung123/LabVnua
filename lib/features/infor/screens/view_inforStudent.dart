@@ -1,4 +1,5 @@
 import 'package:aqedu/features/infor/ctrls/ctrls_inforStudent.dart';
+import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
 import 'package:flutter/material.dart';
 import '../screens/components/profile_card.dart';
 import '../screens/components/student_info_card.dart';
@@ -12,19 +13,23 @@ class InforStudentView extends StatefulWidget {
 }
 
 class _InforStudentViewState extends State<InforStudentView> {
-  final StudentController controller = StudentController();
+  late final Future<CtrlInforStudent> _controllerFuture;
 
-  dynamic student;
+  InforStudentFillData? student;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _controllerFuture = CtrlInforStudent.create();
     loadData();
   }
 
   Future<void> loadData() async {
-    final result = await controller.getProfile();
+    final controller = await _controllerFuture;
+    final result = await controller.getInforStudent();
+
+    if (!mounted) return;
 
     setState(() {
       student = result;
@@ -35,9 +40,7 @@ class _InforStudentViewState extends State<InforStudentView> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -50,13 +53,13 @@ class _InforStudentViewState extends State<InforStudentView> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
+        child: Padding( 
           padding: const EdgeInsets.all(14),
           child: Column(
             children: [
-              ProfileCard(student: student),
+              ProfileCard(student: student!),
               const SizedBox(height: 16),
-              StudentInfoCard(student: student),
+              StudentInfoCard(student: student!),
             ],
           ),
         ),
