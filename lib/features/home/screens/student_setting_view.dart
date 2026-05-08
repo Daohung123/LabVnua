@@ -1,3 +1,5 @@
+import 'package:aqedu/features/auth/student/screens/role_view.dart';
+import 'package:aqedu/features/home/controllers/controller_home.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
@@ -525,7 +527,13 @@ class _SettingsViewState extends State<SettingsView> {
       width: double.infinity,
       height: 54,
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () {
+          ControllerHome.logOut();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => RoleView()),
+          );
+        },
         icon: const Icon(Icons.logout_rounded),
         label: const Text(
           'Đăng xuất',
