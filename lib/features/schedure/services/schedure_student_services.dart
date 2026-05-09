@@ -1,170 +1,164 @@
 import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
-
-import "../models/Schedure_Student.dart";
-import 'package:intl/intl.dart';
+import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'date_time_helper.dart';
+import 'schedure_constants.dart';
 
 class TkbService {
-  static Future<List<TuanTkb>> getWeekSchedures(cookie, token) async {
+  static Future<List<TuanTkb>> getWeekSchedules(
+    dynamic cookie,
+    String token,
+  ) async {
     try {
-      TkbResponse? tkb = await core_services_get_TkbResponse(cookie, token);
-      if (tkb == null) {
-        print("TkbResponse null");
-        return [];
-      }
-      return tkb.dsTuanTkb;
+      final tkb = await core_services_get_TkbResponse(cookie, token);
+      return tkb?.dsTuanTkb ?? [];
     } catch (e) {
-      print(e);
+      _logError('getWeekSchedules', e);
       return [];
     }
   }
 
   static Future<List<ThoiKhoaBieu>> getScheduleByDayInSemester(
-    cookie,
-    token,
+    dynamic cookie,
+    String token,
   ) async {
     try {
-      TkbResponse? tkb = await core_services_get_TkbResponse(cookie, token);
+      final tkb = await core_services_get_TkbResponse(cookie, token);
       if (tkb == null) return [];
-      List<ThoiKhoaBieu> schedure = [];
-      List<TuanTkb> schedureInWeek = tkb.dsTuanTkb ?? [];
-      for (var itemTuanTkb in schedureInWeek) {
-        for (var itemThoiKhoaBieu in itemTuanTkb.dsThoiKhoaBieu) {
-          schedure.add(itemThoiKhoaBieu);
-        }
+
+      final schedules = <ThoiKhoaBieu>[];
+      for (final week in tkb.dsTuanTkb) {
+        schedules.addAll(week.dsThoiKhoaBieu);
       }
-      return schedure;
+      return schedules;
     } catch (e) {
-      print(e);
+      _logError('getScheduleByDayInSemester', e);
       return [];
     }
   }
 
-  static Future<List<ThoiKhoaBieu>> getSchedureInWeek(TkbResponse tkb) async {
+  static Future<List<ThoiKhoaBieu>> getScheduleInWeek(TkbResponse tkb) async {
     try {
-      final fomatTime = DateFormat('dd/MM/yyyy');
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day);
-      final dsTkbTuan = tkb.dsTuanTkb;
-
-      for (var item in dsTkbTuan) {
-        DateTime startDate = fomatTime.parse(item.ngayBatDau);
-        DateTime endDate = fomatTime.parse(item.ngayKetThuc);
-        // Tránh bug giờ 00:00
-        startDate = DateTime(startDate.year, startDate.month, startDate.day);
-        endDate = DateTime(endDate.year, endDate.month, endDate.day);
-        bool isInRange = !today.isBefore(startDate) && !today.isAfter(endDate);
-        if (isInRange) {
-          print("Tuần thứ: ${item.tuanHocKy}");
-          return item.dsThoiKhoaBieu;
-        }
-      }
-
-      return [];
+      final today = DateTimeHelper.getTodayAtMidnight();
+      return _findScheduleInWeek(tkb.dsTuanTkb, today);
     } catch (e) {
-      print("Lỗi getSchedureInWeek: $e");
+      _logError('getScheduleInWeek', e);
       return [];
     }
   }
 
-  static Future<List<ThoiKhoaBieu>> getSchedureInDay(
-    List<ThoiKhoaBieu> schedureWeek,
+  static Future<List<ThoiKhoaBieu>> getScheduleInDay(
+    List<ThoiKhoaBieu> scheduleWeek,
   ) async {
     try {
-      // ✅ FIX: So sánh trực tiếp theo ngayhoc thay vì dùng thu + weekday
-      //
-      // BUG CŨ: int thuHomNay = now.weekday + 1;
-      //   → Dart weekday: 1=Mon ... 7=Sun
-      //   → Cộng 1 → Chủ Nhật = 8
-      //   → Nhưng hệ thống VN dùng Chủ Nhật = 1 → không bao giờ khớp
-      //   → Chủ Nhật luôn trả về rỗng dù có lịch
-      //
-      // FIX MỚI: Parse ngayhoc ("dd/MM/yyyy") rồi so sánh với ngày hôm nay
-      //   → Chính xác 100%, không phụ thuộc cách encode "thu" của server
-      final fomatTime = DateFormat('dd/MM/yyyy');
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day);
-
-      List<ThoiKhoaBieu> schedureDay = [];
-      for (var item in schedureWeek) {
-        try {
-          final ngay = fomatTime.parse(item.ngayhoc);
-          final ngayOnly = DateTime(ngay.year, ngay.month, ngay.day);
-          if (ngayOnly == today) {
-            schedureDay.add(item);
-          }
-        } catch (_) {
-          // Bỏ qua item có ngayhoc không parse được
-        }
-      }
-
-      return schedureDay;
+      final today = DateTimeHelper.getTodayAtMidnight();
+      return _filterScheduleByDate(scheduleWeek, today);
     } catch (e) {
-      print("Lỗi getSchedureInDay: $e");
+      _logError('getScheduleInDay', e);
       return [];
     }
   }
 
-  // ===================== Today =====================
-  static bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
+  static Future<ThoiKhoaBieu> getScheduleToday(
+    dynamic cookie,
+    String token,
+  ) async {
+    try {
+      final tkb = await core_services_get_TkbResponse(cookie, token);
+      if (tkb == null) {
+        return _createEmptySchedule();
+      }
+
+      final scheduleInWeek = await getScheduleInWeek(tkb);
+      if (scheduleInWeek.isEmpty) {
+        return _createEmptySchedule();
+      }
+
+      final today = DateTimeHelper.getTodayAtMidnight();
+      return _findTodaySchedule(scheduleInWeek, today);
+    } catch (e) {
+      _logError('getScheduleToday', e);
+      return _createEmptySchedule();
+    }
   }
 
-  static ThoiKhoaBieu _emptySchedule() {
+  // ==================== Private Helpers ====================
+
+  static List<ThoiKhoaBieu> _findScheduleInWeek(
+    List<TuanTkb> weeks,
+    DateTime today,
+  ) {
+    for (final week in weeks) {
+      final startDate = DateTimeHelper.tryParseDate(week.ngayBatDau);
+      final endDate = DateTimeHelper.tryParseDate(week.ngayKetThuc);
+
+      if (startDate == null || endDate == null) continue;
+
+      final normalizedStart = DateTimeHelper.normalizeToMidnight(startDate);
+      final normalizedEnd = DateTimeHelper.normalizeToMidnight(endDate);
+
+      if (DateTimeHelper.isDateInRange(today, normalizedStart, normalizedEnd)) {
+        _logDebug(
+          '${ScheduleConstants.foundCurrentWeekSchedule}${week.tuanHocKy}',
+        );
+        return week.dsThoiKhoaBieu;
+      }
+    }
+    return [];
+  }
+
+  static List<ThoiKhoaBieu> _filterScheduleByDate(
+    List<ThoiKhoaBieu> schedules,
+    DateTime targetDate,
+  ) {
+    final result = <ThoiKhoaBieu>[];
+    for (final schedule in schedules) {
+      final scheduleDate = DateTimeHelper.tryParseDateFlexible(
+        schedule.ngayhoc,
+      );
+      if (scheduleDate != null &&
+          DateTimeHelper.isSameDay(scheduleDate, targetDate)) {
+        result.add(schedule);
+      }
+    }
+    return result;
+  }
+
+  static ThoiKhoaBieu _findTodaySchedule(
+    List<ThoiKhoaBieu> scheduleInWeek,
+    DateTime today,
+  ) {
+    for (final schedule in scheduleInWeek) {
+      final scheduleDate = DateTimeHelper.tryParseDateFlexible(
+        schedule.ngayhoc,
+      );
+      if (scheduleDate != null &&
+          DateTimeHelper.isSameDay(scheduleDate, today)) {
+        _logDebug('${ScheduleConstants.foundTodaySchedule}${schedule.tenMon}');
+        return schedule;
+      }
+    }
+    return _createEmptySchedule();
+  }
+
+  static ThoiKhoaBieu _createEmptySchedule() {
     return ThoiKhoaBieu(
       thu: 0,
       tietBatDau: 0,
       soTiet: 0,
-      tenMon: "Không có lịch học hôm nay",
-      giangVien: "",
-      phong: "",
-      ngayhoc: "",
+      tenMon: ScheduleConstants.noScheduleTodayMessage,
+      giangVien: '',
+      phong: '',
+      ngayhoc: '',
     );
   }
 
-  static Future<ThoiKhoaBieu> getSchedureToday(cookie, token) async {
-    try {
-      final TkbResponse? tkb = await core_services_get_TkbResponse(
-        cookie,
-        token,
-      );
+  static void _logError(String method, dynamic error) {
+    // TODO: Replace with proper logging service
+    print('$method Error: $error');
+  }
 
-      if (tkb == null) {
-        print("TkbResponse null");
-        return _emptySchedule();
-      }
-
-      final List<ThoiKhoaBieu> schedureInWeek = await getSchedureInWeek(tkb);
-
-      if (schedureInWeek.isEmpty) {
-        print("Không có lịch trong tuần");
-        return _emptySchedule();
-      }
-
-      final DateTime today = DateTime.now();
-
-      for (final item in schedureInWeek) {
-        try {
-          final String rawNgayHoc = item.ngayhoc.trim();
-
-          if (rawNgayHoc.isEmpty) continue;
-
-          // FIX FORMAT
-          final DateTime ngay = DateTime.parse(rawNgayHoc);
-
-          if (_isSameDay(ngay, today)) {
-            print("Đã tìm thấy lịch hôm nay: ${item.tenMon}");
-            return item;
-          }
-        } catch (e) {
-          print("Lỗi parse ngayhoc '${item.ngayhoc}': $e");
-        }
-      }
-
-      print("Không có lịch hôm nay");
-      return _emptySchedule();
-    } catch (e) {
-      print("Lỗi getSchedureToday: $e");
-      return _emptySchedule();
-    }
+  static void _logDebug(String message) {
+    // TODO: Replace with proper logging service
+    print(message);
   }
 }
