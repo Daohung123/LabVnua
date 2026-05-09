@@ -1,145 +1,29 @@
-import '../models/model_score_student.dart';
+import 'package:aqedu/core/services_root/api_daotao/score/getScoreResponse.dart';
+import 'package:aqedu/features/score_data/models/model_score_student.dart';
 
-class ScoreStaticData {
-  static ScoreResponse getScore() {
-    return ScoreResponse(
-      data: ScoreData(
-        totalItems: 6,
-        totalPages: 1,
-        isKkbd: false,
-        dsDiemHocky: [
-          SemesterScore(
-            hocKy: "20252",
-            tenHocKy: "Học kỳ 2 - Năm học 2025 - 2026",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "3.24",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "7.86",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "90",
-            dsDiemMonHoc: [
-              SubjectScore(
-                tenMon: "Giáo dục thể chất đại cương",
-                maMon: "GT01016",
-                diemTkSo: "6.5",
-                diemTkChu: "C+",
-                ketQua: 1,
-              ),
-              SubjectScore(
-                tenMon: "Kỹ năng quản lý bản thân",
-                maMon: "KN01003",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Kỹ năng tìm kiếm việc làm",
-                maMon: "KN01004",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Phân tích yêu cầu phần mềm",
-                maMon: "TH03102",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Kiến trúc&thiết kế phần mềm",
-                maMon: "TH03103",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Phát triển ứng dụng di động",
-                maMon: "TH03112",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Thiết kế giao diện người dùng",
-                maMon: "TH03136",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "Kiểm thử và ĐBCL phần mềm",
-                maMon: "TH03137",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-              SubjectScore(
-                tenMon: "An toàn hệ thống thông tin",
-                maMon: "TH03324",
-                diemTkSo: "",
-                diemTkChu: "",
-                ketQua: 0,
-              ),
-            ],
-          ),
-          SemesterScore(
-            hocKy: "20251",
-            tenHocKy: "Học kỳ 1 - Năm học 2025 - 2026",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "3.00",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "7.20",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "80",
-            dsDiemMonHoc: [],
-          ),
-          SemesterScore(
-            hocKy: "20242",
-            tenHocKy: "Học kỳ 2 - Năm học 2024 - 2025",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "2.85",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "6.95",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "70",
-            dsDiemMonHoc: [],
-          ),
-          SemesterScore(
-            hocKy: "20241",
-            tenHocKy: "Học kỳ 1 - Năm học 2024 - 2025",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "2.70",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "6.70",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "55",
-            dsDiemMonHoc: [],
-          ),
-          SemesterScore(
-            hocKy: "20232",
-            tenHocKy: "Học kỳ 2 - Năm học 2023 - 2024",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "2.50",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "6.40",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "40",
-            dsDiemMonHoc: [],
-          ),
-          SemesterScore(
-            hocKy: "20231",
-            tenHocKy: "Học kỳ 1 - Năm học 2023 - 2024",
-            dtbHkHe4: "-",
-            dtbTichLuyHe4: "2.30",
-            dtbHkHe10: "-",
-            dtbTichLuyHe10: "6.10",
-            soTinChiDatHk: "-",
-            soTinChiDatTichLuy: "20",
-            dsDiemMonHoc: [],
-          ),
-        ],
-      ),
-    );
+
+class ScoreService {
+  static Future<List<SemesterScore>> getSemesterScores(
+    String cookie,
+    String token,
+  ) async {
+    try {
+      final ScoreResponse? response = await getScoreResponse(cookie, token);
+
+      if (response == null) {
+        return [];
+      }
+
+      final List<SemesterScore>? semesters = response.data?.dsDiemHocky;
+
+      if (semesters == null || semesters.isEmpty) {
+        return [];
+      }
+
+      return semesters;
+    } catch (e) {
+      print("Lỗi ScoreService.getSemesterScores: $e");
+      return [];
+    }
   }
 }

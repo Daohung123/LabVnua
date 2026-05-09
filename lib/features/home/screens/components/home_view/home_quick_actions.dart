@@ -25,7 +25,7 @@ class HomeQuickActions extends StatelessWidget {
         Icons.grade_outlined,
         'Xem điểm',
         AppColors.scoreColor,
-        ScoreView(),
+        ScoreStudentView(),
       ),
       ShortcutData(
         Icons.payments_outlined,
@@ -64,9 +64,7 @@ class HomeQuickActions extends StatelessWidget {
             childAspectRatio: 3.0,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            children: shortcuts
-                .map((s) => _ShortcutTile(shortcut: s))
-                .toList(),
+            children: shortcuts.map((s) => _ShortcutTile(shortcut: s)).toList(),
           ),
         ],
       ),
@@ -97,7 +95,8 @@ class _ShortcutTile extends StatelessWidget {
           color: shortcut.color.withOpacity(AppOpacity.bg10),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
-              color: shortcut.color.withOpacity(AppOpacity.bg12)),
+            color: shortcut.color.withOpacity(AppOpacity.bg12),
+          ),
         ),
         child: Row(
           children: [
