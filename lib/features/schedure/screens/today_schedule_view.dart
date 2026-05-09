@@ -19,9 +19,9 @@ const _rose = Color(0xffFF6B8A);
 
 // Màu card theo tiết (sáng/chiều/tối)
 Color _sessionColor(int tietBatDau) {
-  if (tietBatDau <= 5) return _accent; // Sáng
-  if (tietBatDau <= 9) return _green; // Chiều
-  return _rose; // Tối
+  if (tietBatDau <= 5) return _accent;
+  if (tietBatDau <= 9) return _green;
+  return _rose;
 }
 
 String _sessionLabel(int tietBatDau) {
@@ -30,7 +30,7 @@ String _sessionLabel(int tietBatDau) {
   return 'Tối';
 }
 
-// Thời gian bắt đầu / kết thúc theo tiết thực tế
+// Thời gian bắt đầu theo tiết
 String _startTime(int tiet) {
   const times = {
     1: '07:00',
@@ -49,6 +49,7 @@ String _startTime(int tiet) {
   return times[tiet] ?? '--:--';
 }
 
+// Thời gian kết thúc theo tiết
 String _endTime(int tiet, int soTiet) {
   final end = tiet + soTiet - 1;
   const endTimes = {
@@ -65,7 +66,7 @@ String _endTime(int tiet, int soTiet) {
     11: '19:00',
     12: '19:50',
   };
-  return endTimes[end] ?? endTimes[tiet + soTiet - 1] ?? '--:--';
+  return endTimes[end] ?? '--:--';
 }
 
 // Kiểm tra tiết đang diễn ra
@@ -73,47 +74,28 @@ bool _isNow(int tiet, int soTiet) {
   final now = TimeOfDay.now();
   final start = _startTime(tiet).split(':');
   final end = _endTime(tiet, soTiet).split(':');
+
+  if (start.length != 2 || end.length != 2) return false;
+
   final nowMin = now.hour * 60 + now.minute;
   final startMin = int.parse(start[0]) * 60 + int.parse(start[1]);
   final endMin = int.parse(end[0]) * 60 + int.parse(end[1]);
+
   return nowMin >= startMin && nowMin <= endMin;
 }
 
 bool _isPast(int tiet, int soTiet) {
   final now = TimeOfDay.now();
   final end = _endTime(tiet, soTiet).split(':');
+
+  if (end.length != 2) return false;
+
   final nowMin = now.hour * 60 + now.minute;
   final endMin = int.parse(end[0]) * 60 + int.parse(end[1]);
+
   return nowMin > endMin;
 }
 
-// ─────────────────────────────────────────────
-//  NOTE: Fix bug trong schedure_student_services.dart
-//
-//  Thay hàm getSchedureInDay bằng logic so sánh ngayhoc:
-//
-//  static Future<List<ThoiKhoaBieu>> getSchedureInDay(
-//    List<ThoiKhoaBieu> schedureWeek,
-//  ) async {
-//    try {
-//      final fomatTime = DateFormat('dd/MM/yyyy');
-//      DateTime now = DateTime.now();
-//      DateTime today = DateTime(now.year, now.month, now.day);
-//      List<ThoiKhoaBieu> schedureDay = [];
-//      for (var item in schedureWeek) {
-//        try {
-//          DateTime ngay = fomatTime.parse(item.ngayhoc);
-//          DateTime ngayOnly = DateTime(ngay.year, ngay.month, ngay.day);
-//          if (ngayOnly == today) schedureDay.add(item);
-//        } catch (_) {}
-//      }
-//      return schedureDay;
-//    } catch (e) {
-//      print("Lỗi: $e");
-//      return [];
-//    }
-//  }
-//
 // ─────────────────────────────────────────────
 //  Main View
 // ─────────────────────────────────────────────
@@ -126,7 +108,7 @@ class TodayScheduleView extends StatefulWidget {
 
 class _TodayScheduleViewState extends State<TodayScheduleView>
     with TickerProviderStateMixin {
-  late Future<List<ThoiKhoaBieu>> _future;
+  late Future<ThoiKhoaBieu> _future;
   final DateTime today = DateTime.now();
   late AnimationController _pulseCtrl;
 
@@ -147,9 +129,17 @@ class _TodayScheduleViewState extends State<TodayScheduleView>
     super.dispose();
   }
 
-  Future<List<ThoiKhoaBieu>> _loadData() async {
+  Future<ThoiKhoaBieu> _loadData() async {
     final ctrl = await CtrlSchedure.create();
-    return await ctrl.getTkbToday();
+    ThoiKhoaBieu data = await ctrl.getTkbTodayItem();
+    
+    return data;
+  }
+
+  bool _isEmptyItem(ThoiKhoaBieu item) {
+    return item.soTiet == 0 ||
+        item.tenMon.trim().isEmpty ||
+        item.tenMon == "Không có lịch học hôm nay";
   }
 
   @override
@@ -161,28 +151,31 @@ class _TodayScheduleViewState extends State<TodayScheduleView>
           _SliverHeader(today: today),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-            sliver: FutureBuilder<List<ThoiKhoaBieu>>(
+            sliver: FutureBuilder<ThoiKhoaBieu>(
               future: _future,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const SliverFillRemaining(child: _LoadingView());
                 }
+
                 if (snapshot.hasError) {
                   return const SliverFillRemaining(child: _ErrorView());
                 }
-                final list = snapshot.data ?? [];
-                if (list.isEmpty) {
+
+                final item = snapshot.data;
+                if (item == null || _isEmptyItem(item)) {
                   return const SliverFillRemaining(child: _EmptyView());
                 }
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (ctx, i) => _ScheduleCard(
-                      item: list[i],
-                      index: i,
-                      isLast: i == list.length - 1,
+
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: _ScheduleCard(
+                      item: item,
+                      index: 0,
+                      isLast: true,
                       pulseCtrl: _pulseCtrl,
                     ),
-                    childCount: list.length,
                   ),
                 );
               },
@@ -229,10 +222,9 @@ class _SliverHeader extends StatelessWidget {
         ),
         onPressed: () => Navigator.pop(context),
       ),
-      // Chỉ hiện khi collapsed (cuộn lên), không đè lên flexibleSpace
-      title: Text(
+      title: const Text(
         "Lịch học hôm nay",
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w800,
           fontSize: 18,
@@ -247,7 +239,6 @@ class _SliverHeader extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            // Gradient nền
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -257,7 +248,6 @@ class _SliverHeader extends StatelessWidget {
                 ),
               ),
             ),
-            // Vòng trang trí
             Positioned(
               right: -40,
               top: -40,
@@ -282,7 +272,6 @@ class _SliverHeader extends StatelessWidget {
                 ),
               ),
             ),
-            // Nội dung
             Positioned(
               left: 20,
               right: 20,
@@ -303,9 +292,9 @@ class _SliverHeader extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: _gold.withOpacity(0.4)),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(Icons.today_rounded, size: 13, color: _gold),
                             SizedBox(width: 5),
                             Text(
@@ -391,6 +380,7 @@ class _ScheduleCardState extends State<_ScheduleCard>
       begin: const Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOutCubic));
+
     Future.delayed(Duration(milliseconds: widget.index * 80), () {
       if (mounted) _entryCtrl.forward();
     });
@@ -419,7 +409,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Timeline
             _TimelineColumn(
               color: color,
               isNow: isNow,
@@ -429,7 +418,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
               startTime: startT,
             ),
             const SizedBox(width: 14),
-            // Card
             Expanded(
               child: Container(
                 margin: const EdgeInsets.only(top: 4, bottom: 18),
@@ -449,7 +437,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
                 ),
                 child: Stack(
                   children: [
-                    // Đường màu trái
                     Positioned(
                       left: 0,
                       top: 0,
@@ -470,7 +457,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Dòng đầu: tên môn + badge session
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -495,7 +481,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
                             ],
                           ),
                           const SizedBox(height: 10),
-                          // Info row
                           Wrap(
                             spacing: 8,
                             runSpacing: 6,
@@ -513,7 +498,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
                             ],
                           ),
                           const SizedBox(height: 8),
-                          // Tiết badges
                           Row(
                             children: [
                               Text(
@@ -541,10 +525,8 @@ class _ScheduleCardState extends State<_ScheduleCard>
                             ],
                           ),
                           const SizedBox(height: 10),
-                          // Divider
                           Divider(height: 1, color: Colors.grey.shade100),
                           const SizedBox(height: 10),
-                          // Giảng viên
                           Row(
                             children: [
                               CircleAvatar(
@@ -584,7 +566,6 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                   ],
                                 ),
                               ),
-                              // Nếu đang học: badge LIVE
                               if (isNow)
                                 AnimatedBuilder(
                                   animation: widget.pulseCtrl,
@@ -603,19 +584,16 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                         width: 1,
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Container(
-                                          width: 6,
-                                          height: 6,
-                                          decoration: BoxDecoration(
-                                            color: _green,
-                                            shape: BoxShape.circle,
-                                          ),
+                                        Icon(
+                                          Icons.circle,
+                                          size: 6,
+                                          color: _green,
                                         ),
-                                        const SizedBox(width: 5),
-                                        const Text(
+                                        SizedBox(width: 5),
+                                        Text(
                                           'ĐANG HỌC',
                                           style: TextStyle(
                                             color: _green,
@@ -697,7 +675,6 @@ class _TimelineColumn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          // Dot
           AnimatedBuilder(
             animation: pulseCtrl,
             builder: (_, __) {
@@ -775,6 +752,7 @@ class _TimelineColumn extends StatelessWidget {
 class _SessionBadge extends StatelessWidget {
   final String label;
   final Color color;
+
   const _SessionBadge({required this.label, required this.color});
 
   @override
@@ -801,6 +779,7 @@ class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+
   const _InfoChip({
     required this.icon,
     required this.label,
@@ -829,6 +808,7 @@ class _TietBadge extends StatelessWidget {
   final String label;
   final Color color;
   final Color textColor;
+
   const _TietBadge({
     required this.label,
     required this.color,

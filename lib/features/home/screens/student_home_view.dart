@@ -47,23 +47,6 @@ class HomeStudent extends StatelessWidget {
 
             HomeInfoBanner(),
             SizedBox(height: AppSpacing.xl),
-
-            AppSectionHeader(
-              title: 'Thời khóa biểu',
-              subtitle: 'Theo dõi lịch học và lịch làm việc trong ngày',
-            ),
-
-            AppCard(
-              borderRadius: AppRadius.xl,
-              padding: EdgeInsets.all(AppSpacing.lg),
-              child: const Schedure(),
-            ),
-            SizedBox(height: AppSpacing.xl),
-
-            AppSectionHeader(
-              title: 'Công cụ học tập',
-              subtitle: 'Các tiện ích hỗ trợ sinh viên trong quá trình học',
-            ),
           ],
         ),
       ),

@@ -30,6 +30,7 @@ class CtrlSchedure {
 
   Future<List<ThoiKhoaBieu>> getTkbToday() async {
     try {
+      print("Ctrl: Lấy lịch học hôm nay...");
       TkbResponse? tkb = await core_services_get_TkbResponse(_cookie, _token);
       if (tkb == null) return [];
       return await TkbService.getSchedureInDay(
@@ -38,6 +39,26 @@ class CtrlSchedure {
     } catch (e) {
       log("Lỗi lấy TKB: $e");
       return [];
+    }
+  }
+
+  Future<ThoiKhoaBieu> getTkbTodayItem() async {
+    try {
+      ThoiKhoaBieu data = await TkbService.getSchedureToday(_cookie, _token);
+
+      return data;
+    } catch (e) {
+      print("Lỗi lấy TKB hôm nay: $e");
+      print(e);
+      return ThoiKhoaBieu(
+        giangVien: "Không có giảng viên",
+        ngayhoc: "",
+        phong: "Không có phòng học",
+        soTiet: 0,
+        tenMon: "Không có lịch học hôm nay",
+        thu: 0,
+        tietBatDau: 0,
+      );
     }
   }
 

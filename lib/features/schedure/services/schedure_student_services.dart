@@ -103,4 +103,68 @@ class TkbService {
       return [];
     }
   }
+
+  // ===================== Today =====================
+  static bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  static ThoiKhoaBieu _emptySchedule() {
+    return ThoiKhoaBieu(
+      thu: 0,
+      tietBatDau: 0,
+      soTiet: 0,
+      tenMon: "Không có lịch học hôm nay",
+      giangVien: "",
+      phong: "",
+      ngayhoc: "",
+    );
+  }
+
+  static Future<ThoiKhoaBieu> getSchedureToday(cookie, token) async {
+    try {
+      final TkbResponse? tkb = await core_services_get_TkbResponse(
+        cookie,
+        token,
+      );
+
+      if (tkb == null) {
+        print("TkbResponse null");
+        return _emptySchedule();
+      }
+
+      final List<ThoiKhoaBieu> schedureInWeek = await getSchedureInWeek(tkb);
+
+      if (schedureInWeek.isEmpty) {
+        print("Không có lịch trong tuần");
+        return _emptySchedule();
+      }
+
+      final DateTime today = DateTime.now();
+
+      for (final item in schedureInWeek) {
+        try {
+          final String rawNgayHoc = item.ngayhoc.trim();
+
+          if (rawNgayHoc.isEmpty) continue;
+
+          // FIX FORMAT
+          final DateTime ngay = DateTime.parse(rawNgayHoc);
+
+          if (_isSameDay(ngay, today)) {
+            print("Đã tìm thấy lịch hôm nay: ${item.tenMon}");
+            return item;
+          }
+        } catch (e) {
+          print("Lỗi parse ngayhoc '${item.ngayhoc}': $e");
+        }
+      }
+
+      print("Không có lịch hôm nay");
+      return _emptySchedule();
+    } catch (e) {
+      print("Lỗi getSchedureToday: $e");
+      return _emptySchedule();
+    }
+  }
 }

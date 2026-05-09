@@ -13,6 +13,7 @@ Future<TkbResponse?> core_services_get_TkbResponse(
   int retry = 0,
 }) async {
   try {
+    print("Lấy TkbResponse... (Retry: $retry)");
     //kiểm tra
     if (retry > 2) {
       print("Retry quá số lần cho phép");
@@ -30,10 +31,6 @@ Future<TkbResponse?> core_services_get_TkbResponse(
         ],
       },
     });
-
-    /// debug
-    print("TYPE: ${res.runtimeType}");
-    print("BODY: $res");
 
     /// ❌ HTML (hết session)
     /// Nếu session còn thì sẽ trả về json nhưng nếu session hết hạn thì sẽ trả về html
@@ -99,7 +96,8 @@ Future<TkbResponse?> core_services_get_TkbResponse(
     }
 
     /// ✅ OK
-    return TkbResponse.fromJson(jsonData);
+    TkbResponse data = TkbResponse.fromJson(jsonData);
+    return data;
   } catch (e) {
     print("Lỗi lấy TKB: $e");
     return null;
