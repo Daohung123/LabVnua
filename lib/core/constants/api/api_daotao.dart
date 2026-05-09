@@ -14,3 +14,4 @@ String APISCOREDATA =
     "/srm/w-locdsdiemsinhvien?hien_thi_mon_theo_hkdk=false"; //Api điểm
 String APINOTIFICATION = "/web/w-locdsthongbao"; //api notification
 String APIINFORMATION = "/dkmh/w-locsinhvieninfo"; //api thông tin sinh viên
+String APITUITON = "/rms/w-locdstonghophocphisv"; //api học phí

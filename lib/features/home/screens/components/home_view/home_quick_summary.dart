@@ -78,7 +78,7 @@ class HomeQuickSummary extends StatelessWidget {
             title: 'Học phí',
             value: 'Xem chi tiết công nợ',
             color: AppColors.tuitionColor,
-            destination: TuitionView(),
+            destination: HocPhiView(),
           ),
         ],
       ),

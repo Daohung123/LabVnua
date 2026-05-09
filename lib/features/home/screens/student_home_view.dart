@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/schedure/screens/components/schedure.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
 import 'package:aqedu/core/widgets/components/app_section_header.dart';

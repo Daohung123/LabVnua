@@ -19,7 +19,7 @@ class HomeQuickActions extends StatelessWidget {
         Icons.today_outlined,
         'TKB ngày',
         AppColors.scheduleColor,
-        StudyViewDayMoth(),
+        ScheduleScreen(),
       ),
       ShortcutData(
         Icons.grade_outlined,
@@ -31,7 +31,7 @@ class HomeQuickActions extends StatelessWidget {
         Icons.payments_outlined,
         'Học phí',
         AppColors.tuitionColor,
-        TuitionView(),
+        HocPhiView(),
       ),
       ShortcutData(
         Icons.menu_book_outlined,
