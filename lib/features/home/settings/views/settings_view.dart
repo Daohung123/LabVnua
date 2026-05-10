@@ -33,8 +33,8 @@ class _SettingsViewState extends State<SettingsView> {
       backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0,
-        centerTitle: false, // Căn trái
-        backgroundColor: primaryColor, // Màu xanh đồng bộ dự án
+        centerTitle: false,
+        backgroundColor: primaryColor,
         surfaceTintColor: primaryColor,
         foregroundColor: Colors.white,
         title: const Text(
@@ -42,7 +42,7 @@ class _SettingsViewState extends State<SettingsView> {
           style: TextStyle(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
-            color: Colors.white, // Chữ trắng
+            color: Colors.white,
           ),
         ),
       ),
@@ -121,56 +121,6 @@ class _SettingsViewState extends State<SettingsView> {
                   subtitle: 'Nhận thông báo từ nhà trường và khoa',
                   value: notifyNews,
                   onChanged: (value) => setState(() => notifyNews = value),
-                ),
-                _buildDivider(),
-                _buildSwitchTile(
-                  icon: Icons.volume_up_outlined,
-                  title: 'Âm thanh thông báo',
-                  subtitle: 'Phát âm thanh khi có sự kiện mới',
-                  value: soundEnabled,
-                  onChanged: (value) => setState(() => soundEnabled = value),
-                ),
-                _buildDivider(),
-                _buildSwitchTile(
-                  icon: Icons.vibration_rounded,
-                  title: 'Rung khi có thông báo',
-                  subtitle: 'Tăng khả năng nhận biết khi đang dùng điện thoại',
-                  value: vibrationEnabled,
-                  onChanged: (value) =>
-                      setState(() => vibrationEnabled = value),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'Giao diện & đồng bộ',
-              subtitle: 'Điều chỉnh trải nghiệm sử dụng của bạn',
-            ),
-            _buildCard(
-              children: [
-                _buildSwitchTile(
-                  icon: Icons.dark_mode_outlined,
-                  title: 'Chế độ tối',
-                  subtitle: 'Sử dụng giao diện tối cho buổi tối',
-                  value: darkMode,
-                  onChanged: (value) => setState(() => darkMode = value),
-                ),
-                _buildDivider(),
-                _buildSwitchTile(
-                  icon: Icons.sync_outlined,
-                  title: 'Tự động đồng bộ',
-                  subtitle: 'Làm mới dữ liệu khi mở ứng dụng',
-                  value: autoSync,
-                  onChanged: (value) => setState(() => autoSync = value),
-                ),
-                _buildDivider(),
-                _buildActionTile(
-                  icon: Icons.language_rounded,
-                  title: 'Ngôn ngữ',
-                  subtitle: 'Tiếng Việt',
-                  trailing: _buildTrailingValue('VI'),
-                  onTap: () {},
                 ),
               ],
             ),
@@ -273,14 +223,6 @@ class _SettingsViewState extends State<SettingsView> {
                     height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    _buildHeaderChip('Đang hoạt động'),
-                    const SizedBox(width: 8),
-                    _buildHeaderChip('Đã đồng bộ'),
-                  ],
-                ),
               ],
             ),
           ),
@@ -300,22 +242,22 @@ class _SettingsViewState extends State<SettingsView> {
             accentColor: const Color(0xff0EA5E9),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: _buildSummaryCard(
-            icon: Icons.lock_outline_rounded,
+            icon: Icons.security_outlined,
             title: 'Bảo mật',
             value: 'Tốt',
             accentColor: const Color(0xff10B981),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
           child: _buildSummaryCard(
-            icon: Icons.sync_rounded,
-            title: 'Đồng bộ',
-            value: 'Mới',
-            accentColor: const Color(0xff8B5CF6),
+            icon: Icons.storage_outlined,
+            title: 'Lưu trữ',
+            value: '2.4GB',
+            accentColor: const Color(0xffF59E0B),
           ),
         ),
       ],
@@ -329,48 +271,36 @@ class _SettingsViewState extends State<SettingsView> {
     required Color accentColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        border: Border.all(color: borderColor, width: 1),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 42,
-            height: 42,
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: accentColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: accentColor, size: 22),
+            child: Icon(icon, color: accentColor, size: 20),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: Color(0xff111827),
-            ),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 4),
           Text(
             title,
             style: TextStyle(
-              fontSize: 12.5,
+              fontSize: 11.5,
               color: mutedTextColor,
               fontWeight: FontWeight.w500,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -381,58 +311,35 @@ class _SettingsViewState extends State<SettingsView> {
     required String title,
     required String subtitle,
   }) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Color(0xff111827),
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.3,
           ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: TextStyle(
-              color: mutedTextColor,
-              fontSize: 12.5,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: TextStyle(fontSize: 12.5, color: mutedTextColor, height: 1.4),
+        ),
+      ],
     );
   }
 
   Widget _buildCard({required List<Widget> children}) {
     return Container(
+      margin: const EdgeInsets.only(top: 12),
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        border: Border.all(color: borderColor, width: 1),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
-        child: Column(children: children),
-      ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Divider(height: 1, thickness: 1, color: borderColor),
+      child: Column(children: children),
     );
   }
 
@@ -441,42 +348,31 @@ class _SettingsViewState extends State<SettingsView> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
-    Widget? trailing,
   }) {
     return ListTile(
       onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       leading: Container(
-        width: 46,
-        height: 46,
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: primaryColor.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(14),
+          color: primaryColor.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: primaryColor, size: 23),
+        child: Icon(icon, color: primaryColor, size: 22),
       ),
       title: Text(
         title,
-        style: const TextStyle(
-          color: Color(0xff111827),
-          fontWeight: FontWeight.w700,
-          fontSize: 14.5,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
       ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-          subtitle,
-          style: TextStyle(color: mutedTextColor, fontSize: 12.5, height: 1.3),
-        ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(fontSize: 12.5, color: mutedTextColor),
       ),
-      trailing:
-          trailing ??
-          Icon(
-            Icons.chevron_right_rounded,
-            color: Colors.grey.shade400,
-            size: 24,
-          ),
+      trailing: Icon(
+        Icons.arrow_forward_ios_outlined,
+        size: 14,
+        color: mutedTextColor,
+      ),
     );
   }
 
@@ -485,105 +381,75 @@ class _SettingsViewState extends State<SettingsView> {
     required String title,
     required String subtitle,
     required bool value,
-    required ValueChanged<bool> onChanged,
+    required Function(bool) onChanged,
   }) {
-    return SwitchListTile(
-      value: value,
-      onChanged: onChanged,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      secondary: Container(
-        width: 46,
-        height: 46,
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: primaryColor.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(14),
+          color: primaryColor.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Icon(icon, color: primaryColor, size: 23),
+        child: Icon(icon, color: primaryColor, size: 22),
       ),
       title: Text(
         title,
-        style: const TextStyle(
-          color: Color(0xff111827),
-          fontWeight: FontWeight.w700,
-          fontSize: 14.5,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
       ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-          subtitle,
-          style: TextStyle(color: mutedTextColor, fontSize: 12.5, height: 1.3),
-        ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(fontSize: 12.5, color: mutedTextColor),
       ),
-      activeThumbColor: primaryColor,
-      inactiveThumbColor: Colors.grey.shade500,
-      inactiveTrackColor: Colors.grey.shade300,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      trailing: Switch(
+        value: value,
+        onChanged: onChanged,
+        activeColor: primaryColor,
+      ),
     );
+  }
+
+  Widget _buildDivider() {
+    return Divider(height: 1, color: borderColor, indent: 14, endIndent: 14);
   }
 
   Widget _buildLogoutButton() {
-    return SizedBox(
+    return Container(
       width: double.infinity,
-      height: 54,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          ControllerSettings.logOut();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => RoleView()),
-          );
-        },
-        icon: const Icon(Icons.logout_rounded),
-        label: const Text(
-          'Đăng xuất',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xffDC2626),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: Color(0xffFECACA)),
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            await ControllerSettings.logOut();
+            if (mounted) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
+            }
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.logout_rounded, color: Colors.white, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'Đăng xuất',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderChip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.16),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withOpacity(0.18)),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11.5,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTrailingValue(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0xffEEF4FF),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: primaryColor,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
         ),
       ),
     );

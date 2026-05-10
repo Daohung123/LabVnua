@@ -1,6 +1,7 @@
+import 'package:aqedu/features/home/settings/controllers/controller_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
-import 'package:aqedu/features/home/controllers/controller_home.dart';
+
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key});
@@ -12,7 +13,7 @@ class LogoutButton extends StatelessWidget {
       height: 54,
       child: ElevatedButton.icon(
         onPressed: () {
-          ControllerHome.logOut();
+          ControllerSettings.logOut();
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => RoleView()),
