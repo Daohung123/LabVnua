@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/home/screens/student_chat_view.dart';
-import 'package:aqedu/features/home/screens/student_home_view.dart';
-import 'package:aqedu/features/home/screens/student_other_view.dart';
-import 'package:aqedu/features/home/screens/student_setting_view.dart';
-import 'package:aqedu/features/home/screens/study_view.dart';
+import 'package:aqedu/core/screens/view_developing.dart';
+import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
+import 'package:aqedu/features/home/other_view/screens/student_other_view.dart';
+import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';
+import 'package:aqedu/features/home/study_view/screens/study_view.dart';
 import 'package:aqedu/core/widgets/fab/ai_fab_button.dart';
 import 'package:aqedu/features/ai_assistant/screens/ai_chat_dialog.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = const [
     HomeStudent(),
     HocTapView(),
-    Chat(),
+    Developing(),
     OtherFeaturesView(),
     SettingsView(),
   ];

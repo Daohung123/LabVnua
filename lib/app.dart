@@ -1,11 +1,9 @@
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
-import 'package:aqedu/features/home/screens/student_home_screen_view.dart';
-
+import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-
 import 'package:aqedu/core/screens/no_wifi_screen.dart';
 
 // Đây là gốc của toàn bộ UI

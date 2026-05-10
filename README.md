@@ -14,3 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+# change name app
+1. cmd run: dart pub global activate rename
+2. rename setAppName "EduAI"
+3. dart run rename --appname "EduAI"

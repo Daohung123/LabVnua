@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
-import 'package:aqedu/features/home/screens/components/home_view/home_models.dart';
+import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
-import 'package:aqedu/features/home/screens/student_chat_view.dart';
+import 'package:aqedu/core/screens/view_developing.dart';
 
 /// Quick Actions component — lối tắt nhanh
 class HomeQuickActions extends StatelessWidget {
@@ -37,7 +37,7 @@ class HomeQuickActions extends StatelessWidget {
         Icons.menu_book_outlined,
         'Học liệu',
         AppColors.materialsColor,
-        Chat(),
+        Developing(),
       ),
     ];
 

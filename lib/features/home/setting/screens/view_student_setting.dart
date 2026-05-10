@@ -1,5 +1,5 @@
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
-import 'package:aqedu/features/home/controllers/controller_settings.dart';
+import 'package:aqedu/features/home/setting/controllers/controller_settings.dart';
 import 'package:flutter/material.dart';
 
 class SettingsView extends StatefulWidget {
