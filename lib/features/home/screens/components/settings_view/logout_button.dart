@@ -1,4 +1,4 @@
-import 'package:aqedu/features/home/settings/controllers/controller_settings.dart';
+import 'package:aqedu/features/home/controllers/controller_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
 
