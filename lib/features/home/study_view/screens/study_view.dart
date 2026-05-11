@@ -2,7 +2,7 @@ import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:flutter/material.dart';
-import '../../program_training/screens/program_training_view.dart';
+import 'package:aqedu/features/program_training/screens/program_training_view.dart';
 class HocTapView extends StatelessWidget {
   const HocTapView({super.key});
 
