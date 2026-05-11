@@ -37,13 +37,7 @@ class HocTapView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
             _buildHeroHeader(primaryColor, textBlue),
-            const SizedBox(height: 16),
-            _buildQuickSummary(
-              primaryColor: primaryColor,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              mutedTextColor: mutedTextColor,
-            ),
+            const SizedBox(height: 16),  
             const SizedBox(height: 22),
 
             _buildSectionHeader(
@@ -381,52 +375,7 @@ class HocTapView extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickSummary({
-    required Color primaryColor,
-    required Color cardColor,
-    required Color borderColor,
-    required Color mutedTextColor,
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.menu_book_outlined,
-            title: 'CT đào tạo',
-            value: 'Mở',
-            accentColor: const Color(0xff0EA5E9),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.calendar_month_outlined,
-            title: 'Lịch học',
-            value: 'Xem',
-            accentColor: const Color(0xff10B981),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.payments_outlined,
-            title: 'Học phí',
-            value: 'Mới',
-            accentColor: const Color(0xff8B5CF6),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
   Widget _buildSummaryCard({
     required IconData icon,

@@ -37,7 +37,7 @@ class HomeQuickActions extends StatelessWidget {
         Icons.menu_book_outlined,
         'Học liệu',
         AppColors.materialsColor,
-        Developing(),
+        DevelopingView(),
       ),
     ];
 

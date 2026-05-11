@@ -36,14 +36,6 @@ class OtherFeaturesView extends StatelessWidget {
           children: [
             _buildHeroHeader(primaryColor, const Color(0xff355070)),
             const SizedBox(height: 16),
-
-            // Quick summary (keeps original content intact but matches study_view layout)
-            _buildQuickSummary(
-              primaryColor: primaryColor,
-              cardColor: cardColor,
-              borderColor: borderColor,
-              mutedTextColor: subtitleColor,
-            ),
             const SizedBox(height: 22),
 
             // Section: TIỆN ÍCH SINH VIÊN (rendered as card + ListTiles to match study_view)
@@ -252,53 +244,7 @@ class OtherFeaturesView extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickSummary({
-    required Color primaryColor,
-    required Color cardColor,
-    required Color borderColor,
-    required Color mutedTextColor,
-  }) {
-    // Preserve content by summarizing counts of items
-    return Row(
-      children: [
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.apps_rounded,
-            title: 'Tiện ích',
-            value: '9',
-            accentColor: const Color(0xff0EA5E9),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.support_agent_rounded,
-            title: 'Hỗ trợ',
-            value: '6',
-            accentColor: const Color(0xff10B981),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.menu,
-            title: 'Tổng',
-            value: '15',
-            accentColor: const Color(0xff8B5CF6),
-            cardColor: cardColor,
-            borderColor: borderColor,
-            mutedTextColor: mutedTextColor,
-          ),
-        ),
-      ],
-    );
-  }
+  
 
   Widget _buildSummaryCard({
     required IconData icon,

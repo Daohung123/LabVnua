@@ -52,7 +52,6 @@ class _SettingsViewState extends State<SettingsView> {
           children: [
             _buildProfileHeader(),
             const SizedBox(height: 16),
-            _buildQuickSummary(),
             const SizedBox(height: 22),
 
             _buildSectionHeader(
@@ -289,93 +288,6 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  Widget _buildQuickSummary() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.notifications_active_outlined,
-            title: 'Thông báo',
-            value: '3',
-            accentColor: const Color(0xff0EA5E9),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.lock_outline_rounded,
-            title: 'Bảo mật',
-            value: 'Tốt',
-            accentColor: const Color(0xff10B981),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSummaryCard(
-            icon: Icons.sync_rounded,
-            title: 'Đồng bộ',
-            value: 'Mới',
-            accentColor: const Color(0xff8B5CF6),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSummaryCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color accentColor,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: accentColor, size: 22),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: Color(0xff111827),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.5,
-              color: mutedTextColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildSectionHeader({
     required String title,

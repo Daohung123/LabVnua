@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DBHelper {
+class DataBaseConfig {
   static Database? _database;
 
   /// mở database
@@ -31,42 +31,24 @@ class DBHelper {
         )
       ''');
 
-        // bảng tiết trong ngày
         await db.execute('''
-        CREATE TABLE tiet_trong_ngay(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          tiet INTEGER,
-          gio_bat_dau TEXT,
-          gio_ket_thuc TEXT
-        )
-      ''');
-
-        // bảng tuần TKB
-        await db.execute('''
-        CREATE TABLE tuan_tkb(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          tuan_hoc_ky INTEGER,
-          thong_tin_tuan TEXT,
-          ngay_bat_dau TEXT,
-          ngay_ket_thuc TEXT
-        )
-      ''');
-
-        // bảng thời khóa biểu (liên kết với tuần)
-        await db.execute('''
-        CREATE TABLE thoi_khoa_bieu(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          thu INTEGER,
-          tiet_bat_dau INTEGER,
-          so_tiet INTEGER,
-          ten_mon TEXT,
-          giang_vien TEXT,
-          phong TEXT,
-          ngay_hoc TEXT,
-          tuan_id INTEGER,
-          FOREIGN KEY (tuan_id) REFERENCES tuan_tkb(id)
-        )
-      ''');
+        CREATE TABLE notifications(
+          id TEXT PRIMARY KEY,
+          doi_tuong_search TEXT,
+          doi_tuong INTEGER,
+          phan_cap_search TEXT,
+          phan_cap_sinh_vien INTEGER,
+          tieu_de TEXT,
+          noi_dung TEXT,
+          is_phai_xem INTEGER,
+          ngay_gui TEXT,
+          nguoi_gui TEXT,
+          is_da_doc INTEGER,
+          ds_doi_tuong TEXT,
+          is_xem_phan_hoi INTEGER,
+          ngay_xem TEXT
+      )
+    ''');
       },
     );
   }

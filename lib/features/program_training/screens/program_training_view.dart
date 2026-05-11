@@ -1,3 +1,4 @@
+import 'package:aqedu/core/constants/UI/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 import '../controlers/ctrl_program_training.dart';
@@ -63,7 +64,7 @@ class _ProgramTrainingViewState extends State<ProgramTrainingView> {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryColor,
         surfaceTintColor: Colors.white,
         elevation: 0,
         centerTitle: false,
@@ -71,12 +72,12 @@ class _ProgramTrainingViewState extends State<ProgramTrainingView> {
         title: const Text(
           "Chương trình đào tạo",
           style: TextStyle(
-            color: kTextPrimary,
+            color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
         ),
-        iconTheme: const IconThemeData(color: kTextPrimary),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: isLoading

@@ -2,7 +2,7 @@ import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../../../config/config_DB.dart';
 
-class SqliteServices extends DBHelper {
+class SqliteServices extends DataBaseConfig {
   @override
   bool operator ==(Object other) {
     // TODO: implement ==

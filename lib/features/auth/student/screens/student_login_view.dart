@@ -776,7 +776,7 @@ class _FooterText extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         const Text(
-          'AQEdu — Hệ thống quản lý học tập',
+          'EduAI — Hệ thống quản lý học tập',
           style: TextStyle(fontSize: 11, color: Color(0xFFB0BAD0)),
           textAlign: TextAlign.center,
         ),
