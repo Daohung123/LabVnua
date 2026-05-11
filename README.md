@@ -20,3 +20,11 @@ samples, guidance on mobile development, and a full API reference.
 1. cmd run: dart pub global activate rename
 2. rename setAppName "EduAI"
 3. dart run rename --appname "EduAI"
+
+# git pull hard
+1. git fetch origin
+2. git checkout develop
+3. git reset --hard origin/develop
+
+# SoftWare display Android
+scrcpy
