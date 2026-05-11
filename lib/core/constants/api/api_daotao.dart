@@ -15,3 +15,4 @@ String APISCOREDATA =
 String APINOTIFICATION = "/web/w-locdsthongbao"; //api notification
 String APIINFORMATION = "/dkmh/w-locsinhvieninfo"; //api thông tin sinh viên
 String APITUITON = "/rms/w-locdstonghophocphisv"; //api học phí
+String APITRAININGPROGRAM = "/sch/w-locdsctdtsinhvien"; //api chuong trinh dao tao
