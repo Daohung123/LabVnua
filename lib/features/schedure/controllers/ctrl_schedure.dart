@@ -4,7 +4,7 @@ import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart
 import 'package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart';
 
 import '../models/Schedure_Student.dart';
-import '../services/schedure_student_services.dart';
+import '../services/api_daotao/schedure_student_services.dart';
 
 class CtrlSchedure {
   final String _cookie;
@@ -30,12 +30,10 @@ class CtrlSchedure {
 
   Future<List<ThoiKhoaBieu>> getTkbToday() async {
     try {
-      print("Ctrl: Lấy lịch học hôm nay...");
-      TkbResponse? tkb = await core_services_get_TkbResponse(_cookie, _token);
+      final tkb = await core_services_get_TkbResponse(_cookie, _token);
       if (tkb == null) return [];
-      return await TkbService.getScheduleInDay(
-        await TkbService.getScheduleInWeek(tkb),
-      );
+      final scheduleInWeek = await TkbService.getScheduleInWeek(tkb);
+      return await TkbService.getScheduleInDay(scheduleInWeek);
     } catch (e) {
       log("Lỗi lấy TKB: $e");
       return [];
@@ -44,12 +42,9 @@ class CtrlSchedure {
 
   Future<ThoiKhoaBieu> getTkbTodayItem() async {
     try {
-      ThoiKhoaBieu data = await TkbService.getScheduleToday(_cookie, _token);
-
-      return data;
+      return await TkbService.getScheduleToday(_cookie, _token);
     } catch (e) {
-      print("Lỗi lấy TKB hôm nay: $e");
-      print(e);
+      log("Lỗi lấy TKB hôm nay: $e");
       return ThoiKhoaBieu(
         giangVien: "Không có giảng viên",
         ngayhoc: "",
@@ -66,7 +61,7 @@ class CtrlSchedure {
     try {
       return await TkbService.getScheduleByDayInSemester(_cookie, _token);
     } catch (e) {
-      print(e);
+      log("Lỗi lấy lịch học trong kỳ: $e");
       return [];
     }
   }

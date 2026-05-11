@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aqedu/config/syncData.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/sqlite/Session.dart';
 import '../../../constants/api/api_daotao.dart';
@@ -63,6 +64,8 @@ class ApiHelper {
       );
 
       token = currUser["access_token"];
+      ///syncData
+      
 
       /// tạo SessionModel
       return SessionModel(user:user, pass:pass, cookie: cookie!, token: token!);

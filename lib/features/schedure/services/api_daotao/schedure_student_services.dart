@@ -4,19 +4,6 @@ import 'date_time_helper.dart';
 import 'schedure_constants.dart';
 
 class TkbService {
-  static Future<List<TuanTkb>> getWeekSchedules(
-    dynamic cookie,
-    String token,
-  ) async {
-    try {
-      final tkb = await core_services_get_TkbResponse(cookie, token);
-      return tkb?.dsTuanTkb ?? [];
-    } catch (e) {
-      _logError('getWeekSchedules', e);
-      return [];
-    }
-  }
-
   static Future<List<ThoiKhoaBieu>> getScheduleByDayInSemester(
     dynamic cookie,
     String token,
@@ -49,13 +36,8 @@ class TkbService {
   static Future<List<ThoiKhoaBieu>> getScheduleInDay(
     List<ThoiKhoaBieu> scheduleWeek,
   ) async {
-    try {
-      final today = DateTimeHelper.getTodayAtMidnight();
-      return _filterScheduleByDate(scheduleWeek, today);
-    } catch (e) {
-      _logError('getScheduleInDay', e);
-      return [];
-    }
+    final today = DateTimeHelper.getTodayAtMidnight();
+    return _filterScheduleByDate(scheduleWeek, today);
   }
 
   static Future<ThoiKhoaBieu> getScheduleToday(

@@ -25,6 +25,7 @@ samples, guidance on mobile development, and a full API reference.
 1. git fetch origin
 2. git checkout develop
 3. git reset --hard origin/develop
+4. git clean -fd
 
 # SoftWare display Android
 scrcpy

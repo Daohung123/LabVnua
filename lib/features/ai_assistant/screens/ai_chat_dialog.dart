@@ -1,3 +1,4 @@
+import 'package:aqedu/features/ai_assistant/controllers/controller_ai.dart';
 import 'package:flutter/material.dart';
 
 // ─────────────────────────────────────────
@@ -14,12 +15,8 @@ class _C {
   static const textPrimary = Color(0xFF0D1B3E);
   static const textSecondary = Color(0xFF5E6D8A);
   static const textMuted = Color(0xFF9BA8BE);
-  static const aiAvatar = Color(0xFF0047A8);
 }
 
-/// ========================================
-/// AI CHAT DIALOG — ChatGPT-style
-/// ========================================
 class AIChatDialog extends StatefulWidget {
   final String title;
   final String? initialMessage;
@@ -38,26 +35,30 @@ class AIChatDialog extends StatefulWidget {
 
 class _AIChatDialogState extends State<AIChatDialog>
     with TickerProviderStateMixin {
-  final _messageController = TextEditingController();
-  final _scrollController = ScrollController();
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
+
   bool _isLoading = false;
-  late AnimationController _dotController;
+  late final AnimationController _dotController;
 
   @override
   void initState() {
     super.initState();
+
     _dotController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat();
 
-    _messages.add(ChatMessage(
-      text:
-          'Xin chào! 👋 Tôi là AI Assistant của bạn. Có gì tôi có thể giúp bạn?\n\n💡 Bạn có thể hỏi về:\n• Lịch học\n• Điểm số\n• Học phí\n• Thông tin khóa học',
-      isUser: false,
-      timestamp: DateTime.now(),
-    ));
+    _messages.add(
+      ChatMessage(
+        text: widget.initialMessage ??
+            'Xin chào! 👋 Tôi là AI Assistant của bạn. Tôi có thể hỗ trợ bạn về lịch học, điểm số, học phí và thông tin khóa học.',
+        isUser: false,
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   @override
@@ -70,26 +71,28 @@ class _AIChatDialogState extends State<AIChatDialog>
 
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      if (!mounted || !_scrollController.hasClients) return;
+
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeOut,
+      );
     });
   }
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
     if (text.isEmpty || _isLoading) return;
 
     setState(() {
-      _messages.add(ChatMessage(
-        text: text,
-        isUser: true,
-        timestamp: DateTime.now(),
-      ));
+      _messages.add(
+        ChatMessage(
+          text: text,
+          isUser: true,
+          timestamp: DateTime.now(),
+        ),
+      );
       _messageController.clear();
       _isLoading = true;
     });
@@ -97,39 +100,43 @@ class _AIChatDialogState extends State<AIChatDialog>
     widget.onMessageSent?.call(text);
     _scrollToBottom();
 
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      if (mounted) {
-        setState(() {
-          _messages.add(ChatMessage(
-            text: _generateAIResponse(text),
+    try {
+      final response = await AiController.askGemini(text);
+
+      if (!mounted) return;
+
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: response,
             isUser: false,
             timestamp: DateTime.now(),
-          ));
-          _isLoading = false;
-        });
-        _scrollToBottom();
-      }
-    });
-  }
+          ),
+        );
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
 
-  String _generateAIResponse(String userMessage) {
-    final lower = userMessage.toLowerCase();
-    if (lower.contains('lịch') || lower.contains('tkb')) {
-      return '📅 Lịch học của bạn hôm nay:\n• 7:30 – 9:00: Toán cao cấp\n• 9:15 – 10:45: Tiếng Anh\n• 13:00 – 14:30: Tin học\n\nBạn muốn xem thêm chi tiết tuần này không?';
-    } else if (lower.contains('điểm')) {
-      return '📊 Kết quả học tập gần đây:\n• Toán cao cấp: 8.5 / 10\n• Tiếng Anh: 7.8 / 10\n• Tin học đại cương: 9.0 / 10\n\n⭐ Điểm trung bình tích lũy: 8.43';
-    } else if (lower.contains('học phí')) {
-      return '💳 Thông tin học phí học kỳ này:\n• Tổng học phí: 15.000.000 ₫\n• Đã thanh toán: 10.000.000 ₫\n• Còn lại: 5.000.000 ₫\n• Hạn cuối: 31/12/2026\n\nBạn muốn xem hướng dẫn thanh toán?';
-    } else if (lower.contains('cảm ơn') || lower.contains('thank')) {
-      return 'Rất vui được giúp bạn! 😊 Nếu có thắc mắc gì thêm, cứ hỏi mình nhé.';
-    } else {
-      return 'Cảm ơn câu hỏi của bạn! 🤔\n\nMình có thể hỗ trợ bạn về:\n• 📅 Xem lịch học\n• 📊 Kiểm tra điểm số\n• 💳 Tra cứu học phí\n• 📚 Thông tin khóa học\n\nBạn cần tìm hiểu điều gì?';
+      setState(() {
+        _messages.add(
+          ChatMessage(
+            text: 'Đã xảy ra lỗi khi gọi AI: $e',
+            isUser: false,
+            timestamp: DateTime.now(),
+          ),
+        );
+        _isLoading = false;
+      });
     }
+
+    _scrollToBottom();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
@@ -176,6 +183,7 @@ class _AIChatDialogState extends State<AIChatDialog>
           if (index == _messages.length) {
             return _TypingIndicator(controller: _dotController);
           }
+
           return _MessageBubble(
             message: _messages[index],
             isFirst: index == 0 ||
@@ -204,7 +212,6 @@ class _Header extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // AI Avatar
           Container(
             width: 40,
             height: 40,
@@ -212,7 +219,11 @@ class _Header extends StatelessWidget {
               color: _C.primary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -253,7 +264,6 @@ class _Header extends StatelessWidget {
               ],
             ),
           ),
-          // Close button
           Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(10),
@@ -264,8 +274,11 @@ class _Header extends StatelessWidget {
                 width: 36,
                 height: 36,
                 alignment: Alignment.center,
-                child: const Icon(Icons.close_rounded,
-                    color: _C.textSecondary, size: 20),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: _C.textSecondary,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -282,7 +295,10 @@ class _MessageBubble extends StatelessWidget {
   final ChatMessage message;
   final bool isFirst;
 
-  const _MessageBubble({required this.message, required this.isFirst});
+  const _MessageBubble({
+    required this.message,
+    required this.isFirst,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -290,16 +306,12 @@ class _MessageBubble extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: EdgeInsets.only(
-        top: isFirst ? 4 : 2,
-        bottom: 4,
-      ),
+      padding: EdgeInsets.only(top: isFirst ? 4 : 2, bottom: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment:
             isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          // AI avatar
           if (!isUser) ...[
             Container(
               width: 30,
@@ -309,17 +321,17 @@ class _MessageBubble extends StatelessWidget {
                 color: _C.primary,
                 borderRadius: BorderRadius.circular(9),
               ),
-              child: const Icon(Icons.auto_awesome,
-                  color: Colors.white, size: 15),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.white,
+                size: 15,
+              ),
             ),
           ],
-
-          // Bubble
           Flexible(
             child: Container(
               constraints: BoxConstraints(maxWidth: width * 0.68),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
               decoration: BoxDecoration(
                 color: isUser ? _C.primary : _C.white,
                 borderRadius: BorderRadius.only(
@@ -368,8 +380,6 @@ class _MessageBubble extends StatelessWidget {
               ),
             ),
           ),
-
-          // User avatar space
           if (isUser) ...[
             Container(
               width: 30,
@@ -380,8 +390,11 @@ class _MessageBubble extends StatelessWidget {
                 borderRadius: BorderRadius.circular(9),
                 border: Border.all(color: _C.primarySoft, width: 1.5),
               ),
-              child: const Icon(Icons.person_rounded,
-                  color: _C.primary, size: 17),
+              child: const Icon(
+                Icons.person_rounded,
+                color: _C.primary,
+                size: 17,
+              ),
             ),
           ],
         ],
@@ -397,7 +410,7 @@ class _MessageBubble extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-// TYPING INDICATOR (animated dots)
+// TYPING INDICATOR
 // ─────────────────────────────────────────
 class _TypingIndicator extends StatelessWidget {
   final AnimationController controller;
@@ -418,7 +431,11 @@ class _TypingIndicator extends StatelessWidget {
               color: _C.primary,
               borderRadius: BorderRadius.circular(9),
             ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 15),
+            child: const Icon(
+              Icons.auto_awesome,
+              color: Colors.white,
+              size: 15,
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
@@ -441,7 +458,10 @@ class _TypingIndicator extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: List.generate(3, (i) => _Dot(controller: controller, delay: i * 0.2)),
+              children: List.generate(
+                3,
+                (i) => _Dot(controller: controller, delay: i * 0.2),
+              ),
             ),
           ),
         ],
@@ -453,7 +473,11 @@ class _TypingIndicator extends StatelessWidget {
 class _Dot extends StatelessWidget {
   final AnimationController controller;
   final double delay;
-  const _Dot({required this.controller, required this.delay});
+
+  const _Dot({
+    required this.controller,
+    required this.delay,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -464,6 +488,7 @@ class _Dot extends StatelessWidget {
         final y = t < 0.5
             ? -4.0 * (t / 0.5)
             : -4.0 * (1.0 - (t - 0.5) / 0.5);
+
         return Transform.translate(
           offset: Offset(0, y),
           child: Container(
@@ -482,7 +507,7 @@ class _Dot extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-// TYPING BAR (input area)
+// TYPING BAR
 // ─────────────────────────────────────────
 class _TypingBar extends StatefulWidget {
   final TextEditingController controller;
@@ -501,18 +526,33 @@ class _TypingBar extends StatefulWidget {
 
 class _TypingBarState extends State<_TypingBar> {
   bool _hasText = false;
+  late final VoidCallback _listener;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(() {
+    _hasText = widget.controller.text.trim().isNotEmpty;
+
+    _listener = () {
       final has = widget.controller.text.trim().isNotEmpty;
-      if (has != _hasText) setState(() => _hasText = has);
-    });
+      if (has != _hasText && mounted) {
+        setState(() => _hasText = has);
+      }
+    };
+
+    widget.controller.addListener(_listener);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_listener);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final canSend = _hasText && !widget.isLoading;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: const BoxDecoration(
@@ -522,7 +562,6 @@ class _TypingBarState extends State<_TypingBar> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Input field
           Expanded(
             child: Container(
               constraints: const BoxConstraints(minHeight: 44, maxHeight: 120),
@@ -555,8 +594,7 @@ class _TypingBarState extends State<_TypingBar> {
                           color: _C.textMuted,
                         ),
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
                         isDense: true,
                       ),
                       onSubmitted: (_) => widget.onSend(),
@@ -568,9 +606,8 @@ class _TypingBarState extends State<_TypingBar> {
             ),
           ),
           const SizedBox(width: 10),
-          // Send button
           AnimatedScale(
-            scale: _hasText && !widget.isLoading ? 1.0 : 0.85,
+            scale: canSend ? 1.0 : 0.85,
             duration: const Duration(milliseconds: 180),
             child: GestureDetector(
               onTap: widget.isLoading ? null : widget.onSend,
@@ -579,25 +616,21 @@ class _TypingBarState extends State<_TypingBar> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: _hasText && !widget.isLoading
-                      ? _C.primary
-                      : _C.primarySoft,
+                  color: canSend ? _C.primary : _C.primarySoft,
                   shape: BoxShape.circle,
-                  boxShadow: _hasText && !widget.isLoading
+                  boxShadow: canSend
                       ? [
                           BoxShadow(
                             color: _C.primary.withOpacity(0.35),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
-                          )
+                          ),
                         ]
                       : null,
                 ),
                 child: Icon(
                   Icons.arrow_upward_rounded,
-                  color: _hasText && !widget.isLoading
-                      ? Colors.white
-                      : _C.primary.withOpacity(0.5),
+                  color: canSend ? Colors.white : _C.primary.withOpacity(0.5),
                   size: 21,
                 ),
               ),

@@ -35,14 +35,9 @@ class _NotificationViewState extends State<NotificationView> {
 
   Future<List<NotificationItem>> _loadNotifications() async {
     try {
-      final db = SqliteServices();
-      final SessionModel? session = await db.getSession();
+      
 
-      if (session == null) {
-        return [];
-      }
-
-      final ctrl = CtrlNotiStudent(session.cookie, session.token);
+      final ctrl = CtrlNotiStudent();
       return await ctrl.getNotification();
     } catch (e) {
       return [];

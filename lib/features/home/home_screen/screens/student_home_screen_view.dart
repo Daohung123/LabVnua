@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:aqedu/config/syncData.dart';
 import 'package:aqedu/core/screens/view_developing.dart';
 import 'package:aqedu/features/ai_assistant/screens/ai_chat_dialog.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
@@ -33,6 +34,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   Offset? _fabOffset;
+  initState() {
+    super.initState();
+    LoadData();
+    // Load the saved FAB position from local storage if needed
+  }
+  Future<void> LoadData() async {
+    await syncData();
+  }
 
   static const _destinations = <_NavDest>[
     _NavDest('Trang chủ', Icons.home_outlined,      Icons.home_rounded),

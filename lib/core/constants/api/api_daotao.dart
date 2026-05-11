@@ -1,3 +1,6 @@
+//AI KEY
+String AI_KEY = "AIzaSyDMhs23JKBSC-BdUCACMvxB-NknF3fNtaI";
+
 //File này cho phép tinh chỉnh dữ liệu của api daotap.vnua.edu.vn
 //Địa chỉ gốc
 String APIDAOTAO = "https://daotao.vnua.edu.vn/api";
