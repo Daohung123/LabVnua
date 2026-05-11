@@ -12,8 +12,8 @@ Future<bool> ctrl_login(String username, String password) async {
   final session = await sqlite.getSession();
   // print(session?.cookie);
   // print(session?.token);
-  print("Tai khoan: ${session?.user}");
-  print("Mat khau: ${session?.pass}");
+  // print("Tai khoan: ${session?.user}");
+  // print("Mat khau: ${session?.pass}");
 
   if (session?.cookie == null && session?.token == null) return false;
 

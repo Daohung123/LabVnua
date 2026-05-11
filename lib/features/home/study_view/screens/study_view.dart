@@ -3,6 +3,9 @@ import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
+import '../../../prerequisiteSubjects/screens/view_prequisite_subjects.dart';
+import '../../../course_register/screens/view_courses_register.dart';
+
 class HocTapView extends StatelessWidget {
   const HocTapView({super.key});
 
@@ -78,7 +81,15 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Kiểm tra các môn cần học trước',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrerequisiteView(),
+                      ),
+                    );
+
+                  },
                 ),
                 _buildDivider(borderColor),
                 _buildActionTile(
@@ -179,7 +190,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Đăng ký hoặc điều chỉnh môn học',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CourseRegisterView(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(borderColor),
                 _buildActionTile(

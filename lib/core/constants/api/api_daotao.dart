@@ -10,9 +10,25 @@ String APILOGIN(final code) {
 
 String APISCHEDURE = "/sch/w-locdstkbtuanusertheohocky"; //Api Thời khóa biểu
 String APIREGISTER = "";
-String APISCOREDATA =
-    "/srm/w-locdsdiemsinhvien?hien_thi_mon_theo_hkdk=false"; //Api điểm
+String APISCOREDATA = "/srm/w-locdsdiemsinhvien?hien_thi_mon_theo_hkdk=false"; //Api điểm
 String APINOTIFICATION = "/web/w-locdsthongbao"; //api notification
 String APIINFORMATION = "/dkmh/w-locsinhvieninfo"; //api thông tin sinh viên
 String APITUITON = "/rms/w-locdstonghophocphisv"; //api học phí
-String APITRAININGPROGRAM = "/sch/w-locdsctdtsinhvien"; //api chuong trinh dao tao
+String APITRAININGPROGRAM = "/sch/w-locdsctdtsinhvien"; //api chương trình đào tạo
+
+String APIPREREQUISTESUBJECT = "/rms/w-locdsmontienquyet"; //api môn học tiên quyết
+
+
+String APICOURSEREGISTERFILLTER = "/dkmh/w-locdsdieukienloc"; //api gửi yêu cầu lọc các lớp đăng kí môn học
+String APICOURSEREGISTERCLASSES = "/dkmh/w-locdsnhomto"; //Hiển thị cấc lớp đăng kí môn học
+
+
+
+
+
+
+
+
+
+
+
