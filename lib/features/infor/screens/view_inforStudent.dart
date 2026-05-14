@@ -40,8 +40,8 @@ class _InforStudentViewState extends State<InforStudentView> {
   }
 
   Future<void> loadData() async {
-    final controller = await CtrlInforStudent.create();
-    final result = await controller.getInforStudent();
+;
+    final result = await CtrlInforStudent.getInforStudent();
     if (result == null) {
       setState(() {
         isLoading = false;

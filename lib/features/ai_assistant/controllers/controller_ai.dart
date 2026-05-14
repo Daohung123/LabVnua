@@ -8,8 +8,8 @@ class AiController {
     apiKey: AI_KEY,
   );
 
-  static final ServiceSqlNotification _notificationSql =
-      ServiceSqlNotification();
+  static final ServiceSqlNotificationStudentRoot _notificationSql =
+      ServiceSqlNotificationStudentRoot();
 
   /// Các từ khóa để nhận diện câu hỏi liên quan đến thông báo
   static final List<String> _notificationKeywords = [

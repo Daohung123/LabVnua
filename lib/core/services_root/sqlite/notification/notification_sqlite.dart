@@ -4,7 +4,7 @@ import 'package:aqedu/config/config_DB.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:sqflite/sqflite.dart';
 
-class ServiceSqlNotification {
+class ServiceSqlNotificationStudentRoot {
   final DataBaseConfig _dbConfig = DataBaseConfig();
 
   /// =====================================================
