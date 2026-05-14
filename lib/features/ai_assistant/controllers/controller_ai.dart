@@ -91,7 +91,7 @@ Hãy trả lời ngay theo đúng quy tắc trên.
 
       return text;
     } catch (e) {
-      return 'Hỏi lằm hỏi lốn! 😡';
+      return '😡';
     }
   }
 }
