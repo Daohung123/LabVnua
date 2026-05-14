@@ -16,5 +16,4 @@ class ServiceSqlNotificationStudent {
     final ServiceSqlNotification serviceSql = ServiceSqlNotification();
     return await serviceSql.getAllNotifications();
   }
-
 }
