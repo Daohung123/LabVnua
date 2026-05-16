@@ -6,7 +6,7 @@ import 'package:aqedu/core/services_root/api_daotao/auth/reLogin.dart';
 import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/infor/models/models_inforStudent.dart';
-
+//thay gia tri tra ve, doi ten ham
 Future<StudentResponse?> getInformationResponse(
   String cookie,
   String token, {
@@ -22,10 +22,10 @@ Future<StudentResponse?> getInformationResponse(
     /// init api
     final api = ApiHelper.withSession(cookie, token);
 
-    final payload = {};
+    final payload = {};//Thay payload
 
     /// call api
-    final res = await api.post(APIINFORMATION, payload);
+    final res = await api.post(APIINFORMATION, payload);//thay api
 
     print("========== RESPONSE ==========");
     print(res);

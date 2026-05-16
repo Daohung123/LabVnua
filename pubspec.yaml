@@ -8,6 +8,7 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
+  mobile_scanner: ^7.0.1
   flutter_html: ^3.0.0
   flutter:
     sdk: flutter

@@ -1,3 +1,4 @@
+import 'package:aqedu/features/qr_code/screens/view_qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
@@ -45,7 +46,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: 4),
               QRScanButton(
                 onPressed: () {
-                  print("Đang mở chức năng quét QR...");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const QRScannerView()),
+                  );
                 },
               ),
               SizedBox(width: 8),
