@@ -1,6 +1,8 @@
 import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
+import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
+import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
 import '../../../prerequisiteSubjects/screens/view_prequisite_subjects.dart';
@@ -40,7 +42,7 @@ class HocTapView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
             _buildHeroHeader(primaryColor, textBlue),
-            const SizedBox(height: 16),  
+            const SizedBox(height: 16),
             const SizedBox(height: 22),
 
             _buildSectionHeader(
@@ -82,7 +84,6 @@ class HocTapView extends StatelessWidget {
                         builder: (context) => const PrerequisiteView(),
                       ),
                     );
-
                   },
                 ),
                 _buildDivider(borderColor),
@@ -259,7 +260,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Xem tình trạng và chi tiết học phí',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HocPhiView(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(borderColor),
                 _buildActionTile(
@@ -289,7 +297,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Xem thống kê và biểu đồ kết quả học tập',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ScoreAnalysisView(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(borderColor),
                 _buildActionTile(
@@ -392,8 +407,6 @@ class HocTapView extends StatelessWidget {
       ),
     );
   }
-
- 
 
   Widget _buildSummaryCard({
     required IconData icon,

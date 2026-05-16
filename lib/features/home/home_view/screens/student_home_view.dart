@@ -7,6 +7,7 @@ import 'package:aqedu/features/home/home_view/components/home_hero_header.dart';
 import 'package:aqedu/features/home/home_view/components/home_quick_summary.dart';
 import 'package:aqedu/features/home/home_view/components/home_quick_actions.dart';
 import 'package:aqedu/features/home/home_view/components/home_info_banner.dart';
+import 'package:aqedu/features/home/layout/app_layout.dart';
 
 /// ========================================
 /// HOME STUDENT VIEW — Main Dashboard
@@ -23,31 +24,29 @@ class HomeStudent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
+    return AppLayout(
       appBar: HomeAppBar(),
-      body: SafeArea(
-        child: ListView(
-          padding: AppSpacing.screenPadding,
-          children: [
-            HomeHeroHeader(),
-            SizedBox(height: AppSpacing.xl),
+      // child is a ScrollView — AppLayout will detect and not wrap it again.
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          HomeHeroHeader(),
+          SizedBox(height: AppSpacing.xl),
 
-            HomeQuickSummary(),
-            SizedBox(height: AppSpacing.xl),
+          HomeQuickSummary(),
+          SizedBox(height: AppSpacing.xl),
 
-            HomeQuickActions(),
-            SizedBox(height: AppSpacing.xxl),
+          HomeQuickActions(),
+          SizedBox(height: AppSpacing.xxl),
 
-            AppSectionHeader(
-              title: 'Hôm nay',
-              subtitle: 'Những thông tin bạn cần xem trước khi bắt đầu',
-            ),
+          AppSectionHeader(
+            title: 'Hôm nay',
+            subtitle: 'Những thông tin bạn cần xem trước khi bắt đầu',
+          ),
 
-            HomeInfoBanner(),
-            SizedBox(height: AppSpacing.xl),
-          ],
-        ),
+          HomeInfoBanner(),
+          SizedBox(height: AppSpacing.xl),
+        ],
       ),
     );
   }

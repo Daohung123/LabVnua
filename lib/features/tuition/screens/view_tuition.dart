@@ -1,31 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:aqedu/core/theme/app_theme.dart';
+import 'package:aqedu/core/theme/app_text_styles.dart';
+
 import '../controllers/controller_tuition_student.dart';
 import '../models/model_data.dart';
 import '../models/model_item.dart';
-
-// ═══════════════════════════════════════════════════════════════════════════
-// COLOR CONSTANTS
-// ═══════════════════════════════════════════════════════════════════════════
-
-class _C {
-  static const primary = Color(0xFF0047A8);
-  static const primaryDark = Color(0xFF003D99);
-  static const primaryLight = Color(0xFFE8EFFE);
-  static const bg = Color(0xFFF4F7FB);
-  static const surface = Colors.white;
-  static const textPrimary = Color(0xFF0D1B3E);
-  static const textSecondary = Color(0xFF6B7A99);
-  static const textMuted = Color(0xFFADB8CC);
-  static const success = Color(0xFF1A7A4A);
-  static const successBg = Color(0xFFE6F5ED);
-  static const danger = Color(0xFFB91C1C);
-  static const dangerBg = Color(0xFFFEE2E2);
-  static const warn = Color(0xFFD97706);
-  static const warnBg = Color(0xFFFEF3C7);
-  static const divider = Color(0xFFEBEFF7);
-}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MAIN VIEW
@@ -69,7 +50,7 @@ class _HocPhiViewState extends State<HocPhiView> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: _C.bg,
+        backgroundColor: AppColors.background,
         body: FutureBuilder<Data?>(
           future: _futureData,
           builder: (context, snapshot) {
@@ -100,7 +81,7 @@ class _HocPhiViewState extends State<HocPhiView> {
             final filteredList = _getFilteredList(data.dsHocPhiHocKy);
 
             return RefreshIndicator(
-              color: _C.primary,
+              color: AppColors.primary,
               onRefresh: () async => _loadData(),
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -125,13 +106,13 @@ class _HocPhiViewState extends State<HocPhiView> {
                             Icon(
                               Icons.search_off_rounded,
                               size: 52,
-                              color: _C.textMuted,
+                              color: AppColors.textMuted,
                             ),
-                            SizedBox(height: 12),
+                            SizedBox(height: AppSpacing.md),
                             Text(
                               'Không tìm thấy học kỳ phù hợp',
                               style: TextStyle(
-                                color: _C.textSecondary,
+                                color: AppColors.textSecondary,
                                 fontSize: 15,
                               ),
                             ),
@@ -141,9 +122,14 @@ class _HocPhiViewState extends State<HocPhiView> {
                     )
                   else
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.lg,
+                        0,
+                        AppSpacing.lg,
+                        AppSpacing.xxl40,
+                      ),
                       sliver: SliverList.separated(
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
                         itemCount: filteredList.length,
                         itemBuilder: (context, index) =>
                             _HpSemesterCard(item: filteredList[index]),
@@ -173,19 +159,18 @@ class _HpAppBar extends StatelessWidget {
       expandedHeight: 110,
       pinned: true,
       stretch: true,
-      backgroundColor: _C.primary,
+      backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
       elevation: 0,
       shadowColor: Colors.transparent,
-      actions: [
-        IconButton(
-          onPressed: onRefresh,
-          icon: const Icon(Icons.refresh_rounded, color: Colors.white),
-          tooltip: 'Làm mới',
-        ),
-      ],
+      actions: [],
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.fromLTRB(16, 0, 56, 14),
+        titlePadding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          0,
+          56,
+          AppSpacing.md14,
+        ),
         title: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,7 +199,7 @@ class _HpAppBar extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF002F80), _C.primary, Color(0xFF1565C0)],
+              colors: [Color(0xFF002F80), AppColors.primary, Color(0xFF1565C0)],
             ),
           ),
           child: Stack(
@@ -227,7 +212,7 @@ class _HpAppBar extends StatelessWidget {
                   height: 140,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withOpacity(AppOpacity.bg10),
                   ),
                 ),
               ),
@@ -239,7 +224,7 @@ class _HpAppBar extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.04),
+                    color: Colors.white.withOpacity(AppOpacity.bg10 - 0.01),
                   ),
                 ),
               ),
@@ -313,16 +298,21 @@ class _HpSummarySection extends StatelessWidget {
     }
 
     return Container(
-      color: _C.primary,
+      color: AppColors.primary,
       child: Container(
         decoration: const BoxDecoration(
-          color: _C.bg,
+          color: AppColors.background,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          20,
+          AppSpacing.lg,
+          AppSpacing.md,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -338,7 +328,7 @@ class _HpSummarySection extends StatelessWidget {
             // Fallback nếu không có dữ liệu học kỳ nào
             if (latest == null) _NoDataCard(),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             // ── Thống kê tổng (thông tin phụ) ───────────────────
             Row(
@@ -348,19 +338,19 @@ class _HpSummarySection extends StatelessWidget {
                     label: 'Tổng phải thu',
                     value: _formatCurrency(totalPhaiThu),
                     icon: Icons.account_balance_wallet_outlined,
-                    color: _C.primary,
-                    bg: _C.primaryLight,
+                    color: AppColors.primary,
+                    bg: AppColors.primaryLight,
                     footer: '${list.length} học kỳ',
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.sm10),
                 Expanded(
                   child: _MiniStatCard(
                     label: 'Tổng đã thu',
                     value: _formatCurrency(totalDaThu),
                     icon: Icons.check_circle_outline_rounded,
-                    color: _C.success,
-                    bg: _C.successBg,
+                    color: AppColors.success,
+                    bg: AppColors.successLight,
                     footer: 'Đã thanh toán',
                   ),
                 ),
@@ -375,7 +365,7 @@ class _HpSummarySection extends StatelessWidget {
                 deadline: data.ngayGiaHan?.toString() ?? '',
               ),
 
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
           ],
         ),
       ),
@@ -401,12 +391,12 @@ class _DebtHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColors = isDebt
-        ? [const Color(0xFF991B1B), _C.danger]
-        : [const Color(0xFF145C38), _C.success];
+        ? [const Color(0xFF991B1B), AppColors.error]
+        : [const Color(0xFF145C38), AppColors.success];
 
     final shadowColor = isDebt
-        ? _C.danger.withOpacity(0.30)
-        : _C.success.withOpacity(0.28);
+        ? AppColors.error.withOpacity(0.30)
+        : AppColors.success.withOpacity(0.28);
 
     return Container(
       width: double.infinity,
@@ -437,7 +427,7 @@ class _DebtHeroCard extends StatelessWidget {
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.07),
+                color: Colors.white.withOpacity(AppOpacity.bg10 - 0.03),
               ),
             ),
           ),
@@ -449,7 +439,7 @@ class _DebtHeroCard extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+                color: Colors.white.withOpacity(AppOpacity.bg10 - 0.05),
               ),
             ),
           ),
@@ -464,8 +454,8 @@ class _DebtHeroCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white.withOpacity(AppOpacity.bg18),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
                     child: Icon(
                       isDebt
@@ -475,7 +465,7 @@ class _DebtHeroCard extends StatelessWidget {
                       size: 16,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Text(
                     'Công nợ kỳ gần nhất',
                     style: TextStyle(
@@ -488,7 +478,7 @@ class _DebtHeroCard extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.xs + 2),
 
               // Tên học kỳ
               Text(
@@ -523,8 +513,8 @@ class _DebtHeroCard extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.18),
-                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white.withOpacity(AppOpacity.bg18),
+                  borderRadius: BorderRadius.circular(AppRadius.full),
                   border: Border.all(
                     color: Colors.white.withOpacity(0.25),
                     width: 1,
@@ -540,7 +530,7 @@ class _DebtHeroCard extends StatelessWidget {
                       color: Colors.white,
                       size: 13,
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: AppSpacing.xs + 1),
                     Text(
                       isDebt ? 'Cần thanh toán' : 'Đã thanh toán đầy đủ',
                       style: const TextStyle(
@@ -567,20 +557,23 @@ class _NoDataCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg + 4,
+        vertical: AppSpacing.xl,
+      ),
       decoration: BoxDecoration(
-        color: _C.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _C.divider),
+        border: Border.all(color: AppColors.divider),
       ),
       child: const Column(
         children: [
-          Icon(Icons.inbox_outlined, size: 40, color: _C.textMuted),
-          SizedBox(height: 10),
+          Icon(Icons.inbox_outlined, size: 40, color: AppColors.textMuted),
+          SizedBox(height: AppSpacing.sm10),
           Text(
             'Chưa có dữ liệu học phí',
             style: TextStyle(
-              color: _C.textSecondary,
+              color: AppColors.textSecondary,
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -613,13 +606,13 @@ class _MiniStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpacing.md14),
       decoration: BoxDecoration(
-        color: _C.surface,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
         boxShadow: [
           BoxShadow(
-            color: _C.primary.withOpacity(0.05),
+            color: AppColors.primary.withOpacity(AppOpacity.bg10 - 0.05),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -634,7 +627,7 @@ class _MiniStatCard extends StatelessWidget {
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: bg,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Icon(icon, color: color, size: 16),
               ),
@@ -649,16 +642,16 @@ class _MiniStatCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpacing.sm10),
           Text(
             label,
             style: const TextStyle(
               fontSize: 11,
-              color: _C.textSecondary,
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 3),
+          const SizedBox(height: AppSpacing.xs + 2),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -667,7 +660,7 @@ class _MiniStatCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: _C.textPrimary,
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -687,18 +680,18 @@ class _ExtensionNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(top: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md14),
       decoration: BoxDecoration(
-        color: _C.warnBg,
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.warningLight,
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: const Color(0xFFFDE68A)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, color: _C.warn, size: 18),
-          const SizedBox(width: 10),
+          const Icon(Icons.info_outline_rounded, color: AppColors.warning, size: 18),
+          const SizedBox(width: AppSpacing.sm10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,11 +706,11 @@ class _ExtensionNotice extends StatelessWidget {
                   ),
                 ),
                 if (deadline.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Hạn: $deadline',
                     style: const TextStyle(
-                      color: _C.warn,
+                      color: AppColors.warning,
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600,
                     ),
@@ -754,7 +747,12 @@ class _HpFilterBar extends StatelessWidget {
     final hasFilter = selectedHocKy != null && selectedHocKy!.isNotEmpty;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.xs,
+        AppSpacing.lg,
+        AppSpacing.lg,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -765,23 +763,23 @@ class _HpFilterBar extends StatelessWidget {
                 width: 4,
                 height: 18,
                 decoration: BoxDecoration(
-                  color: _C.primary,
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               const Text(
                 'Chi tiết theo học kỳ',
                 style: TextStyle(
                   fontSize: 15.5,
                   fontWeight: FontWeight.w700,
-                  color: _C.textPrimary,
+                  color: AppColors.textPrimary,
                   letterSpacing: -0.2,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           // Dropdown + reset
           Row(
@@ -789,11 +787,11 @@ class _HpFilterBar extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: _C.surface,
-                    borderRadius: BorderRadius.circular(14),
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     boxShadow: [
                       BoxShadow(
-                        color: _C.primary.withOpacity(0.07),
+                        color: AppColors.primary.withOpacity(AppOpacity.hovered - 0.01),
                         blurRadius: 10,
                         offset: const Offset(0, 3),
                       ),
@@ -806,41 +804,41 @@ class _HpFilterBar extends StatelessWidget {
                         Icon(
                           Icons.calendar_today_outlined,
                           size: 16,
-                          color: _C.textMuted,
+                          color: AppColors.textMuted,
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: AppSpacing.sm),
                         Text(
                           'Tất cả học kỳ',
-                          style: TextStyle(color: _C.textMuted, fontSize: 14),
+                          style: TextStyle(color: AppColors.textMuted, fontSize: 14),
                         ),
                       ],
                     ),
                     isExpanded: true,
                     icon: const Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: _C.primary,
+                      color: AppColors.primary,
                     ),
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
+                        horizontal: AppSpacing.md14,
                         vertical: 13,
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                         borderSide: BorderSide.none,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                         borderSide: const BorderSide(
-                          color: _C.primary,
+                          color: AppColors.primary,
                           width: 1.5,
                         ),
                       ),
-                      fillColor: _C.surface,
+                      fillColor: AppColors.surface,
                       filled: true,
                     ),
                     items: [
@@ -849,7 +847,7 @@ class _HpFilterBar extends StatelessWidget {
                         child: Text(
                           'Tất cả học kỳ',
                           style: TextStyle(
-                            color: _C.textSecondary,
+                            color: AppColors.textSecondary,
                             fontSize: 14,
                           ),
                         ),
@@ -860,7 +858,7 @@ class _HpFilterBar extends StatelessWidget {
                           child: Text(
                             hk,
                             style: const TextStyle(
-                              color: _C.textPrimary,
+                              color: AppColors.textPrimary,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -874,18 +872,18 @@ class _HpFilterBar extends StatelessWidget {
                 ),
               ),
               if (hasFilter) ...[
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpacing.sm10),
                 GestureDetector(
                   onTap: onReset,
                   child: Container(
                     padding: const EdgeInsets.all(13),
                     decoration: BoxDecoration(
-                      color: _C.dangerBg,
-                      borderRadius: BorderRadius.circular(14),
+                      color: AppColors.errorLight,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     child: const Icon(
                       Icons.close_rounded,
-                      color: _C.danger,
+                      color: AppColors.error,
                       size: 20,
                     ),
                   ),
@@ -896,20 +894,20 @@ class _HpFilterBar extends StatelessWidget {
 
           if (hasFilter)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Row(
                 children: [
                   const Icon(
                     Icons.filter_list_rounded,
                     size: 13,
-                    color: _C.primary,
+                    color: AppColors.primary,
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpacing.xs),
                   Text(
                     'Đang lọc: $selectedHocKy',
                     style: const TextStyle(
                       fontSize: 12,
-                      color: _C.primary,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -995,17 +993,17 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: _C.surface,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: _isExpanded ? _C.primary.withOpacity(0.25) : _C.divider,
+            color: _isExpanded ? AppColors.primary.withOpacity(0.25) : AppColors.divider,
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
               color: _isExpanded
-                  ? _C.primary.withOpacity(0.10)
-                  : _C.primary.withOpacity(0.04),
+                  ? AppColors.primary.withOpacity(AppOpacity.bg10)
+                  : AppColors.primary.withOpacity(AppOpacity.bg10 - 0.06),
               blurRadius: _isExpanded ? 18 : 10,
               offset: const Offset(0, 4),
             ),
@@ -1015,7 +1013,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
           children: [
             // ── Card Header ──────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1030,9 +1028,9 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [_C.primaryDark, Color(0xFF1565C0)],
+                            colors: [AppColors.primaryDark, Color(0xFF1565C0)],
                           ),
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(AppRadius.md),
                         ),
                         child: const Icon(
                           Icons.school_rounded,
@@ -1040,7 +1038,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                           size: 22,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
 
                       // Title + meta
                       Expanded(
@@ -1052,29 +1050,29 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                               style: const TextStyle(
                                 fontSize: 14.5,
                                 fontWeight: FontWeight.w700,
-                                color: _C.textPrimary,
+                                color: AppColors.textPrimary,
                                 letterSpacing: -0.2,
                               ),
                             ),
                             if (item.nhhk != null) ...[
-                              const SizedBox(height: 2),
+                              const SizedBox(height: AppSpacing.xs + 1),
                               Text(
                                 'NHHK: ${item.nhhk}',
                                 style: const TextStyle(
                                   fontSize: 11.5,
-                                  color: _C.textMuted,
+                                  color: AppColors.textMuted,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                             if (item.tenNhomCt != null &&
                                 item.tenNhomCt.toString().isNotEmpty) ...[
-                              const SizedBox(height: 2),
+                              const SizedBox(height: AppSpacing.xs + 1),
                               Text(
                                 item.tenNhomCt.toString(),
                                 style: const TextStyle(
                                   fontSize: 11.5,
-                                  color: _C.primary,
+                                  color: AppColors.primary,
                                   fontWeight: FontWeight.w500,
                                 ),
                                 maxLines: 1,
@@ -1096,47 +1094,47 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                             ).animate(_expandAnimation),
                             child: const Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              color: _C.primary,
+                              color: AppColors.primary,
                               size: 24,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpacing.xs + 2),
                           _StatusChip(isDebt: isDebt),
                         ],
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: AppSpacing.md14),
 
                   // Quick figures row
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
+                      horizontal: AppSpacing.md14,
                       vertical: 11,
                     ),
                     decoration: BoxDecoration(
-                      color: _C.bg,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     child: Row(
                       children: [
                         _QuickStat(
                           label: 'Phải thu',
                           value: _fmt(item.phaiThu),
-                          color: _C.primary,
+                          color: AppColors.primary,
                         ),
                         _VertDivider(),
                         _QuickStat(
                           label: 'Đã thu',
                           value: _fmt(item.daThu),
-                          color: _C.success,
+                          color: AppColors.success,
                         ),
                         _VertDivider(),
                         _QuickStat(
                           label: 'Còn nợ',
                           value: _fmt(item.conNo),
-                          color: isDebt ? _C.danger : _C.success,
+                          color: isDebt ? AppColors.error : AppColors.success,
                         ),
                       ],
                     ),
@@ -1152,11 +1150,16 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                 children: [
                   Container(
                     height: 1,
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    color: _C.divider,
+                    margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    color: AppColors.divider,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.md14,
+                      AppSpacing.lg,
+                      AppSpacing.lg,
+                    ),
                     child: Column(
                       children: [
                         _DetailGroup(
@@ -1170,7 +1173,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                             _DetailEntry('Được hỗ trợ', item.duocHoTro),
                           ],
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: AppSpacing.sm10),
                         _DetailGroup(
                           title: 'Thanh toán',
                           icon: Icons.receipt_long_outlined,
@@ -1182,13 +1185,13 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                         ),
                         if (item.ghiChu != null &&
                             item.ghiChu.toString().isNotEmpty) ...[
-                          const SizedBox(height: 10),
+                          const SizedBox(height: AppSpacing.sm10),
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(AppSpacing.md),
                             decoration: BoxDecoration(
-                              color: _C.warnBg,
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.warningLight,
+                              borderRadius: BorderRadius.circular(AppRadius.md),
                               border: Border.all(
                                 color: const Color(0xFFFDE68A),
                               ),
@@ -1199,9 +1202,9 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                                 const Icon(
                                   Icons.sticky_note_2_outlined,
                                   size: 15,
-                                  color: _C.warn,
+                                  color: AppColors.warning,
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: AppSpacing.sm),
                                 Expanded(
                                   child: Text(
                                     item.ghiChu.toString(),
@@ -1240,8 +1243,8 @@ class _StatusChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
-        color: isDebt ? _C.dangerBg : _C.successBg,
-        borderRadius: BorderRadius.circular(20),
+        color: isDebt ? AppColors.errorLight : AppColors.successLight,
+        borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1251,15 +1254,15 @@ class _StatusChip extends StatelessWidget {
                 ? Icons.error_outline_rounded
                 : Icons.check_circle_outline_rounded,
             size: 11,
-            color: isDebt ? _C.danger : _C.success,
+            color: isDebt ? AppColors.error : AppColors.success,
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             isDebt ? 'Còn nợ' : 'Đã trả',
             style: TextStyle(
               fontSize: 10.5,
               fontWeight: FontWeight.w600,
-              color: isDebt ? _C.danger : _C.success,
+              color: isDebt ? AppColors.error : AppColors.success,
             ),
           ),
         ],
@@ -1291,11 +1294,11 @@ class _QuickStat extends StatelessWidget {
             label,
             style: const TextStyle(
               fontSize: 10.5,
-              color: _C.textMuted,
+              color: AppColors.textMuted,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 3),
+          const SizedBox(height: AppSpacing.xs + 1),
           Text(
             value,
             style: TextStyle(
@@ -1315,8 +1318,8 @@ class _VertDivider extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     width: 1,
     height: 26,
-    margin: const EdgeInsets.symmetric(horizontal: 10),
-    color: _C.divider,
+    margin: const EdgeInsets.symmetric(horizontal: AppSpacing.sm10),
+    color: AppColors.divider,
   );
 }
 
@@ -1356,24 +1359,29 @@ class _DetailGroup extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFF8FAFF),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _C.divider),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.divider),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.md14,
+              AppSpacing.md,
+              AppSpacing.md14,
+              AppSpacing.sm,
+            ),
             child: Row(
               children: [
-                Icon(icon, size: 15, color: _C.primary),
-                const SizedBox(width: 6),
+                Icon(icon, size: 15, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.xs + 1),
                 Text(
                   title,
                   style: const TextStyle(
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
-                    color: _C.primary,
+                    color: AppColors.primary,
                     letterSpacing: 0.1,
                   ),
                 ),
@@ -1398,7 +1406,10 @@ class _DetailRow extends StatelessWidget {
     final isEmpty = display.isEmpty || display == 'null';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md14,
+        vertical: 7,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -1407,7 +1418,7 @@ class _DetailRow extends StatelessWidget {
               label,
               style: const TextStyle(
                 fontSize: 13,
-                color: _C.textSecondary,
+                color: AppColors.textSecondary,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -1420,7 +1431,7 @@ class _DetailRow extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: isEmpty ? _C.textMuted : _C.textPrimary,
+                color: isEmpty ? AppColors.textMuted : AppColors.textPrimary,
               ),
             ),
           ),
@@ -1445,7 +1456,7 @@ class _HpLoadingState extends StatelessWidget {
           height: MediaQuery.of(context).padding.top + 70,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [_C.primaryDark, Color(0xFF1565C0)],
+              colors: [AppColors.primaryDark, Color(0xFF1565C0)],
             ),
           ),
         ),
@@ -1459,15 +1470,15 @@ class _HpLoadingState extends StatelessWidget {
                   height: 44,
                   child: CircularProgressIndicator(
                     strokeWidth: 2.5,
-                    color: _C.primary,
-                    backgroundColor: _C.primary.withOpacity(0.12),
+                    color: AppColors.primary,
+                    backgroundColor: AppColors.primary.withOpacity(AppOpacity.pressed),
                   ),
                 ),
                 const SizedBox(height: 18),
                 const Text(
                   'Đang tải học phí...',
                   style: TextStyle(
-                    color: _C.textSecondary,
+                    color: AppColors.textSecondary,
                     fontSize: 14.5,
                     fontWeight: FontWeight.w500,
                   ),
@@ -1515,29 +1526,29 @@ class _HpErrorState extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 42,
-                  color: _C.primary.withOpacity(0.45),
+                  color: AppColors.primary.withOpacity(0.45),
                 ),
               ),
-              const SizedBox(height: 22),
+              const SizedBox(height: AppSpacing.lg20),
               const Text(
                 'Không thể tải dữ liệu',
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  color: _C.textPrimary,
+                  color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 message,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 13,
-                  color: _C.textSecondary,
+                  color: AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 26),
+              const SizedBox(height: AppSpacing.lg20),
               SizedBox(
                 width: 150,
                 child: ElevatedButton.icon(
@@ -1545,12 +1556,12 @@ class _HpErrorState extends StatelessWidget {
                   icon: const Icon(Icons.refresh_rounded, size: 17),
                   label: const Text('Thử lại'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _C.primary,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                     textStyle: const TextStyle(
                       fontSize: 14,

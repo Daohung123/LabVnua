@@ -70,10 +70,16 @@ class AppSpacing {
   // Consistent spacing values following 4px grid
   static const double xs = 4; // Extra small - rarely used
   static const double sm = 8; // Small - internal padding in components
+  static const double sm10 = 10; // Small variant
   static const double md = 12; // Medium - spacing between elements
+  static const double md14 = 14; // Medium variant
   static const double lg = 16; // Large - main padding for screens
+  static const double lg20 = 20; // Large variant
+  static const double lg22 = 22; // Large variant
   static const double xl = 24; // Extra large - section spacing
   static const double xxl = 32; // Double extra large - hero sections
+  static const double xxl40 = 40; // Double extra large variant
+  static const double xxl56 = 56; // Double extra large variant
 
   // Common combinations
   static const EdgeInsets paddingXs = EdgeInsets.all(xs);
