@@ -1,12 +1,12 @@
 import 'package:aqedu/core/screens/screen_loading.dart';
-import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
 import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
+import 'package:aqedu/features/infor/services/service_sqlite_informationStudent.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/core/screens/no_wifi_screen.dart';
 
-// Đây là gốc của toàn bộ UI
 class MyWidget extends StatefulWidget {
   const MyWidget({super.key});
 
@@ -15,7 +15,7 @@ class MyWidget extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyWidget> {
-  bool? checkResult;
+  bool? isLogged;
   bool? hasWifi;
 
   @override
@@ -25,52 +25,50 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   Future<void> initApp() async {
-    // Kiểm tra wifi
+    print("App: Khởi động...");
+    
+    // 1. Kiểm tra Wifi nhanh
     final connectivityResult = await Connectivity().checkConnectivity();
+    bool wifi = connectivityResult.contains(ConnectivityResult.wifi) || 
+                connectivityResult.contains(ConnectivityResult.mobile);
 
-    bool wifiConnected = connectivityResult.contains(ConnectivityResult.wifi);
+    if (mounted) setState(() => hasWifi = wifi);
+    if (!wifi) return;
 
-    setState(() {
-      hasWifi = wifiConnected;
-    });
-
-    // Không có wifi -> dừng
-    if (!wifiConnected) {
-      return;
+    // 2. Kiểm tra Session trong máy (Chỉ đọc SQLite, không gọi API để tránh treo)
+    SqliteServices db = SqliteServices();
+    bool sessionExists = await db.checkLogin();
+    
+    if (sessionExists) {
+      // Kiểm tra thêm xem có thông tin sinh viên chưa
+      final student = await ServiceSqlInformationStudent.getAllInformation();
+      if (student == null) {
+        sessionExists = false; // Coi như chưa login để hiện màn hình nhập tài khoản
+      }
     }
 
-    // Có wifi -> check login
-    bool result = await checkLogin();
-
-    setState(() {
-      checkResult = result;
-      print("Login: $result");
-    });
+    if (mounted) {
+      setState(() {
+        isLogged = sessionExists;
+        print("App: Trạng thái login (offline check): $sessionExists");
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Đang loading wifi
-    if (hasWifi == null) {
-      return const ScreenLoading();
+    if (hasWifi == null) return const ScreenLoading();
+    if (hasWifi == false) return const NoWifiScreen();
+    
+    // Nếu chưa xác định được trạng thái login
+    if (isLogged == null) return const ScreenLoading();
+
+    // Nếu đã có session và thông tin SV trong máy
+    if (isLogged == true) {
+      return const HomeScreen();
     }
 
-    // Không có wifi
-    if (hasWifi == false) {
-      return const NoWifiScreen();
-    }
-
-    // Đang check login
-    if (checkResult == null) {
-      return const ScreenLoading();
-    }
-
-    // Đã login
-    if (checkResult == true) {
-      return HomeScreen();
-    }
-
-    // Chưa login
-    return RoleView();
+    // Nếu chưa có (hoặc session cũ bị lỗi) -> Hiện màn hình Chọn vai trò để Đăng nhập
+    return const RoleView();
   }
 }

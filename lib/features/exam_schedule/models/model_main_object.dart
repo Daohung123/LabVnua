@@ -1,106 +1,66 @@
-import 'package:aqedu/features/exam_schedule/models/model_data_scores.dart';
-
 class LichThi {
-  final String idNhomThi;
-  final String idMonHoc;
-  final String idKqdk;
-
-  final int soThuTu;
-  final String kyThi;
-  final String dotThi;
-
+  final String? idNhomThi;
   final String maMon;
   final String tenMon;
-  final String tenMonEg;
-
   final String maPhong;
-  final String maCoSo;
-
   final String ngayThi;
-  final String tietBatDau;
-  final String soTiet;
   final String gioBatDau;
   final String soPhut;
-
   final String hinhThucThi;
-
-  final String diaDiemThi;
-
-  final int siSo;
-
-  final List<DiemMonHoc> dsDiemMonHoc;
+  final int? siSo;
+  final String? soTiet;
+  final String? toThi;
+  final String? ghiChu;
 
   LichThi({
-    required this.idNhomThi,
-    required this.idMonHoc,
-    required this.idKqdk,
-    required this.soThuTu,
-    required this.kyThi,
-    required this.dotThi,
-    required this.maMon,
-    required this.tenMon,
-    required this.tenMonEg,
-    required this.maPhong,
-    required this.maCoSo,
-    required this.ngayThi,
-    required this.tietBatDau,
-    required this.soTiet,
-    required this.gioBatDau,
-    required this.soPhut,
-    required this.hinhThucThi,
-    required this.diaDiemThi,
-    required this.siSo,
-    required this.dsDiemMonHoc,
+    this.idNhomThi, required this.maMon, required this.tenMon, required this.maPhong,
+    required this.ngayThi, required this.gioBatDau, required this.soPhut,
+    required this.hinhThucThi, this.siSo, this.soTiet, this.toThi, this.ghiChu,
   });
 
   factory LichThi.fromJson(Map<String, dynamic> json) {
     return LichThi(
-      idNhomThi: json['id_nhom_thi'],
-      idMonHoc: json['id_mon_hoc'],
-      idKqdk: json['id_kqdk'],
-      soThuTu: json['so_thu_tu'],
-      kyThi: json['ky_thi'] ?? '',
-      dotThi: json['dot_thi'] ?? '',
-      maMon: json['ma_mon'] ?? '',
-      tenMon: json['ten_mon'] ?? '',
-      tenMonEg: json['ten_mon_eg'] ?? '',
-      maPhong: json['ma_phong'] ?? '',
-      maCoSo: json['ma_co_so'] ?? '',
-      ngayThi: json['ngay_thi'] ?? '',
-      tietBatDau: json['tiet_bat_dau'] ?? '',
-      soTiet: json['so_tiet'] ?? '',
-      gioBatDau: json['gio_bat_dau'] ?? '',
-      soPhut: json['so_phut'] ?? '',
-      hinhThucThi: json['hinh_thuc_thi'] ?? '',
-      diaDiemThi: (json['dia_diem_thi'] ?? '').trim(),
-      siSo: json['si_so'] ?? 0,
-      dsDiemMonHoc: (json['ds_diem_mon_hoc'] as List)
-          .map((e) => DiemMonHoc.fromJson(e))
-          .toList(),
+      idNhomThi: json['id_nhom_thi']?.toString(), // Dùng String cho số cực lớn
+      maMon: json['ma_mon']?.toString() ?? '',
+      tenMon: json['ten_mon']?.toString() ?? '',
+      maPhong: json['ma_phong']?.toString() ?? '',
+      ngayThi: json['ngay_thi']?.toString() ?? '',
+      gioBatDau: json['gio_bat_dau']?.toString() ?? '',
+      soPhut: json['so_phut']?.toString() ?? '',
+      hinhThucThi: json['hinh_thuc_thi']?.toString() ?? '',
+      siSo: json['si_so'] is int ? json['si_so'] : int.tryParse(json['si_so']?.toString() ?? '0'),
+      soTiet: json['so_tiet']?.toString(),
+      toThi: json['to_thi']?.toString() ?? json['nhom_thi']?.toString(),
+      ghiChu: (json['ghi_chu_sv']?.toString() ?? '') + (json['ghi_chu_htt']?.toString() ?? ''),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id_nhom_thi': idNhomThi,
-        'id_mon_hoc': idMonHoc,
-        'id_kqdk': idKqdk,
-        'so_thu_tu': soThuTu,
-        'ky_thi': kyThi,
-        'dot_thi': dotThi,
-        'ma_mon': maMon,
-        'ten_mon': tenMon,
-        'ten_mon_eg': tenMonEg,
-        'ma_phong': maPhong,
-        'ma_co_so': maCoSo,
-        'ngay_thi': ngayThi,
-        'tiet_bat_dau': tietBatDau,
-        'so_tiet': soTiet,
-        'gio_bat_dau': gioBatDau,
-        'so_phut': soPhut,
-        'hinh_thuc_thi': hinhThucThi,
-        'dia_diem_thi': diaDiemThi,
-        'si_so': siSo,
-        'ds_diem_mon_hoc':
-            dsDiemMonHoc.map((e) => e.toJson()).toList(),
-      };
+    'id_nhom_thi': idNhomThi, 'ma_mon': maMon, 'ten_mon': tenMon, 'ma_phong': maPhong,
+    'ngay_thi': ngayThi, 'gio_bat_dau': gioBatDau, 'so_phut': soPhut,
+    'hinh_thuc_thi': hinhThucThi, 'si_so': siSo, 'so_tiet': soTiet, 'to_thi': toThi, 'ghi_chu': ghiChu,
+  };
+
+  Map<String, dynamic> toMap(int hocKyId) {
+    var map = toJson();
+    map['hoc_ky_id'] = hocKyId;
+    return map;
+  }
+
+  factory LichThi.fromMap(Map<String, dynamic> map) {
+    return LichThi(
+      idNhomThi: map['id_nhom_thi']?.toString(),
+      maMon: map['ma_mon'] ?? '',
+      tenMon: map['ten_mon'] ?? '',
+      maPhong: map['ma_phong'] ?? '',
+      ngayThi: map['ngay_thi'] ?? '',
+      gioBatDau: map['gio_bat_dau'] ?? '',
+      soPhut: map['so_phut']?.toString() ?? '',
+      hinhThucThi: map['hinh_thuc_thi'] ?? '',
+      siSo: map['si_so'],
+      soTiet: map['so_tiet'],
+      toThi: map['to_thi'],
+      ghiChu: map['ghi_chu'],
+    );
+  }
 }

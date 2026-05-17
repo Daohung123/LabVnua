@@ -5,6 +5,7 @@ import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
+import 'package:aqedu/features/exam_schedule/screens/exam_schedule_view.dart';
 import '../../../prerequisiteSubjects/screens/view_prequisite_subjects.dart';
 import '../../../course_register/screens/view_courses_register.dart';
 
@@ -164,7 +165,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Theo dõi lịch thi sắp tới',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ExamScheduleView(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

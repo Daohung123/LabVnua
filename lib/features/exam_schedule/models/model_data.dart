@@ -23,16 +23,17 @@ class LichThiData {
 
   factory LichThiData.fromJson(Map<String, dynamic> json) {
     return LichThiData(
-      totalItems: json['total_items'],
-      totalPages: json['total_pages'],
-      isDhmo: json['is_DHMO'],
-      dsLichThi: (json['ds_lich_thi'] as List)
-          .map((e) => LichThi.fromJson(e))
-          .toList(),
+      totalItems: json['total_items'] ?? 0,
+      totalPages: json['total_pages'] ?? 0,
+      isDhmo: json['is_DHMO'] ?? false,
+      dsLichThi: (json['ds_lich_thi'] as List?)
+              ?.map((e) => LichThi.fromJson(e))
+              .toList() ??
+          [],
       dsLichHoanThi: json['ds_lich_hoan_thi'] ?? [],
       titleLichHoanThi: json['title_lich_hoan_thi'] ?? '',
       thongBaoNoHocPhi: json['thong_bao_no_hoc_phi'] ?? '',
-      isShowInSvDuThi: json['is_show_in_sv_du_thi'],
+      isShowInSvDuThi: json['is_show_in_sv_du_thi'] ?? false,
     );
   }
 

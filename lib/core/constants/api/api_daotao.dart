@@ -17,6 +17,7 @@ String APISCOREDATA = "/srm/w-locdsdiemsinhvien?hien_thi_mon_theo_hkdk=false"; /
 String APINOTIFICATION = "/web/w-locdsthongbao"; //api notification
 String APIINFORMATION = "/dkmh/w-locsinhvieninfo"; //api thông tin sinh viên
 String APITUITON = "/rms/w-locdstonghophocphisv"; //api học phí
+String APITUITON_DETAIL = "/rms/w-locdstonghophocphisvtheohocky"; //api học phí chi tiết
 String APITRAININGPROGRAM = "/sch/w-locdsctdtsinhvien"; //api chương trình đào tạo
 
 String APIPREREQUISTESUBJECT = "/rms/w-locdsmontienquyet"; //api môn học tiên quyết
@@ -25,15 +26,7 @@ String APIPREREQUISTESUBJECT = "/rms/w-locdsmontienquyet"; //api môn học tiê
 String APICOURSEREGISTERFILLTER = "/dkmh/w-locdsdieukienloc"; //api gửi yêu cầu lọc các lớp đăng kí môn học
 String APICOURSEREGISTERCLASSES = "/dkmh/w-locdsnhomto"; //Hiển thị cấc lớp đăng kí môn học
 
-
-
-
-
-
-
-
-
-
-
-
-
+// API LỊCH THI - KHỚP 100% VỚI TRÌNH DUYỆT CỦA BẠN
+String APIEXAM_SEMESTER = "/report/w-locdshockylichthisinhvien";
+String APIEXAM_OBJECT   = "/epm/w-locdsdoituongxemlichthi?is_dk_coi_thi=false";
+String APIEXAM_SCHEDULE = "/epm/w-locdslichthisvtheohocky";
