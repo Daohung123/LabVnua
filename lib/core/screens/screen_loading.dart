@@ -299,7 +299,7 @@ class _MainCard extends StatelessWidget {
               const SizedBox(height: 18),
 
               Text(
-                'AQEdu',
+                'EduAI',
                 style: TextStyle(
                   color: primary.withOpacity(.75),
                   letterSpacing: 2,

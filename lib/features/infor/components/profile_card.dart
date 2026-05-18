@@ -1,6 +1,6 @@
 import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/constants/UI/styles/colors.dart';
+import '../../../core/constants/UI/styles/colors.dart';
 
 class ProfileCard extends StatelessWidget {
   final InforStudentFillData student;

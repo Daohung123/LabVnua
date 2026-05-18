@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/UI/styles/colors.dart';
+import '../../../core/constants/UI/styles/colors.dart';
 
 class RowInfo extends StatelessWidget {
   final String left;

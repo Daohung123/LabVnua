@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
 import 'package:aqedu/core/widgets/components/app_section_header.dart';
-import 'package:aqedu/features/home/home_view/screens/components/home_app_bar.dart';
-import 'package:aqedu/features/home/home_view/screens/components/home_hero_header.dart';
-import 'package:aqedu/features/home/home_view/screens/components/home_quick_summary.dart';
-import 'package:aqedu/features/home/home_view/screens/components/home_quick_actions.dart';
-import 'package:aqedu/features/home/home_view/screens/components/home_info_banner.dart';
+import 'package:aqedu/features/home/home_view/components/home_app_bar.dart';
+import 'package:aqedu/features/home/home_view/components/home_hero_header.dart';
+import 'package:aqedu/features/home/home_view/components/home_quick_summary.dart';
+import 'package:aqedu/features/home/home_view/components/home_quick_actions.dart';
+import 'package:aqedu/features/home/home_view/components/home_info_banner.dart';
 import 'package:aqedu/features/home/layout/app_layout.dart';
 
 /// ========================================

@@ -8,7 +8,7 @@ import '../../../core/widgets/components/app_section_header.dart';
 import '../../../core/widgets/appBar/avt.dart';
 import '../../../core/widgets/appBar/name_user.dart';
 import '../../../core/widgets/appBar/time_fomat.dart';
-import 'components/student_info_card.dart';
+import '../components/student_info_card.dart';
 
 /// ========================================
 /// STUDENT INFORMATION VIEW — Personal Profile Dashboard
