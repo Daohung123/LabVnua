@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../controlers/ctrl_courses_register.dart';
+import '../controllers/ctrl_courses_register.dart';
 import '../models/model_course_register.dart';
 import '../models/model_course_register_fillter.dart';
 

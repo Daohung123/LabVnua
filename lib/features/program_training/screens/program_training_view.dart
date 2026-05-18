@@ -1,7 +1,7 @@
 import 'package:aqedu/core/constants/UI/styles/colors.dart';
 import 'package:flutter/material.dart';
 
-import '../controlers/ctrl_program_training.dart';
+import '../controllers/ctrl_program_training.dart';
 import '../models/model_program_data.dart';
 
 class ProgramTrainingView extends StatefulWidget {

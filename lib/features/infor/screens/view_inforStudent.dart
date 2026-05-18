@@ -1,4 +1,4 @@
-import 'package:aqedu/features/infor/ctrls/ctrls_inforStudent.dart';
+import 'package:aqedu/features/infor/controllers/ctrls_inforStudent.dart';
 import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
