@@ -30,8 +30,11 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
         "is_checked": isChecked,
         "sv_nganh": svNganh,
         "id_rs": idRs,
-      }
+      },
     };
+
+    print("===== ACTION PAYLOAD =====");
+    print(payload);
 
     final res = await api.post(APICOURSEREGISTERACTION, payload);
 
