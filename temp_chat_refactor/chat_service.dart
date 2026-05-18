@@ -321,7 +321,7 @@ class ChatService {
   }) async {
     final participants = _sortParticipants(currentStudentId, otherStudentId);
     final condition =
-        'or((user_1.eq.${participants.first},user_2.eq.${participants.last}),' \
+        'or((user_1.eq.${participants.first},user_2.eq.${participants.last}),' 
         '(user_1.eq.${participants.last},user_2.eq.${participants.first}))';
 
     final response = await _client
@@ -485,11 +485,3 @@ class ChatService {
     if (!controller.isClosed) controller.addError(error, stackTrace);
   }
 }
-""",
-}
-
-for relative, content in files.items():
-    Path(relative).write_text(content, encoding='utf-8')
-    print(f'Wrote {relative}')
-'@
-python -c "$script"

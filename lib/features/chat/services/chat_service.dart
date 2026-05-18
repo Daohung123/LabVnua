@@ -6,6 +6,22 @@ import 'package:aqedu/features/chat/models/chat_thread.dart';
 import 'package:aqedu/features/chat/models/chat_user.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+String generateConversationId(String a, String b) {
+  final first = a.trim();
+  final second = b.trim();
+
+  if (first.isEmpty || second.isEmpty) {
+    throw ArgumentError.value(
+      '$a, $b',
+      'a/b',
+      'Conversation participants must not be empty',
+    );
+  }
+
+  final participants = [first, second]..sort((left, right) => left.compareTo(right));
+  return participants.join('_');
+}
+
 class ChatService {
   ChatService({
     SupabaseClient? client,
@@ -99,7 +115,7 @@ class ChatService {
     final response = await _client
         .from(conversationsTable)
         .select()
-        .or('user_1.eq.$currentStudentId,user_2.eq.$currentStudentId')
+        .or('and(user_1.eq.$currentStudentId),and(user_2.eq.$currentStudentId)')
         .order('updated_at', ascending: false)
         .limit(limit);
 
@@ -317,15 +333,12 @@ class ChatService {
     required String currentStudentId,
     required String otherStudentId,
   }) async {
-    final participants = _sortParticipants(currentStudentId, otherStudentId);
-    final condition =
-        'or((user_1.eq.${participants.first},user_2.eq.${participants.last}),' 
-        '(user_1.eq.${participants.last},user_2.eq.${participants.first}))';
+    final conversationId = generateConversationId(currentStudentId, otherStudentId);
 
     final response = await _client
         .from(conversationsTable)
         .select()
-        .or(condition)
+        .eq('id', conversationId)
         .maybeSingle();
 
     if (response == null) return null;
@@ -347,17 +360,20 @@ class ChatService {
     }
 
     final participants = _sortParticipants(currentStudentId, otherStudentId);
+    final conversationId = generateConversationId(currentStudentId, otherStudentId);
+
     final response = await _client
         .from(conversationsTable)
         .upsert(
           {
+            'id': conversationId,
             'user_1': participants.first,
             'user_2': participants.last,
             'last_message': lastMessage,
             'last_sender_id': lastSenderId,
             'updated_at': DateTime.now().toUtc().toIso8601String(),
           },
-          onConflict: 'user_1,user_2',
+          onConflict: 'id',
         )
         .select()
         .single();
