@@ -154,6 +154,7 @@ class CourseRegisterSubject {
 class CourseRegisterClass {
   final String? idToHoc;
   final String? idMon;
+  final String? idRs;
 
   final String? maMon;
   final String? tenMon;
@@ -179,6 +180,7 @@ class CourseRegisterClass {
   CourseRegisterClass({
     this.idToHoc,
     this.idMon,
+    this.idRs,
     this.maMon,
     this.tenMon,
     this.tenMonEg,
@@ -195,10 +197,13 @@ class CourseRegisterClass {
     this.gcEnable,
   });
 
-  factory CourseRegisterClass.fromJson(Map<String, dynamic> json) {
+  factory CourseRegisterClass.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return CourseRegisterClass(
       idToHoc: json['id_to_hoc'],
       idMon: json['id_mon'],
+      idRs: json['id_rs'],
 
       maMon: json['ma_mon'],
       tenMon: json['ten_mon'],
@@ -227,6 +232,7 @@ class CourseRegisterClass {
     return {
       'id_to_hoc': idToHoc,
       'id_mon': idMon,
+      'id_rs': idRs,
 
       'ma_mon': maMon,
       'ten_mon': tenMon,
