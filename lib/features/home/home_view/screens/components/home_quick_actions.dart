@@ -6,7 +6,7 @@ import 'package:aqedu/features/home/home_view/screens/components/home_models.dar
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
-import 'package:aqedu/core/screens/view_developing.dart';
+import 'package:aqedu/features/chat/screens/chat_list_screen.dart';
 
 /// Quick Actions component — lối tắt nhanh
 class HomeQuickActions extends StatelessWidget {
@@ -34,10 +34,10 @@ class HomeQuickActions extends StatelessWidget {
         HocPhiView(),
       ),
       ShortcutData(
-        Icons.menu_book_outlined,
-        'Học liệu',
+        Icons.forum_outlined,
+        'Chat',
         AppColors.materialsColor,
-        DevelopingView(),
+        const ChatListScreen(),
       ),
     ];
 
@@ -92,10 +92,10 @@ class _ShortcutTile extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: shortcut.color.withOpacity(AppOpacity.bg10),
+          color: shortcut.color.withValues(alpha: AppOpacity.bg10),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
-            color: shortcut.color.withOpacity(AppOpacity.bg12),
+            color: shortcut.color.withValues(alpha: AppOpacity.bg12),
           ),
         ),
         child: Row(
@@ -104,7 +104,7 @@ class _ShortcutTile extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: shortcut.color.withOpacity(AppOpacity.bg18),
+                color: shortcut.color.withValues(alpha: AppOpacity.bg18),
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Icon(shortcut.icon, color: shortcut.color, size: 20),

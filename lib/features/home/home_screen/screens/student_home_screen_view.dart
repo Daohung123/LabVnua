@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aqedu/config/syncData.dart';
 import 'package:aqedu/core/screens/view_developing.dart';
 import 'package:aqedu/features/ai_assistant/screens/ai_chat_dialog.dart';
+import 'package:aqedu/features/chat/screens/chat_list_screen.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/home/other_view/screens/student_other_view.dart';
 import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _destinations = <_NavDest>[
     _NavDest('Trang chủ', Icons.home_outlined,      Icons.home_rounded),
     _NavDest('Học tập',   Icons.menu_book_outlined,  Icons.menu_book_rounded),
+    _NavDest('Chat',      Icons.forum_outlined,      Icons.forum_rounded),
     _NavDest('Khác',      Icons.grid_view_outlined,  Icons.grid_view_rounded),
     _NavDest('Cài đặt',   Icons.settings_outlined,   Icons.settings_rounded),
   ];
@@ -53,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _pages = <Widget>[
     HomeStudent(),
     HocTapView(),
+    ChatListScreen(),
     OtherFeaturesView(),
     SettingsView(),
   ];
