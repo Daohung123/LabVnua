@@ -104,7 +104,7 @@ class ChatThreadTile extends StatelessWidget {
     final trimmed = fullName.trim();
     if (trimmed.isEmpty) return '?';
 
-    final parts = trimmed.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts = trimmed.split(RegExp(r'\\s+')).where((p) => p.isNotEmpty).toList();
     if (parts.isEmpty) return '?';
     if (parts.length == 1) {
       return parts.first.substring(0, min(2, parts.first.length)).toUpperCase();

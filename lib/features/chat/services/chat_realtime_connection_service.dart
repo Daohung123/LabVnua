@@ -14,18 +14,18 @@ class ChatRealtimeConnectionService {
   final ChatService _chatService = ChatService();
 
   StreamSubscription<List<ChatThread>>? _threadsSubscription;
-  String? _activeUserKey;
+  String? _activeStudentId;
 
   bool get isConnected => _threadsSubscription != null;
 
   Future<void> connect(ChatUser user) async {
-    final userKey = user.id.toString();
-    if (_activeUserKey == userKey && _threadsSubscription != null) return;
+    final studentId = user.studentId;
+    if (_activeStudentId == studentId && _threadsSubscription != null) return;
 
     await disconnect();
-    _activeUserKey = userKey;
+    _activeStudentId = studentId;
     _threadsSubscription = _chatService
-        .streamChatThreads(currentUserId: user.id)
+        .streamChatThreads(currentStudentId: studentId)
         .listen(
           (_) {},
           onError: (Object error) {
@@ -37,6 +37,6 @@ class ChatRealtimeConnectionService {
   Future<void> disconnect() async {
     await _threadsSubscription?.cancel();
     _threadsSubscription = null;
-    _activeUserKey = null;
+    _activeStudentId = null;
   }
 }

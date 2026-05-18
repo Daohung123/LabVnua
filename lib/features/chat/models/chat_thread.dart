@@ -1,11 +1,17 @@
-import 'chat_message.dart';
 import 'chat_user.dart';
 
 class ChatThread {
-  const ChatThread({required this.peer, required this.lastMessage});
+  const ChatThread({
+    required this.conversationId,
+    required this.peer,
+    required this.lastMessage,
+    required this.lastSenderStudentId,
+    required this.updatedAt,
+  });
 
+  final String conversationId;
   final ChatUser peer;
-  final ChatMessage lastMessage;
-
-  DateTime get updatedAt => lastMessage.createdAt;
+  final String lastMessage;
+  final String lastSenderStudentId;
+  final DateTime updatedAt;
 }

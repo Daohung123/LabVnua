@@ -2,24 +2,21 @@ import 'dart:async';
 
 import 'package:aqedu/features/chat/models/chat_message.dart';
 import 'package:aqedu/features/chat/models/chat_user.dart';
-import 'package:aqedu/features/chat/services/chat_service.dart';
-import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
+import 'package:aqedu/features/chat/repository/chat_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class ChatRoomController extends ChangeNotifier {
   ChatRoomController({
     required this.receiverStudentId,
-    ChatService? chatService,
-    ChatUserSyncService? userSyncService,
-  }) : _chatService = chatService ?? ChatService(),
-       _userSyncService = userSyncService ?? ChatUserSyncService();
+    ChatRepository? chatRepository,
+  }) : _chatRepository = chatRepository ?? ChatRepository();
 
   final String receiverStudentId;
-  final ChatService _chatService;
-  final ChatUserSyncService _userSyncService;
+  final ChatRepository _chatRepository;
 
   ChatUser? currentUser;
   ChatUser? receiverUser;
+  String? conversationId;
   List<ChatMessage> messages = const [];
   bool isLoading = false;
   bool isSending = false;
@@ -32,14 +29,18 @@ class ChatRoomController extends ChangeNotifier {
 
     _setLoading(true);
     try {
-      currentUser = await _userSyncService.syncCurrentSessionUser();
-      receiverUser = await _chatService.getUserByStudentId(receiverStudentId);
+      currentUser ??= await _chatRepository.syncCurrentSessionUser();
+      receiverUser = await _chatRepository.getUserByStudentId(receiverStudentId);
+      receiverUser ??= await _chatRepository.ensureUserByStudentId(receiverStudentId);
 
-      if (receiverUser == null) {
-        throw StateError('Student $receiverStudentId is not available on chat');
+      if (currentUser == null || receiverUser == null) {
+        throw StateError('Chat user information is not available.');
       }
 
-      _subscribeMessages();
+      conversationId = await _findConversationId();
+      if (conversationId != null) {
+        _subscribeMessages();
+      }
       errorMessage = null;
     } catch (error) {
       errorMessage = error.toString();
@@ -49,11 +50,11 @@ class ChatRoomController extends ChangeNotifier {
   }
 
   Future<void> sendMessage(String text) async {
-    final message = text.trim();
+    final trimmedText = text.trim();
     final activeUser = currentUser;
     final activeReceiver = receiverUser;
 
-    if (message.isEmpty || activeUser == null || activeReceiver == null) {
+    if (trimmedText.isEmpty || activeUser == null || activeReceiver == null) {
       return;
     }
 
@@ -61,10 +62,33 @@ class ChatRoomController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final sentMessage = await _chatService.sendMessage(
-        senderId: activeUser.id,
-        receiverId: activeReceiver.id,
-        message: message,
+      final conversationKey = conversationId ?? await _chatRepository.ensureConversationId(
+        currentStudentId: activeUser.studentId,
+        otherStudentId: activeReceiver.studentId,
+        lastMessage: trimmedText,
+        lastSenderId: activeUser.studentId,
+      );
+      conversationId = conversationKey;
+
+      _messagesSubscription ??= _chatRepository
+          .streamConversationMessages(conversationId: conversationKey)
+          .listen(
+            (items) {
+              messages = items;
+              errorMessage = null;
+              notifyListeners();
+            },
+            onError: (Object error) {
+              errorMessage = error.toString();
+              notifyListeners();
+            },
+          );
+
+      final sentMessage = await _chatRepository.sendMessage(
+        conversationId: conversationKey,
+        senderStudentId: activeUser.studentId,
+        receiverStudentId: activeReceiver.studentId,
+        message: trimmedText,
       );
       _upsertLocalMessage(sentMessage);
       errorMessage = null;
@@ -79,20 +103,18 @@ class ChatRoomController extends ChangeNotifier {
   bool isMine(ChatMessage message) {
     final activeUser = currentUser;
     if (activeUser == null) return false;
-    return message.isSentBy(activeUser.id);
+    return message.isSentBy(activeUser.studentId);
   }
 
-  void _subscribeMessages() {
+  Future<void> _subscribeMessages() async {
     final activeUser = currentUser;
     final activeReceiver = receiverUser;
-    if (activeUser == null || activeReceiver == null) return;
+    final currentConversationId = conversationId;
+    if (activeUser == null || activeReceiver == null || currentConversationId == null) return;
 
     _messagesSubscription?.cancel();
-    _messagesSubscription = _chatService
-        .streamConversation(
-          currentUserId: activeUser.id,
-          otherUserId: activeReceiver.id,
-        )
+    _messagesSubscription = _chatRepository
+        .streamConversationMessages(conversationId: currentConversationId)
         .listen(
           (items) {
             messages = items;
@@ -104,6 +126,17 @@ class ChatRoomController extends ChangeNotifier {
             notifyListeners();
           },
         );
+  }
+
+  Future<String?> _findConversationId() async {
+    final activeUser = currentUser;
+    final activeReceiver = receiverUser;
+    if (activeUser == null || activeReceiver == null) return null;
+
+    return _chatRepository.getConversationId(
+      currentStudentId: activeUser.studentId,
+      otherStudentId: activeReceiver.studentId,
+    );
   }
 
   void _upsertLocalMessage(ChatMessage message) {

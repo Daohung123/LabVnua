@@ -2,19 +2,15 @@ import 'dart:async';
 
 import 'package:aqedu/features/chat/models/chat_thread.dart';
 import 'package:aqedu/features/chat/models/chat_user.dart';
-import 'package:aqedu/features/chat/services/chat_service.dart';
-import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
+import 'package:aqedu/features/chat/repository/chat_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class ChatListController extends ChangeNotifier {
   ChatListController({
-    ChatService? chatService,
-    ChatUserSyncService? userSyncService,
-  }) : _chatService = chatService ?? ChatService(),
-       _userSyncService = userSyncService ?? ChatUserSyncService();
+    ChatRepository? chatRepository,
+  }) : _chatRepository = chatRepository ?? ChatRepository();
 
-  final ChatService _chatService;
-  final ChatUserSyncService _userSyncService;
+  final ChatRepository _chatRepository;
 
   ChatUser? currentUser;
   List<ChatThread> threads = const [];
@@ -32,7 +28,7 @@ class ChatListController extends ChangeNotifier {
 
     _setLoading(true);
     try {
-      currentUser = await _userSyncService.syncCurrentSessionUser();
+      currentUser = await _chatRepository.syncCurrentSessionUser();
       _subscribeThreads();
       errorMessage = null;
     } catch (error) {
@@ -67,7 +63,7 @@ class ChatListController extends ChangeNotifier {
     if (activeUser == null) return;
 
     try {
-      final results = await _chatService.searchUsers(
+      final results = await _chatRepository.searchUsers(
         keyword: query,
         excludeStudentId: activeUser.studentId,
       );
@@ -102,8 +98,8 @@ class ChatListController extends ChangeNotifier {
     if (activeUser == null) return;
 
     _threadsSubscription?.cancel();
-    _threadsSubscription = _chatService
-        .streamChatThreads(currentUserId: activeUser.id)
+    _threadsSubscription = _chatRepository
+        .streamChatThreads(currentStudentId: activeUser.studentId)
         .listen(
           (items) {
             threads = items;
