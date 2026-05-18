@@ -5,7 +5,7 @@ import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
-import '../../../prerequisiteSubjects/screens/view_prequisite_subjects.dart';
+import '../../../prerequisite_subjects/screens/view_prequisite_subjects.dart';
 import '../../../course_register/screens/view_courses_register.dart';
 
 class HocTapView extends StatelessWidget {

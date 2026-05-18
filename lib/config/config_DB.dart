@@ -17,7 +17,7 @@ class DataBaseConfig {
 
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         // bảng session
         await db.execute('''
@@ -163,7 +163,88 @@ class DataBaseConfig {
           is_xac_nhan_email INTEGER
         )
       ''');
+
+        await _createChangeNotificationTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _createChangeNotificationTables(db);
+        }
       },
     );
+  }
+
+  Future<void> _createChangeNotificationTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS notification_history(
+        id TEXT PRIMARY KEY,
+        change_id TEXT NOT NULL UNIQUE,
+        data_type TEXT NOT NULL,
+        change_type TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        message TEXT NOT NULL,
+        old_hash TEXT,
+        new_hash TEXT,
+        old_payload TEXT,
+        new_payload TEXT,
+        is_read INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        notified_at TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_notification_history_data_type
+      ON notification_history(data_type, created_at DESC)
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_notification_history_unread
+      ON notification_history(is_read, created_at DESC)
+    ''');
+
+    await _createCachedDataTable(db, 'cached_scores');
+    await _createCachedDataTable(db, 'cached_schedule');
+    await _createCachedDataTable(db, 'cached_exam_schedule');
+    await _createCachedDataTable(db, 'cached_tuition');
+    await _createCachedDataTable(db, 'cached_course_register');
+    await _createCachedDataTable(db, 'cached_training_notifications');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS thoi_khoa_bieu(
+        id TEXT PRIMARY KEY,
+        thu_kieu_so INTEGER,
+        tiet_bat_dau INTEGER,
+        so_tiet INTEGER,
+        ten_mon TEXT,
+        ten_giang_vien TEXT,
+        ma_phong TEXT,
+        ngay_hoc TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_thoi_khoa_bieu_ngay_hoc
+      ON thoi_khoa_bieu(ngay_hoc, tiet_bat_dau)
+    ''');
+  }
+
+  Future<void> _createCachedDataTable(Database db, String tableName) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS $tableName(
+        id TEXT PRIMARY KEY,
+        data_type TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        payload TEXT NOT NULL,
+        payload_hash TEXT NOT NULL,
+        source_updated_at TEXT,
+        cached_at TEXT NOT NULL,
+        UNIQUE(data_type, entity_id)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_${tableName}_hash
+      ON $tableName(payload_hash)
+    ''');
   }
 }

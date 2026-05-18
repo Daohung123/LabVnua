@@ -5,7 +5,7 @@ import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/reLogin.dart';
 import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
-import '../../../../features/prerequisiteSubjects/models/model_prequisite_subjects.dart';
+import '../../../../features/prerequisite_subjects/models/model_prequisite_subjects.dart';
 
 Future<PrerequisiteResponse?> getPrerequisiteResponse(
   String cookie,
