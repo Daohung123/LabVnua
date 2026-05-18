@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/chat/models/chat_message.dart';
@@ -316,6 +317,89 @@ class ChatService {
         });
 
       unawaited(emitInitialMessages());
+    };
+
+    controller.onCancel = () async {
+      final currentChannel = channel;
+      channel = null;
+      if (currentChannel != null) {
+        await _client.removeChannel(currentChannel);
+      }
+    };
+
+    return controller.stream;
+  }
+
+  Stream<ChatMessage> streamIncomingMessages({
+    required String currentStudentId,
+  }) {
+    final controller = StreamController<ChatMessage>.broadcast();
+    final recentMessageIds = LinkedHashSet<String>();
+    RealtimeChannel? channel;
+
+    void applyRealtimePayload(PostgresChangePayload payload) {
+      if (payload.eventType != PostgresChangeEvent.insert) return;
+      final record = payload.newRecord;
+      if (record == null) return;
+
+      final message = ChatMessage.fromJson(record);
+      if (message.receiverStudentId != currentStudentId) return;
+
+      final messageId = message.id.toString();
+      if (recentMessageIds.contains(messageId)) return;
+      recentMessageIds.add(messageId);
+      if (recentMessageIds.length > 500) {
+        recentMessageIds.remove(recentMessageIds.first);
+      }
+
+      _safeAdd(controller, message);
+    }
+
+    void subscribeChannel() {
+      if (controller.isClosed) return;
+
+      channel = _client.channel(_realtimeTopic('messages', currentStudentId))
+        ..onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: messagesTable,
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'receiver_student_id',
+            value: currentStudentId,
+          ),
+          callback: applyRealtimePayload,
+        )
+        ..subscribe((status, [error]) async {
+          if (status == RealtimeSubscribeStatus.channelError ||
+              status == RealtimeSubscribeStatus.timedOut ||
+              status == RealtimeSubscribeStatus.closed) {
+            _safeAddError(
+              controller,
+              StateError('Realtime subscribe failed: $status'),
+              StackTrace.current,
+            );
+
+            final currentChannel = channel;
+            channel = null;
+            if (currentChannel != null) {
+              await _client.removeChannel(currentChannel);
+            }
+
+            if (!controller.isClosed) {
+              Future.delayed(const Duration(seconds: 4), () {
+                if (!controller.isClosed) {
+                  subscribeChannel();
+                }
+              });
+            }
+          }
+        });
+    }
+
+    controller.onListen = () {
+      if (channel != null) return;
+      subscribeChannel();
     };
 
     controller.onCancel = () async {

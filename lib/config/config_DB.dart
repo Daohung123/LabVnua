@@ -17,7 +17,7 @@ class DataBaseConfig {
 
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         // bảng session
         await db.execute('''
@@ -167,7 +167,7 @@ class DataBaseConfig {
         await _createChangeNotificationTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
+        if (oldVersion < 3) {
           await _createChangeNotificationTables(db);
         }
       },
@@ -193,6 +193,18 @@ class DataBaseConfig {
         notified_at TEXT
       )
     ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS chat_notifications(
+        id TEXT PRIMARY KEY,
+        conversation_id TEXT NOT NULL,
+        sender_student_id TEXT NOT NULL,
+        sender_name TEXT NOT NULL,
+        sender_avatar_url TEXT,
+        message TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        is_read INTEGER NOT NULL DEFAULT 0
+      )
+    ''');
 
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_notification_history_data_type
@@ -201,6 +213,14 @@ class DataBaseConfig {
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_notification_history_unread
       ON notification_history(is_read, created_at DESC)
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_chat_notifications_unread
+      ON chat_notifications(is_read, created_at DESC)
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_chat_notifications_sender
+      ON chat_notifications(sender_student_id, created_at DESC)
     ''');
 
     await _createCachedDataTable(db, 'cached_scores');

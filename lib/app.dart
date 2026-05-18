@@ -1,6 +1,9 @@
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
 import 'package:aqedu/features/auth/student/screens/role_view.dart';
+import 'package:aqedu/features/chat/services/chat_notification_service.dart';
+import 'package:aqedu/features/chat/services/chat_realtime_connection_service.dart';
+import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
 import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,7 @@ class _MyWidgetState extends State<MyWidget> {
     // Kiểm tra wifi
     final connectivityResult = await Connectivity().checkConnectivity();
 
-    bool wifiConnected = connectivityResult.contains(ConnectivityResult.wifi);
+    final bool wifiConnected = connectivityResult.contains(ConnectivityResult.wifi);
 
     setState(() {
       hasWifi = wifiConnected;
@@ -40,12 +43,24 @@ class _MyWidgetState extends State<MyWidget> {
     }
 
     // Có wifi -> check login
-    bool result = await checkLogin();
-
+    final bool result = await checkLogin();
     setState(() {
       checkResult = result;
-      print("Login: $result");
     });
+
+    if (result) {
+      _initializeChatForCurrentUser();
+    }
+  }
+
+  Future<void> _initializeChatForCurrentUser() async {
+    try {
+      final chatUser = await ChatUserSyncService().syncCurrentSessionUser();
+      await ChatRealtimeConnectionService.instance.connect(chatUser);
+      await ChatNotificationService.instance.startForUser(chatUser);
+    } catch (error) {
+      debugPrint('Startup chat notification init failed: $error');
+    }
   }
 
   @override

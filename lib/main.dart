@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aqedu/core/services_root/notification/notification_manager.dart';
+import 'package:aqedu/core/services_root/notification/notification_router.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/notification/services/background_sync_service.dart';
@@ -16,13 +18,20 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   await NotificationService().init();
+  await NotificationManager.instance.init(
+    navigatorKey: NotificationRouter.navigatorKey,
+    onNotificationTap: NotificationRouter.handleNotificationTap,
+  );
   await BackgroundSyncService.initializeWorkManager();
   await BackgroundSyncService.registerPeriodicSync();
-  WidgetsFlutterBinding.ensureInitialized();
 
   //config DB
   await SupabaseConfig.init();
   unawaited(BackgroundSyncService().checkNow());
 
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyWidget()));
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    navigatorKey: NotificationRouter.navigatorKey,
+    home: const MyWidget(),
+  ));
 }

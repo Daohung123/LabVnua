@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:aqedu/core/services_root/notification/notification_manager.dart';
 import 'package:aqedu/core/theme/app_components.dart';
 import 'package:aqedu/features/chat/controllers/chat_room_controller.dart';
 import 'package:aqedu/features/chat/widgets/chat_message_bubble.dart';
@@ -35,6 +36,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
   @override
   void initState() {
     super.initState();
+    NotificationManager.instance.setActiveChatPeerStudentId(widget.receiverStudentId);
+    NotificationManager.instance.markConversationAsRead(widget.receiverStudentId);
     _controller = ChatRoomController(
       receiverStudentId: widget.receiverStudentId,
     )..init();
@@ -44,6 +47,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
 
   @override
   void dispose() {
+    NotificationManager.instance.setActiveChatPeerStudentId(null);
     _controller
       ..removeListener(_scheduleScrollToBottom)
       ..dispose();
