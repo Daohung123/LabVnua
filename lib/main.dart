@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/notification/services/background_sync_service.dart';
 import 'package:aqedu/features/notification/services/notification_service.dart';
@@ -17,6 +18,10 @@ Future<void> main() async {
   await NotificationService().init();
   await BackgroundSyncService.initializeWorkManager();
   await BackgroundSyncService.registerPeriodicSync();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //config DB
+  await SupabaseConfig.init();
   unawaited(BackgroundSyncService().checkNow());
 
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyWidget()));
