@@ -75,4 +75,13 @@ class CtrlCourseRegister {
       return null;
     }
   }
+
+  Future<CourseRegisterResponse?> getCourseRegisterFull() async {
+    try {
+      return await CourseRegisterService.getCourseRegisterFull(_cookie, _token);
+    } catch (e) {
+      log("Lỗi getCourseRegisterFull: $e");
+      return null;
+    }
+  }
 }

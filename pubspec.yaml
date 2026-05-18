@@ -12,6 +12,7 @@ dependencies:
   flutter_html: ^3.0.0
   flutter:
     sdk: flutter
+  diacritic: ^0.1.5
 
   cupertino_icons: ^1.0.8
   flutter_launcher_icons: ^0.14.4
@@ -38,3 +39,6 @@ flutter_icons:
   android: true
   ios: false
   image_path: "assets/logo.png"
+
+
+  

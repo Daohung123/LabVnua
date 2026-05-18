@@ -12,9 +12,7 @@ class CourseRegisterResponse {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'data': data?.toJson(),
-    };
+    return {'data': data?.toJson()};
   }
 }
 
@@ -79,23 +77,14 @@ class CourseRegisterFaculty {
   final String? ma;
   final String? ten;
 
-  CourseRegisterFaculty({
-    this.ma,
-    this.ten,
-  });
+  CourseRegisterFaculty({this.ma, this.ten});
 
   factory CourseRegisterFaculty.fromJson(Map<String, dynamic> json) {
-    return CourseRegisterFaculty(
-      ma: json['ma'],
-      ten: json['ten'],
-    );
+    return CourseRegisterFaculty(ma: json['ma'], ten: json['ten']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'ma': ma,
-      'ten': ten,
-    };
+    return {'ma': ma, 'ten': ten};
   }
 }
 
@@ -103,23 +92,14 @@ class CourseRegisterStudentClass {
   final String? ma;
   final String? ten;
 
-  CourseRegisterStudentClass({
-    this.ma,
-    this.ten,
-  });
+  CourseRegisterStudentClass({this.ma, this.ten});
 
   factory CourseRegisterStudentClass.fromJson(Map<String, dynamic> json) {
-    return CourseRegisterStudentClass(
-      ma: json['ma'],
-      ten: json['ten'],
-    );
+    return CourseRegisterStudentClass(ma: json['ma'], ten: json['ten']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'ma': ma,
-      'ten': ten,
-    };
+    return {'ma': ma, 'ten': ten};
   }
 }
 
@@ -128,11 +108,7 @@ class CourseRegisterSubject {
   final String? ten;
   final String? tenEg;
 
-  CourseRegisterSubject({
-    this.ma,
-    this.ten,
-    this.tenEg,
-  });
+  CourseRegisterSubject({this.ma, this.ten, this.tenEg});
 
   factory CourseRegisterSubject.fromJson(Map<String, dynamic> json) {
     return CourseRegisterSubject(
@@ -143,11 +119,7 @@ class CourseRegisterSubject {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'ma': ma,
-      'ten': ten,
-      'ten_eg': tenEg,
-    };
+    return {'ma': ma, 'ten': ten, 'ten_eg': tenEg};
   }
 }
 
@@ -197,9 +169,7 @@ class CourseRegisterClass {
     this.gcEnable,
   });
 
-  factory CourseRegisterClass.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory CourseRegisterClass.fromJson(Map<String, dynamic> json) {
     return CourseRegisterClass(
       idToHoc: json['id_to_hoc'],
       idMon: json['id_mon'],

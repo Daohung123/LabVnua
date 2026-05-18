@@ -9,9 +9,7 @@ class CourseRegisterResultResponse {
     this.code,
   });
 
-  factory CourseRegisterResultResponse.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory CourseRegisterResultResponse.fromJson(Map<String, dynamic> json) {
     return CourseRegisterResultResponse(
       data: json['data'] != null
           ? CourseRegisterResultData.fromJson(json['data'])
@@ -20,14 +18,6 @@ class CourseRegisterResultResponse {
       code: json['code'],
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'data': data?.toJson(),
-      'result': result,
-      'code': code,
-    };
-  }
 }
 
 class CourseRegisterResultData {
@@ -35,51 +25,65 @@ class CourseRegisterResultData {
   final int? totalPages;
   final int? soTinChiMin;
   final String? ngayIn;
-  final bool? isShowNganhHoc;
-  final bool? isShowDiaDiemThi;
-  final List<dynamic>? dsKqdkmh;
-  final bool? isGuiMailRutMh;
-  final bool? isXacNhanKqdk;
+  final List<CourseRegisterResultItem>? dsKqdkmh;
 
   CourseRegisterResultData({
     this.totalItems,
     this.totalPages,
     this.soTinChiMin,
     this.ngayIn,
-    this.isShowNganhHoc,
-    this.isShowDiaDiemThi,
     this.dsKqdkmh,
-    this.isGuiMailRutMh,
-    this.isXacNhanKqdk,
   });
 
-  factory CourseRegisterResultData.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory CourseRegisterResultData.fromJson(Map<String, dynamic> json) {
     return CourseRegisterResultData(
       totalItems: json['total_items'],
       totalPages: json['total_pages'],
       soTinChiMin: json['so_tin_chi_min'],
       ngayIn: json['ngay_in'],
-      isShowNganhHoc: json['is_show_nganh_hoc'],
-      isShowDiaDiemThi: json['is_show_dia_diem_thi'],
-      dsKqdkmh: json['ds_kqdkmh'] as List<dynamic>?,
-      isGuiMailRutMh: json['is_gui_mail_rut_mh'],
-      isXacNhanKqdk: json['is_xac_nhan_kqdk'],
+      dsKqdkmh: (json['ds_kqdkmh'] as List<dynamic>?)
+          ?.map((e) => CourseRegisterResultItem.fromJson(e))
+          .toList(),
     );
   }
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'total_items': totalItems,
-      'total_pages': totalPages,
-      'so_tin_chi_min': soTinChiMin,
-      'ngay_in': ngayIn,
-      'is_show_nganh_hoc': isShowNganhHoc,
-      'is_show_dia_diem_thi': isShowDiaDiemThi,
-      'ds_kqdkmh': dsKqdkmh,
-      'is_gui_mail_rut_mh': isGuiMailRutMh,
-      'is_xac_nhan_kqdk': isXacNhanKqdk,
-    };
+class CourseRegisterResultItem {
+  final String? idToHoc;
+  final String? maMon;
+  final String? tenMon;
+  final String? tenMonEg;
+  final String? soTc;
+  final String? nhomTo;
+  final String? lop;
+  final String? tkb;
+  final bool? enableXoa;
+
+  CourseRegisterResultItem({
+    this.idToHoc,
+    this.maMon,
+    this.tenMon,
+    this.tenMonEg,
+    this.soTc,
+    this.nhomTo,
+    this.lop,
+    this.tkb,
+    this.enableXoa,
+  });
+
+  factory CourseRegisterResultItem.fromJson(Map<String, dynamic> json) {
+    final toHoc = json['to_hoc'];
+
+    return CourseRegisterResultItem(
+      idToHoc: json['id_to_hoc'] ?? toHoc?['id_to_hoc'],
+      maMon: json['ma_mon'] ?? toHoc?['ma_mon'],
+      tenMon: json['ten_mon'] ?? toHoc?['ten_mon'],
+      tenMonEg: json['ten_mon_eg'] ?? toHoc?['ten_mon_eg'],
+      soTc: json['so_tc'] ?? toHoc?['so_tc'],
+      nhomTo: json['nhom_to'] ?? toHoc?['nhom_to'],
+      lop: json['lop'] ?? toHoc?['lop'],
+      tkb: json['tkb'] ?? toHoc?['tkb'],
+      enableXoa: json['enable_xoa'],
+    );
   }
 }
