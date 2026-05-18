@@ -12,6 +12,9 @@ import '../services/service_courses_register_action.dart';
 import '../models/model_course_register_results.dart';
 import '../services/service_courses_register_results.dart';
 
+import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import '../services/service_course_register_student.dart';
+
 class CtrlCourseRegister {
   final String _cookie;
   final String _token;
@@ -81,6 +84,15 @@ class CtrlCourseRegister {
       return await CourseRegisterService.getCourseRegisterFull(_cookie, _token);
     } catch (e) {
       log("Lỗi getCourseRegisterFull: $e");
+      return null;
+    }
+  }
+
+  Future<StudentData?> getStudentData() async {
+    try {
+      return await CourseRegisterStudentService.getStudentData(_cookie, _token);
+    } catch (e) {
+      log("Lỗi getStudentData: $e");
       return null;
     }
   }

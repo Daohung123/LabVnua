@@ -5,6 +5,7 @@ import '../controlers/ctrl_courses_register.dart';
 import '../models/model_course_register.dart';
 import '../models/model_course_register_action.dart';
 import '../models/model_course_register_fillter.dart';
+import 'package:aqedu/features/infor/models/models_inforStudent.dart';
 
 class CourseRegisterView extends StatefulWidget {
   const CourseRegisterView({super.key});
@@ -28,7 +29,12 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   String? selectedKhoa;
   String? selectedLop;
 
-  final int svNganh = 1;
+  int svNganh = 1;
+
+  String studentClassCode = '';
+
+  StudentData? studentData;
+
   String currentIdRs = '';
 
   static const Color primaryBlue = Color(0xff0D47A1);
@@ -47,6 +53,15 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
 
       final filterResult = await controller.getFilters();
       final fullResponse = await controller.getCourseRegisterFull();
+      final student = await controller.getStudentData();
+
+      if (student != null) {
+        studentData = student;
+
+        svNganh = int.tryParse(student.idNganh) ?? 1;
+
+        studentClassCode = student.lop.toUpperCase();
+      }
 
       final classResult = fullResponse?.data?.dsNhomTo ?? [];
       final subjectResult = fullResponse?.data?.dsMonHoc ?? [];
@@ -105,20 +120,14 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   }
 
   List<CourseRegisterFaculty> get faculties {
-    return classes
-        .expand((e) => e.dsKhoa ?? <String>[])
-        .toSet()
-        .map((ma) {
-          final khoa = (filters.isEmpty)
-              ? null
-              : null;
-          final match = _facultiesFromData.firstWhere(
-            (e) => e.ma == ma,
-            orElse: () => CourseRegisterFaculty(ma: ma, ten: ma),
-          );
-          return match;
-        })
-        .toList();
+    return classes.expand((e) => e.dsKhoa ?? <String>[]).toSet().map((ma) {
+      final khoa = (filters.isEmpty) ? null : null;
+      final match = _facultiesFromData.firstWhere(
+        (e) => e.ma == ma,
+        orElse: () => CourseRegisterFaculty(ma: ma, ten: ma),
+      );
+      return match;
+    }).toList();
   }
 
   List<CourseRegisterFaculty> get _facultiesFromData {
@@ -164,22 +173,22 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   }
 
   List<CourseRegisterClass> get availableClasses {
-    List<CourseRegisterClass> list =
-        classes.where((e) => e.isDk != true).toList();
+    List<CourseRegisterClass> list = classes
+        .where((e) => e.isDk != true)
+        .toList();
 
     switch (selectedFilter) {
       case 0:
-        list = list.where((e) {
-          final dsLop = e.dsLop ?? [];
-          final lop = (e.lop ?? '').toUpperCase();
+        final classCode = studentClassCode.toUpperCase();
 
-          return dsLop.any((x) {
-                final value = x.toUpperCase();
-                return value.contains('K68CNTTF') ||
-                    value == 'LOP_DH' ||
-                    value == '*';
-              }) ||
-              lop == 'LOP_DH';
+        list = list.where((e) {
+          final dsLop = (e.dsLop ?? [])
+              .map((x) => x.trim().toUpperCase())
+              .toList();
+
+          final lop = (e.lop ?? '').trim().toUpperCase();
+
+          return dsLop.contains(classCode) || lop == classCode;
         }).toList();
         break;
 
@@ -191,29 +200,8 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
         list = list.where((e) => e.isCtdt == true).toList();
         break;
 
-      case 3:
-        if (selectedKhoa != null && selectedKhoa!.isNotEmpty) {
-          list = list
-              .where((e) => (e.dsKhoa ?? []).contains(selectedKhoa))
-              .toList();
-        }
-        break;
-
-      case 4:
-        if (selectedLop != null && selectedLop!.isNotEmpty) {
-          list = list.where((e) {
-            final dsLop = e.dsLop ?? [];
-            return dsLop.contains(selectedLop) || e.lop == selectedLop;
-          }).toList();
-        }
-        break;
-
       case 6:
         list = list.where((e) => e.isChctdt == true).toList();
-        break;
-
-      case 10:
-      default:
         break;
     }
 
@@ -279,10 +267,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     });
 
     try {
-      final response = await _callAction(
-        idToHoc: idToHoc,
-        isChecked: true,
-      );
+      final response = await _callAction(idToHoc: idToHoc, isChecked: true);
 
       final data = response?.data;
 
@@ -292,10 +277,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
         await loadData();
 
         if (warning.isNotEmpty) {
-          await _showInfoDialog(
-            title: 'Thông báo',
-            content: warning,
-          );
+          await _showInfoDialog(title: 'Thông báo', content: warning);
         }
 
         return;
@@ -305,9 +287,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
 
       await _showInfoDialog(
         title: 'Không thể đăng ký',
-        content: error.isNotEmpty
-            ? error
-            : 'Đăng ký học phần chưa thành công.',
+        content: error.isNotEmpty ? error : 'Đăng ký học phần chưa thành công.',
       );
     } catch (_) {
       await _showInfoDialog(
@@ -356,10 +336,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     });
 
     try {
-      final response = await _callAction(
-        idToHoc: idToHoc,
-        isChecked: false,
-      );
+      final response = await _callAction(idToHoc: idToHoc, isChecked: false);
 
       final data = response?.data;
 
@@ -448,10 +425,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          content: Text(
-            content,
-            textAlign: TextAlign.center,
-          ),
+          content: Text(content, textAlign: TextAlign.center),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
             TextButton(
@@ -491,10 +465,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
         backgroundColor: primaryBlue,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            onPressed: loadData,
-            icon: const Icon(Icons.refresh),
-          ),
+          IconButton(onPressed: loadData, icon: const Icon(Icons.refresh)),
         ],
       ),
       body: isLoading
@@ -533,9 +504,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 if (isActionLoading)
                   Container(
                     color: Colors.black.withOpacity(0.18),
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: const Center(child: CircularProgressIndicator()),
                   ),
               ],
             ),
@@ -580,10 +549,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 const SizedBox(height: 4),
                 Text(
                   '${registeredClasses.length} học phần đã đăng ký • $totalCredits tín chỉ',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -622,12 +588,20 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 borderSide: BorderSide.none,
               ),
             ),
-            items: filters.map((filter) {
-              return DropdownMenuItem<int>(
-                value: filter.giaTri,
-                child: Text(filter.mieuTa ?? 'Bộ lọc'),
-              );
-            }).toList(),
+            items: filters
+                .where(
+                  (filter) =>
+                      filter.giaTri != 10 &&
+                      filter.giaTri != 3 &&
+                      filter.giaTri != 4,
+                )
+                .map((filter) {
+                  return DropdownMenuItem<int>(
+                    value: filter.giaTri,
+                    child: Text(filter.mieuTa ?? 'Bộ lọc'),
+                  );
+                })
+                .toList(),
             onChanged: (value) {
               if (value == null) return;
 
@@ -656,32 +630,6 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               ),
             ),
           ),
-          if (selectedFilter == 3) ...[
-            const SizedBox(height: 12),
-            _dropdownString(
-              label: 'Khoa quản lý môn học',
-              value: selectedKhoa,
-              values: availableKhoaCodes,
-              onChanged: (value) {
-                setState(() {
-                  selectedKhoa = value;
-                });
-              },
-            ),
-          ],
-          if (selectedFilter == 4) ...[
-            const SizedBox(height: 12),
-            _dropdownString(
-              label: 'Lớp',
-              value: selectedLop,
-              values: availableLopCodes,
-              onChanged: (value) {
-                setState(() {
-                  selectedLop = value;
-                });
-              },
-            ),
-          ],
         ],
       ),
     );
@@ -706,10 +654,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
         ),
       ),
       items: values.map((item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item),
-        );
+        return DropdownMenuItem<String>(value: item, child: Text(item));
       }).toList(),
       onChanged: onChanged,
     );
@@ -727,27 +672,18 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     );
   }
 
-  Widget _sectionHeader({
-    required String title,
-    required String subtitle,
-  }) {
+  Widget _sectionHeader({required String title, required String subtitle}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           subtitle,
-          style: const TextStyle(
-            color: Colors.black54,
-            fontSize: 13,
-          ),
+          style: const TextStyle(color: Colors.black54, fontSize: 13),
         ),
       ],
     );
@@ -894,10 +830,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 const SizedBox(height: 5),
                 Text(
                   'Nhóm: ${item.nhomTo ?? '-'} • Lớp: ${item.lop ?? '-'} • ${item.soTc ?? '0'} TC',
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 13,
-                  ),
+                  style: const TextStyle(color: Colors.black54, fontSize: 13),
                 ),
               ],
             ),
@@ -954,10 +887,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                         child: const CircleAvatar(
                           radius: 18,
                           backgroundColor: Color(0xff75758B),
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.white,
-                          ),
+                          child: Icon(Icons.close, color: Colors.white),
                         ),
                       ),
                     ],
@@ -1021,9 +951,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 9),
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Color(0xffEEEEEE)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xffEEEEEE))),
       ),
       child: Row(
         children: [
@@ -1057,16 +985,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       ),
       child: Column(
         children: [
-          const Icon(
-            Icons.event_note,
-            color: Colors.blue,
-            size: 42,
-          ),
+          const Icon(Icons.event_note, color: Colors.blue, size: 42),
           const SizedBox(height: 10),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-          ),
+          Text(text, textAlign: TextAlign.center),
         ],
       ),
     );
