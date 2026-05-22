@@ -24,6 +24,8 @@ String APIPREREQUISTESUBJECT = "/rms/w-locdsmontienquyet"; //api môn học tiê
 
 String APICOURSEREGISTERFILLTER = "/dkmh/w-locdsdieukienloc"; //api gửi yêu cầu lọc các lớp đăng kí môn học
 String APICOURSEREGISTERCLASSES = "/dkmh/w-locdsnhomto"; //Hiển thị cấc lớp đăng kí môn học
+String APISEMESTERTIMTABLE = "/sch/w-locdstkbhockytheodoituong"; // api thời khóa biểu theo học kì 
+
 
 
 

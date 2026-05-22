@@ -23,9 +23,7 @@ class ServiceSqlTkb {
   /// =====================================================
   /// INSERT LIST SCHEDULE
   /// =====================================================
-  Future<void> insertListSchedule(
-    List<ThoiKhoaBieu> items,
-  ) async {
+  Future<void> insertListSchedule(List<ThoiKhoaBieu> items) async {
     final db = await _dbConfig.database;
 
     final batch = db.batch();
@@ -47,26 +45,15 @@ class ServiceSqlTkb {
   Future<List<ThoiKhoaBieu>> getAllSchedules() async {
     final db = await _dbConfig.database;
 
-    final result = await db.query(
-      'thoi_khoa_bieu',
-      orderBy: 'ngay_hoc ASC',
-    );
+    final result = await db.query('thoi_khoa_bieu', orderBy: 'ngay_hoc ASC');
 
-    return result
-        .map(
-          (e) => ThoiKhoaBieu.fromJson(
-            _mapToSchedule(e),
-          ),
-        )
-        .toList();
+    return result.map((e) => ThoiKhoaBieu.fromJson(_mapToSchedule(e))).toList();
   }
 
   /// =====================================================
   /// GET SCHEDULE BY DATE
   /// =====================================================
-  Future<List<ThoiKhoaBieu>> getScheduleByDate(
-    String ngayHoc,
-  ) async {
+  Future<List<ThoiKhoaBieu>> getScheduleByDate(String ngayHoc) async {
     final db = await _dbConfig.database;
 
     final result = await db.query(
@@ -76,13 +63,7 @@ class ServiceSqlTkb {
       orderBy: 'tiet_bat_dau ASC',
     );
 
-    return result
-        .map(
-          (e) => ThoiKhoaBieu.fromJson(
-            _mapToSchedule(e),
-          ),
-        )
-        .toList();
+    return result.map((e) => ThoiKhoaBieu.fromJson(_mapToSchedule(e))).toList();
   }
 
   /// =====================================================
@@ -97,9 +78,7 @@ class ServiceSqlTkb {
   /// =====================================================
   /// DELETE BY DATE
   /// =====================================================
-  Future<int> deleteScheduleByDate(
-    String ngayHoc,
-  ) async {
+  Future<int> deleteScheduleByDate(String ngayHoc) async {
     final db = await _dbConfig.database;
 
     return await db.delete(
@@ -139,12 +118,9 @@ class ServiceSqlTkb {
   /// =====================================================
   /// CONVERT MODEL -> SQLITE MAP
   /// =====================================================
-  Map<String, dynamic> _scheduleToMap(
-    ThoiKhoaBieu item,
-  ) {
+  Map<String, dynamic> _scheduleToMap(ThoiKhoaBieu item) {
     return {
-      'id':
-          '${item.ngayhoc}_${item.thu}_${item.tietBatDau}_${item.tenMon}',
+      'id': '${item.ngayhoc}_${item.thu}_${item.tietBatDau}_${item.tenMon}',
       'thu_kieu_so': item.thu,
       'tiet_bat_dau': item.tietBatDau,
       'so_tiet': item.soTiet,
@@ -158,9 +134,7 @@ class ServiceSqlTkb {
   /// =====================================================
   /// CONVERT SQLITE MAP -> JSON MODEL
   /// =====================================================
-  Map<String, dynamic> _mapToSchedule(
-    Map<String, dynamic> map,
-  ) {
+  Map<String, dynamic> _mapToSchedule(Map<String, dynamic> map) {
     return {
       'thu_kieu_so': map['thu_kieu_so'],
       'tiet_bat_dau': map['tiet_bat_dau'],

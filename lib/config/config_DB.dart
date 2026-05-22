@@ -31,6 +31,26 @@ class DataBaseConfig {
         )
       ''');
 
+        //bảng semester_timetable
+        await db.execute('''
+        CREATE TABLE semester_timetable(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,  
+          id_to_hoc TEXT,
+          ma_mon TEXT,
+          ten_mon TEXT,
+          nhom_to TEXT,
+          thu INTEGER,
+          tbd INTEGER,
+          so_tiet INTEGER, 
+          tu_gio TEXT,
+          den_gio TEXT,
+          phong TEXT,
+          lop TEXT,
+          gv TEXT,
+          tooltip TEXT,
+        )
+      ''');
+
         // bảng notifications
         await db.execute('''
         CREATE TABLE notifications(
