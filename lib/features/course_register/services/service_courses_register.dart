@@ -7,8 +7,10 @@ class CourseRegisterService {
     String token,
   ) async {
     try {
-      final CourseRegisterResponse? response =
-          await getCourseRegisterResponse(cookie, token);
+      final CourseRegisterResponse? response = await getCourseRegisterResponse(
+        cookie,
+        token,
+      );
 
       if (response == null) {
         return [];
@@ -24,6 +26,18 @@ class CourseRegisterService {
     } catch (e) {
       print("Lỗi CourseRegisterService.getClasses: $e");
       return [];
+    }
+  }
+
+  static Future<CourseRegisterResponse?> getCourseRegisterFull(
+    String cookie,
+    String token,
+  ) async {
+    try {
+      return await getCourseRegisterResponse(cookie, token);
+    } catch (e) {
+      print("Lỗi CourseRegisterService.getCourseRegisterFull: $e");
+      return null;
     }
   }
 }
