@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:lab_dart_basic/view/view_chat_bot.dart';
 import 'package:lab_dart_basic/view/view_study_price.dart';
 //models
 import './model/Cookie_Token.dart';
@@ -17,11 +18,7 @@ import './view/view_notification_daotao.dart';
 
 void main() async {
   //Dang nhap
-  print("Đang đăng nhập...");
-  ApiHelper daotao = ApiHelper();
-  SessionModel? sessionModel = await daotao.login("", "");
-  String cookie = sessionModel!.cookie;
-  String token = sessionModel!.token;
+
   int a = 1;
   //Dieu huong
   while (a != 0) {
@@ -33,25 +30,14 @@ void main() async {
     print("3. Hiển thị thời khóa biểu");
     print("4. Hiển thị học phí");
     print("5. Thông báo từ nhà quản trị");
+    print("6. ChatBot");
     print("");
     int b = int.parse(stdin.readLineSync()!);
     a = b;
     switch (b) {
-      case 1:
-        print("Cookie nè: \n${sessionModel?.cookie}");
-        print("\n\nToken nè: \n${sessionModel?.token}");
-        break;
-      case 2:
-        await view_infor_student(cookie, token);
-        break;
-      case 3:
-        await viewSchedure(cookie, token);
-        break;
-      case 4:
-        await viewHocPhi(cookie, token);
-        break;
-      case 5:
-        await viewNotificationLog(cookie, token);
+      
+      case 6:
+        await view_chat_bot();
         break;
     }
     print("\n");
