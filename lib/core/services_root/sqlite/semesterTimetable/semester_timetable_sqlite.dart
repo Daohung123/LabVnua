@@ -80,6 +80,7 @@ class SemesterTimetableSqliteRoot {
   /// =====================================================
   Map<String, dynamic> _timetableToMap(SemesterTimetableItem item) {
     return {
+      'id_to_hoc': item.idToHoc,
       'ma_mon': item.maMon,
       'ten_mon': item.tenMon,
       'nhom_to': item.nhomTo,
@@ -89,6 +90,9 @@ class SemesterTimetableSqliteRoot {
       'tu_gio': item.tuGio,
       'den_gio': item.denGio,
       'phong': item.phong,
+      'lop': item.lop,
+      'gv': item.gv,
+      'tooltip': item.tooltip,
     };
   }
 
@@ -97,6 +101,7 @@ class SemesterTimetableSqliteRoot {
   /// =====================================================
   Map<String, dynamic> _mapToSemesterTimetable(Map<String, dynamic> map) {
     return {
+      'id_to_hoc': map['id_to_hoc'],
       'ma_mon': map['ma_mon'],
       'ten_mon': map['ten_mon'],
       'nhom_to': map['nhom_to'],
@@ -106,6 +111,9 @@ class SemesterTimetableSqliteRoot {
       'tu_gio': map['tu_gio'],
       'den_gio': map['den_gio'],
       'phong': map['phong'],
+      'lop': map['lop'],
+      'gv': map['gv'],
+      'tooltip': map['tooltip'],
     };
   }
 

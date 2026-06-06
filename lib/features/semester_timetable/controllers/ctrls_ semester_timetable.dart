@@ -1,89 +1,164 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
+
+import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
+import 'package:aqedu/core/services_root/api_daotao/semester_timetable/getSemesterTimetable.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart';
 
 import '../models/model_semester_timetable.dart';
+import '../services/services_api_semester_timetable_copy.dart';
 
-class FakeSemesterTimetableController extends ChangeNotifier {
-  List<SemesterTimetableItem> _list = [];
+class CtrlsemesterTimetable {
+  final String _cookie;
+  final String _token;
 
-  List<SemesterTimetableItem> get list => _list;
+  CtrlsemesterTimetable._(this._cookie, this._token);
 
-  bool _loading = false;
+  static Future<CtrlsemesterTimetable> create() async {
+    final cookie = await GETDB.getCookie();
+    final token = await GETDB.getToken();
 
-  bool get loading => _loading;
-
-  // fake load data
-  Future<void> loadData() async {
-    _loading = true;
-    notifyListeners();
-
-    // giả lập delay API
-    await Future.delayed(const Duration(seconds: 2));
-
-    _list = [
-      SemesterTimetableItem(
-        id: 1,
-        idToHoc: "20252",
-        maMon: "INT2204",
-        tenMon: "Lập trình C++",
-        nhomTo: "01",
-        thu: 2,
-        tietBatDau: 1,
-        soTiet: 3,
-        tuGio: "07:00",
-        denGio: "09:30",
-        phong: "A101",
-        lop: "KTPM1",
-        gv: "Nguyễn Văn A",
-        tooltip: "Học lý thuyết",
-      ),
-
-      SemesterTimetableItem(
-        id: 2,
-        idToHoc: "20252",
-        maMon: "INT2205",
-        tenMon: "Flutter",
-        nhomTo: "02",
-        thu: 3,
-        tietBatDau: 4,
-        soTiet: 3,
-        tuGio: "09:45",
-        denGio: "12:15",
-        phong: "B203",
-        lop: "KTPM1",
-        gv: "Trần Văn B",
-        tooltip: "Thực hành",
-      ),
-
-      SemesterTimetableItem(
-        id: 3,
-        idToHoc: "20252",
-        maMon: "INT2206",
-        tenMon: "Cơ sở dữ liệu",
-        nhomTo: "01",
-        thu: 5,
-        tietBatDau: 7,
-        soTiet: 3,
-        tuGio: "13:00",
-        denGio: "15:30",
-        phong: "C105",
-        lop: "KTPM1",
-        gv: "Lê Thị C",
-        tooltip: "Lab",
-      ),
-    ];
-
-    _loading = false;
-    notifyListeners();
+    return CtrlsemesterTimetable._(cookie, token);
   }
 
-  // lấy môn theo thứ
-  List<SemesterTimetableItem> getByThu(int thu) {
-    return _list.where((e) => e.thu == thu).toList();
+  /// Lấy response đầy đủ từ API
+  Future<SemesterTimetableResponse?> getFullTkbResponse({
+    int? semesterId,
+  }) async {
+    try {
+      return await getSemesterTimetableResponse(_cookie, _token);
+    } catch (e) {
+      log("Lỗi lấy SemesterTimetableResponse: $e");
+      return null;
+    }
   }
 
-  // clear data
-  void clear() {
-    _list.clear();
-    notifyListeners();
+  /// Lấy toàn bộ danh sách lịch học của học kỳ
+  Future<List<SemesterTimetableItem>> getTkbInSemester({
+    int? semesterId,
+  }) async {
+    try {
+      final response = await getFullTkbResponse(semesterId: semesterId);
+
+      return response?.data?.dsNhomTo ?? [];
+    } catch (e) {
+      log("Lỗi lấy TKB học kỳ: $e");
+      return [];
+    }
   }
+
+  /// Lấy môn đầu tiên trong danh sách
+  Future<SemesterTimetableItem?> getFirstClass({int? semesterId}) async {
+    try {
+      final list = await getTkbInSemester(semesterId: semesterId);
+
+      if (list.isEmpty) return null;
+
+      return list.first;
+    } catch (e) {
+      log("Lỗi lấy môn đầu tiên: $e");
+      return null;
+    }
+  }
+
+  /// Lọc theo thứ
+  Future<List<SemesterTimetableItem>> getByWeekday(
+    int thu, {
+    int? semesterId,
+  }) async {
+    try {
+      final list = await getTkbInSemester(semesterId: semesterId);
+
+      return list.where((e) => e.thu == thu).toList();
+    } catch (e) {
+      log("Lỗi lọc theo thứ: $e");
+      return [];
+    }
+  }
+
+  /// Lấy lịch hôm nay
+  Future<List<SemesterTimetableItem>> getTodaySchedule({
+    int? semesterId,
+  }) async {
+    try {
+      int thu = DateTime.now().weekday + 1;
+
+      if (thu > 7) {
+        thu = 1; // Chủ nhật
+      }
+
+      return await getByWeekday(thu, semesterId: semesterId);
+    } catch (e) {
+      log("Lỗi lấy lịch hôm nay: $e");
+      return [];
+    }
+  }
+
+  /// Lấy môn tiếp theo trong ngày
+  Future<SemesterTimetableItem?> getNextClass({int? semesterId}) async {
+    try {
+      final todayList = await getTodaySchedule(semesterId: semesterId);
+
+      if (todayList.isEmpty) return null;
+
+      todayList.sort(
+        (a, b) => (a.tietBatDau ?? 0).compareTo(b.tietBatDau ?? 0),
+      );
+
+      final now = DateTime.now();
+
+      for (final item in todayList) {
+        if (item.tuGio == null) continue;
+
+        final parts = item.tuGio!.split(':');
+
+        if (parts.length < 2) continue;
+
+        final hour = int.tryParse(parts[0]) ?? 0;
+        final minute = int.tryParse(parts[1]) ?? 0;
+
+        if (hour > now.hour || (hour == now.hour && minute > now.minute)) {
+          return item;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      log("Lỗi lấy môn tiếp theo: $e");
+      return null;
+    }
+  }
+
+  /// Lấy danh sách theo mã tổ học
+  Future<List<SemesterTimetableItem>> getByIdToHoc(
+    String idToHoc, {
+    int? semesterId,
+  }) async {
+    try {
+      final list = await getTkbInSemester(semesterId: semesterId);
+
+      return list.where((e) => e.idToHoc == idToHoc).toList();
+    } catch (e) {
+      log("Lỗi lọc theo id_to_hoc: $e");
+      return [];
+    }
+  }
+
+  /// Tìm kiếm theo tên môn
+  Future<List<SemesterTimetableItem>> searchBySubject(
+    String keyword, {
+    int? semesterId,
+  }) async {
+    try {
+      final list = await getTkbInSemester(semesterId: semesterId);
+
+      return list.where((e) {
+        return (e.tenMon ?? "").toLowerCase().contains(keyword.toLowerCase());
+      }).toList();
+    } catch (e) {
+      log("Lỗi tìm kiếm môn học: $e");
+      return [];
+    }
+  }
+
+  loadData() {}
 }

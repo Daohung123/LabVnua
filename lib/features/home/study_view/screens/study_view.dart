@@ -2,6 +2,7 @@ import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
+import 'package:aqedu/features/semester_timetable/screens/view_%20semester_timetable.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
@@ -155,7 +156,14 @@ class HocTapView extends StatelessWidget {
                   subtitle: 'Xem thời khóa biểu theo học kỳ',
                   primaryColor: primaryColor,
                   mutedTextColor: mutedTextColor,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SemesterTimetableView(),
+                      ),
+                    );
+                  },
                 ),
                 _buildDivider(borderColor),
                 _buildActionTile(

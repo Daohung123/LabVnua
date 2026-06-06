@@ -47,7 +47,7 @@ class DataBaseConfig {
           phong TEXT,
           lop TEXT,
           gv TEXT,
-          tooltip TEXT,
+          tooltip TEXT
         )
       ''');
 
