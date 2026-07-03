@@ -1,6 +1,6 @@
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
-import 'package:aqedu/features/auth/student/screens/role_view.dart';
+import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
 import 'package:aqedu/features/chat/services/chat_notification_service.dart';
 import 'package:aqedu/features/chat/services/chat_realtime_connection_service.dart';
 import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
@@ -31,7 +31,9 @@ class _MyWidgetState extends State<MyWidget> {
     // Kiểm tra wifi
     final connectivityResult = await Connectivity().checkConnectivity();
 
-    final bool wifiConnected = connectivityResult.contains(ConnectivityResult.wifi);
+    final bool wifiConnected = connectivityResult.contains(
+      ConnectivityResult.wifi,
+    );
 
     setState(() {
       hasWifi = wifiConnected;
@@ -86,6 +88,6 @@ class _MyWidgetState extends State<MyWidget> {
     }
 
     // Chưa login
-    return RoleView();
+    return const LoginScreen();
   }
 }

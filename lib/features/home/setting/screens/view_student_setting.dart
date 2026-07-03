@@ -1,4 +1,4 @@
-import 'package:aqedu/features/auth/student/screens/role_view.dart';
+import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
 import 'package:aqedu/features/home/setting/controllers/controller_settings.dart';
 import 'package:flutter/material.dart';
 
@@ -218,14 +218,18 @@ class _SettingsViewState extends State<SettingsView> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [primaryColor, primaryColor.withOpacity(0.92), textBlue],
+          colors: [
+            primaryColor,
+            primaryColor.withValues(alpha: 0.92),
+            textBlue,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: primaryColor.withOpacity(0.18),
+            color: primaryColor.withValues(alpha: 0.18),
             blurRadius: 24,
             offset: const Offset(0, 10),
           ),
@@ -238,9 +242,9 @@ class _SettingsViewState extends State<SettingsView> {
             height: 68,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.16),
+              color: Colors.white.withValues(alpha: 0.16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.22),
+                color: Colors.white.withValues(alpha: 0.22),
                 width: 1.2,
               ),
             ),
@@ -267,7 +271,7 @@ class _SettingsViewState extends State<SettingsView> {
                 Text(
                   'Cổng thông tin đào tạo',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.88),
+                    color: Colors.white.withValues(alpha: 0.88),
                     fontSize: 13.5,
                     height: 1.4,
                   ),
@@ -287,7 +291,6 @@ class _SettingsViewState extends State<SettingsView> {
       ),
     );
   }
-
 
   Widget _buildSectionHeader({
     required String title,
@@ -328,7 +331,7 @@ class _SettingsViewState extends State<SettingsView> {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -362,7 +365,7 @@ class _SettingsViewState extends State<SettingsView> {
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: primaryColor.withOpacity(0.10),
+          color: primaryColor.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Icon(icon, color: primaryColor, size: 23),
@@ -407,7 +410,7 @@ class _SettingsViewState extends State<SettingsView> {
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: primaryColor.withOpacity(0.10),
+          color: primaryColor.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(14),
         ),
         child: Icon(icon, color: primaryColor, size: 23),
@@ -439,11 +442,13 @@ class _SettingsViewState extends State<SettingsView> {
       width: double.infinity,
       height: 54,
       child: ElevatedButton.icon(
-        onPressed: () {
-          ControllerSettings.logOut();
-          Navigator.pushReplacement(
+        onPressed: () async {
+          await ControllerSettings.logOut();
+          if (!mounted) return;
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => RoleView()),
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            (_) => false,
           );
         },
         icon: const Icon(Icons.logout_rounded),
@@ -468,9 +473,9 @@ class _SettingsViewState extends State<SettingsView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.16),
+        color: Colors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withOpacity(0.18)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       ),
       child: Text(
         text,

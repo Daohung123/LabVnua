@@ -4,11 +4,17 @@ import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/widgets/appBar/notification.dart';
 import 'package:aqedu/core/widgets/appBar/scan.dart';
+import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
+import 'package:aqedu/features/home/setting/controllers/controller_settings.dart';
+import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';
 import 'package:aqedu/features/notification/screens/view_noti_student.dart';
 
 /// AppBar component cho Home Student
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key});
+  const HomeAppBar({super.key, this.onSettingsPressed, this.onLogoutPressed});
+
+  final VoidCallback? onSettingsPressed;
+  final VoidCallback? onLogoutPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +58,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   );
                 },
               ),
+              SizedBox(width: 4),
+              _AvatarMenuButton(
+                onSettingsPressed: onSettingsPressed,
+                onLogoutPressed: onLogoutPressed,
+              ),
               SizedBox(width: 8),
             ],
           ),
@@ -62,4 +73,191 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+enum _AvatarMenuAction { settings, logout }
+
+class _AvatarMenuButton extends StatelessWidget {
+  const _AvatarMenuButton({this.onSettingsPressed, this.onLogoutPressed});
+
+  final VoidCallback? onSettingsPressed;
+  final VoidCallback? onLogoutPressed;
+
+  void _openSettings(BuildContext context) {
+    if (onSettingsPressed != null) {
+      onSettingsPressed!();
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SettingsView()),
+    );
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    if (onLogoutPressed != null) {
+      onLogoutPressed!();
+      return;
+    }
+
+    await ControllerSettings.logOut();
+    if (!context.mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (_) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<_AvatarMenuAction>(
+      tooltip: 'Tài khoản',
+      offset: const Offset(0, 48),
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      onSelected: (action) {
+        switch (action) {
+          case _AvatarMenuAction.settings:
+            _openSettings(context);
+            break;
+          case _AvatarMenuAction.logout:
+            _logout(context);
+            break;
+        }
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem<_AvatarMenuAction>(
+          enabled: false,
+          child: _AvatarProfileSummary(),
+        ),
+        PopupMenuDivider(height: 8),
+        PopupMenuItem<_AvatarMenuAction>(
+          value: _AvatarMenuAction.settings,
+          child: _AvatarMenuItem(
+            icon: Icons.settings_outlined,
+            label: 'Cài đặt',
+          ),
+        ),
+        PopupMenuItem<_AvatarMenuAction>(
+          enabled: false,
+          child: _AvatarMenuItem(
+            icon: Icons.lock_outline_rounded,
+            label: 'Đổi mật khẩu',
+            helper: 'Chưa có màn hình',
+          ),
+        ),
+        PopupMenuDivider(height: 8),
+        PopupMenuItem<_AvatarMenuAction>(
+          value: _AvatarMenuAction.logout,
+          child: _AvatarMenuItem(
+            icon: Icons.logout_rounded,
+            label: 'Đăng xuất',
+            color: AppColors.error,
+          ),
+        ),
+      ],
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.14),
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white.withValues(alpha: 0.24)),
+        ),
+        child: const Icon(
+          Icons.account_circle_rounded,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
+    );
+  }
+}
+
+class _AvatarProfileSummary extends StatelessWidget {
+  const _AvatarProfileSummary();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+          child: const Icon(Icons.school_rounded, color: AppColors.primary),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Sinh viên VNUA',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 2),
+              Text(
+                'Đang hoạt động',
+                style: TextStyle(color: AppColors.textMuted, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AvatarMenuItem extends StatelessWidget {
+  const _AvatarMenuItem({
+    required this.icon,
+    required this.label,
+    this.helper,
+    this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final String? helper;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor = color ?? AppColors.textPrimary;
+    return Row(
+      children: [
+        Icon(icon, color: effectiveColor, size: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: effectiveColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (helper != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  helper!,
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }

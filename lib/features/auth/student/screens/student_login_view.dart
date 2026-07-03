@@ -2,6 +2,9 @@ import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/auth/student/controllers/ctrl_login_Student.dart';
 
+typedef AuthLoginHandler =
+    Future<bool> Function(String username, String password);
+
 // ─────────────────────────────────────────────
 //  CONSTANTS
 // ─────────────────────────────────────────────
@@ -22,7 +25,9 @@ class _AppColors {
 //  MAIN SCREEN
 // ─────────────────────────────────────────────
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.loginHandler});
+
+  final AuthLoginHandler? loginHandler;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -100,7 +105,8 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _isLoading = true);
 
     try {
-      final success = await ctrl_login(
+      final login = widget.loginHandler ?? ctrl_login;
+      final success = await login(
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
@@ -120,8 +126,9 @@ class _LoginScreenState extends State<LoginScreen>
         _showSnackBar('Sai tài khoản hoặc mật khẩu', isSuccess: false);
       }
     } catch (_) {
-      if (mounted)
+      if (mounted) {
         _showSnackBar('Đã xảy ra lỗi. Vui lòng thử lại.', isSuccess: false);
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -246,9 +253,9 @@ class _BackgroundDecoration extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF003380),
-                  Color(0xFF0047A8),
-                  Color(0xFF1A63C5),
+                  _AppColors.primaryDark,
+                  _AppColors.primary,
+                  _AppColors.primaryLight,
                 ],
               ),
               borderRadius: BorderRadius.only(
@@ -268,7 +275,7 @@ class _BackgroundDecoration extends StatelessWidget {
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.06),
+              color: Colors.white.withValues(alpha: 0.06),
             ),
           ),
         ),
@@ -280,7 +287,7 @@ class _BackgroundDecoration extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.04),
+              color: Colors.white.withValues(alpha: 0.04),
             ),
           ),
         ),
@@ -307,7 +314,7 @@ class _LogoHeader extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.18),
+                color: Colors.black.withValues(alpha: 0.18),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -353,7 +360,7 @@ class _LogoHeader extends StatelessWidget {
           height: 2,
           width: 48,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.white.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -364,7 +371,7 @@ class _LogoHeader extends StatelessWidget {
           'Vietnam National University of Agriculture',
           style: TextStyle(
             fontSize: 12,
-            color: Colors.white.withOpacity(0.75),
+            color: Colors.white.withValues(alpha: 0.75),
             letterSpacing: 0.3,
           ),
           textAlign: TextAlign.center,
@@ -412,13 +419,13 @@ class _LoginCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: _AppColors.primary.withOpacity(0.10),
+            color: _AppColors.primary.withValues(alpha: 0.10),
             blurRadius: 32,
             offset: const Offset(0, 12),
             spreadRadius: 2,
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -441,6 +448,30 @@ class _LoginCard extends StatelessWidget {
           const Text(
             'Nhập thông tin tài khoản của bạn',
             style: TextStyle(fontSize: 13, color: _AppColors.textSecondary),
+          ),
+
+          const SizedBox(height: 20),
+
+          const _VniedLoginOption(),
+
+          const SizedBox(height: 20),
+
+          Row(
+            children: [
+              const Expanded(child: Divider(color: _AppColors.inputBorder)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'hoặc dùng tài khoản VNUA',
+                  style: TextStyle(
+                    color: _AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const Expanded(child: Divider(color: _AppColors.inputBorder)),
+            ],
           ),
 
           const SizedBox(height: 28),
@@ -489,6 +520,44 @@ class _LoginCard extends StatelessWidget {
           // Login button
           _LoginButton(isLoading: isLoading, onPressed: onLogin),
         ],
+      ),
+    );
+  }
+}
+
+class _VniedLoginOption extends StatelessWidget {
+  const _VniedLoginOption();
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: 'Chờ cấu hình hợp đồng OAuth2 VNied',
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          key: const Key('vnied-login-disabled'),
+          onPressed: null,
+          icon: const Icon(Icons.verified_user_outlined),
+          label: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Đăng nhập VNied'),
+              SizedBox(height: 2),
+              Text(
+                'Chờ cấu hình OAuth2',
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          style: OutlinedButton.styleFrom(
+            disabledForegroundColor: _AppColors.textSecondary,
+            side: const BorderSide(color: _AppColors.inputBorder),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -580,7 +649,7 @@ class _ModernInputFieldState extends State<_ModernInputField> {
             boxShadow: _hasFocus
                 ? [
                     BoxShadow(
-                      color: _AppColors.primary.withOpacity(0.12),
+                      color: _AppColors.primary.withValues(alpha: 0.12),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -707,7 +776,7 @@ class _LoginButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: _AppColors.primary.withOpacity(0.40),
+              color: _AppColors.primary.withValues(alpha: 0.40),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),

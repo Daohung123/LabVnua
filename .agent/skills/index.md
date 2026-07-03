@@ -3,7 +3,7 @@
 ## Counters
 | TYPE | Completed Since Review | Last Review | Next Review |
 |---|---:|---|---|
-| CODING | 0 | - | 10 completed worklogs |
+| CODING | 1 | - | 10 completed worklogs |
 | TEST | 0 | - | 10 completed worklogs |
 | BUG | 0 | - | 10 completed worklogs |
 | CREATE_DD | 2 | - | 10 completed worklogs |

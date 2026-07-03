@@ -17,7 +17,7 @@ class DataBaseConfig {
 
     return openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
         // bảng session
         await db.execute('''
@@ -165,10 +165,14 @@ class DataBaseConfig {
       ''');
 
         await _createChangeNotificationTables(db);
+        await _createHomeShortcutTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 3) {
           await _createChangeNotificationTables(db);
+        }
+        if (oldVersion < 4) {
+          await _createHomeShortcutTable(db);
         }
       },
     );
@@ -245,6 +249,23 @@ class DataBaseConfig {
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_thoi_khoa_bieu_ngay_hoc
       ON thoi_khoa_bieu(ngay_hoc, tiet_bat_dau)
+    ''');
+  }
+
+  Future<void> _createHomeShortcutTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS home_shortcuts(
+        profile_id TEXT NOT NULL,
+        shortcut_key TEXT NOT NULL,
+        sort_order INTEGER NOT NULL,
+        enabled INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY(profile_id, shortcut_key)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_home_shortcuts_profile_order
+      ON home_shortcuts(profile_id, sort_order)
     ''');
   }
 
