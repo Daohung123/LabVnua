@@ -5,7 +5,7 @@
 |---|---:|---|---|
 | CODING | 2 | - | 10 completed worklogs |
 | TEST | 0 | - | 10 completed worklogs |
-| BUG | 0 | - | 10 completed worklogs |
+| BUG | 1 | - | 10 completed worklogs |
 | CREATE_DD | 2 | - | 10 completed worklogs |
 
 ## Skills

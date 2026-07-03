@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
+import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
 import 'package:aqedu/features/chat/services/chat_notification_service.dart';
 import 'package:aqedu/features/chat/services/chat_realtime_connection_service.dart';
@@ -28,40 +31,58 @@ class _MyWidgetState extends State<MyWidget> {
   }
 
   Future<void> initApp() async {
-    // Kiểm tra wifi
-    final connectivityResult = await Connectivity().checkConnectivity();
+    try {
+      // Kiểm tra wifi
+      final connectivityResult = await Connectivity().checkConnectivity();
+      final bool wifiConnected = connectivityResult.contains(
+        ConnectivityResult.wifi,
+      );
 
-    final bool wifiConnected = connectivityResult.contains(
-      ConnectivityResult.wifi,
-    );
+      if (!mounted) return;
+      setState(() {
+        hasWifi = wifiConnected;
+      });
 
-    setState(() {
-      hasWifi = wifiConnected;
-    });
+      // Không có wifi -> dừng
+      if (!wifiConnected) {
+        return;
+      }
 
-    // Không có wifi -> dừng
-    if (!wifiConnected) {
-      return;
-    }
+      // Có wifi -> check login
+      final bool result = await checkLogin();
 
-    // Có wifi -> check login
-    final bool result = await checkLogin();
-    setState(() {
-      checkResult = result;
-    });
+      if (!mounted) return;
+      setState(() {
+        checkResult = result;
+      });
 
-    if (result) {
-      _initializeChatForCurrentUser();
+      if (result) {
+        unawaited(_initializeChatForCurrentUser());
+      }
+    } catch (error, stackTrace) {
+      debugPrint('App startup state check failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+
+      // Keep the app usable when a startup integration fails.
+      if (!mounted) return;
+      setState(() {
+        hasWifi ??= true;
+        checkResult ??= false;
+      });
     }
   }
 
   Future<void> _initializeChatForCurrentUser() async {
     try {
+      final isSupabaseReady = await SupabaseConfig.init();
+      if (!isSupabaseReady) return;
+
       final chatUser = await ChatUserSyncService().syncCurrentSessionUser();
       await ChatRealtimeConnectionService.instance.connect(chatUser);
       await ChatNotificationService.instance.startForUser(chatUser);
-    } catch (error) {
+    } catch (error, stackTrace) {
       debugPrint('Startup chat notification init failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 

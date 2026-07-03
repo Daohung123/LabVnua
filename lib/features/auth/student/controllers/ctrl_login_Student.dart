@@ -1,6 +1,7 @@
 import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/chat/services/chat_notification_service.dart';
 import 'package:aqedu/features/chat/services/chat_realtime_connection_service.dart';
 import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
@@ -23,11 +24,15 @@ Future<bool> ctrl_login(String username, String password) async {
   if (session?.cookie == null && session?.token == null) return false;
 
   try {
-    final chatUser = await ChatUserSyncService().syncCurrentSessionUser();
-    await ChatRealtimeConnectionService.instance.connect(chatUser);
-    await ChatNotificationService.instance.startForUser(chatUser);
-  } catch (error) {
+    final isSupabaseReady = await SupabaseConfig.init();
+    if (isSupabaseReady) {
+      final chatUser = await ChatUserSyncService().syncCurrentSessionUser();
+      await ChatRealtimeConnectionService.instance.connect(chatUser);
+      await ChatNotificationService.instance.startForUser(chatUser);
+    }
+  } catch (error, stackTrace) {
     debugPrint('Chat user sync failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
   }
 
   return true;
