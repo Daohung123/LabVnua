@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_print, non_constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
+import 'package:aqedu/core/services_root/api_daotao/daotao_read_payloads.dart';
 import 'package:aqedu/core/models/sqlite/Session.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/reLogin.dart';
 import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
@@ -22,15 +25,7 @@ Future<TkbResponse?> core_services_get_TkbResponse(
 
     final api = ApiHelper.withSession(cookie, token);
 
-    final res = await api.post(APISCHEDURE, {
-      "filter": {"hoc_ky": 20252, "ten_hoc_ky": ""},
-      "additional": {
-        "paging": {"limit": 100, "page": 1},
-        "ordering": [
-          {"name": null, "order_type": null},
-        ],
-      },
-    });
+    final res = await api.post(APISCHEDURE, daotaoSchedulePayload());
 
     /// ❌ HTML (hết session)
     /// Nếu session còn thì sẽ trả về json nhưng nếu session hết hạn thì sẽ trả về html

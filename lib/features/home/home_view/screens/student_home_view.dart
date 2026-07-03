@@ -22,6 +22,7 @@ class HomeStudent extends StatefulWidget {
 class _HomeStudentState extends State<HomeStudent> {
   late HomeDashboardController _controller;
   late Future<HomeDashboardState> _dashboardFuture;
+  bool _isSyncing = false;
 
   @override
   void initState() {
@@ -36,6 +37,39 @@ class _HomeStudentState extends State<HomeStudent> {
     if (oldWidget.controller != widget.controller) {
       _controller = widget.controller ?? HomeDashboardController();
       _dashboardFuture = _controller.load();
+    }
+  }
+
+  Future<void> _syncDashboardData() async {
+    if (_isSyncing) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _isSyncing = true);
+
+    try {
+      final result = await _controller.syncData();
+      if (!mounted) return;
+
+      setState(() {
+        _dashboardFuture = _controller.load();
+        _isSyncing = false;
+      });
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            result.hasFailures
+                ? 'Đồng bộ ${result.success}/${result.total} nhóm dữ liệu. Một số nguồn chưa cập nhật được.'
+                : 'Đã đồng bộ ${result.success}/${result.total} nhóm dữ liệu vào SQLite.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _isSyncing = false);
+      messenger.showSnackBar(
+        SnackBar(content: Text('Không thể đồng bộ dữ liệu: $error')),
+      );
     }
   }
 
@@ -60,6 +94,8 @@ class _HomeStudentState extends State<HomeStudent> {
                     scheduleError: snapshot.error,
                     notifications: const [],
                     notificationError: snapshot.error,
+                    upcomingTasks: const [],
+                    taskError: snapshot.error,
                     shortcutPreferences: buildDefaultHomeShortcutPreferences(
                       _controller.catalog,
                     ),
@@ -68,6 +104,8 @@ class _HomeStudentState extends State<HomeStudent> {
               return _HomeDashboardContent(
                 controller: _controller,
                 state: state,
+                isSyncing: _isSyncing,
+                onSync: _syncDashboardData,
               );
             },
           ),
@@ -78,21 +116,33 @@ class _HomeStudentState extends State<HomeStudent> {
 }
 
 class _HomeDashboardContent extends StatelessWidget {
-  const _HomeDashboardContent({required this.controller, required this.state});
+  const _HomeDashboardContent({
+    required this.controller,
+    required this.state,
+    required this.isSyncing,
+    required this.onSync,
+  });
 
   final HomeDashboardController controller;
   final HomeDashboardState state;
+  final bool isSyncing;
+  final VoidCallback onSync;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        _HomeSyncButton(isSyncing: isSyncing, onSync: onSync),
+        SizedBox(height: AppSpacing.xl),
         HomeScheduleSection(
           schedules: state.todaySchedule,
           hasError: state.hasScheduleError,
         ),
         SizedBox(height: AppSpacing.xl),
-        const HomeDeadlineSection(),
+        HomeDeadlineSection(
+          tasks: state.upcomingTasks,
+          hasError: state.hasTaskError,
+        ),
         SizedBox(height: AppSpacing.xl),
         HomeQuickActions(
           catalog: controller.catalog,
@@ -106,6 +156,61 @@ class _HomeDashboardContent extends StatelessWidget {
         ),
         SizedBox(height: AppSpacing.xl),
       ],
+    );
+  }
+}
+
+class _HomeSyncButton extends StatelessWidget {
+  const _HomeSyncButton({required this.isSyncing, required this.onSync});
+
+  final bool isSyncing;
+  final VoidCallback onSync;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      borderRadius: AppRadius.xl,
+      padding: EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: Icon(Icons.sync_rounded, color: AppColors.primary),
+          ),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Đồng bộ dữ liệu', style: AppTextStyles.sectionTitle),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Lưu dữ liệu từ VNUA vào SQLite để dùng offline',
+                  style: AppTextStyles.actionTileSubtitle,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: AppSpacing.md),
+          FilledButton.icon(
+            key: const Key('home-sync-data-button'),
+            onPressed: isSyncing ? null : onSync,
+            icon: isSyncing
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.cloud_sync_rounded, size: 18),
+            label: Text(isSyncing ? 'Đang đồng bộ' : 'Đồng bộ'),
+          ),
+        ],
+      ),
     );
   }
 }

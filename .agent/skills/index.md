@@ -3,7 +3,7 @@
 ## Counters
 | TYPE | Completed Since Review | Last Review | Next Review |
 |---|---:|---|---|
-| CODING | 2 | - | 10 completed worklogs |
+| CODING | 0 | 2026-07-03 | 10 completed worklogs |
 | TEST | 0 | - | 10 completed worklogs |
 | BUG | 1 | - | 10 completed worklogs |
 | CREATE_DD | 2 | - | 10 completed worklogs |
@@ -11,6 +11,7 @@
 ## Skills
 | ID | TYPE | Pattern | Trigger | File | Evidence |
 |---|---|---|---|---|---|
+| SKILL-CODING-sqlite-local-first-slice | CODING | sqlite-local-first-slice | Flutter feature needs SQLite persistence/offline cache without backend conflict policy. | `.agent/skills/CODING/SKILL-CODING-sqlite-local-first-slice.md` | WL-20260703-02, WL-20260703-07, WL-20260703-08, WL-20260703-10 |
 
 ## Counter Rule
 - Increment a counter only after a completed worklog of that same `TYPE`.

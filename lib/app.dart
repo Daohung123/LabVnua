@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
 import 'package:aqedu/features/chat/services/chat_notification_service.dart';
@@ -10,7 +11,6 @@ import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
 import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:aqedu/core/screens/no_wifi_screen.dart';
 
 // Đây là gốc của toàn bộ UI
 class MyWidget extends StatefulWidget {
@@ -22,7 +22,7 @@ class MyWidget extends StatefulWidget {
 
 class _MyWidgetState extends State<MyWidget> {
   bool? checkResult;
-  bool? hasWifi;
+  bool? hasNetwork;
 
   @override
   void initState() {
@@ -34,17 +34,22 @@ class _MyWidgetState extends State<MyWidget> {
     try {
       // Kiểm tra wifi
       final connectivityResult = await Connectivity().checkConnectivity();
-      final bool wifiConnected = connectivityResult.contains(
-        ConnectivityResult.wifi,
+      final bool networkConnected = !connectivityResult.contains(
+        ConnectivityResult.none,
       );
 
       if (!mounted) return;
       setState(() {
-        hasWifi = wifiConnected;
+        hasNetwork = networkConnected;
       });
 
       // Không có wifi -> dừng
-      if (!wifiConnected) {
+      if (!networkConnected) {
+        final localSession = await SqliteServices().getSession();
+        if (!mounted) return;
+        setState(() {
+          checkResult = localSession != null;
+        });
         return;
       }
 
@@ -66,8 +71,13 @@ class _MyWidgetState extends State<MyWidget> {
       // Keep the app usable when a startup integration fails.
       if (!mounted) return;
       setState(() {
-        hasWifi ??= true;
-        checkResult ??= false;
+        hasNetwork ??= false;
+      });
+
+      final localSession = await SqliteServices().getSession();
+      if (!mounted) return;
+      setState(() {
+        checkResult ??= localSession != null;
       });
     }
   }
@@ -89,13 +99,8 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     // Đang loading wifi
-    if (hasWifi == null) {
+    if (hasNetwork == null) {
       return const ScreenLoading();
-    }
-
-    // Không có wifi
-    if (hasWifi == false) {
-      return const NoWifiScreen();
     }
 
     // Đang check login

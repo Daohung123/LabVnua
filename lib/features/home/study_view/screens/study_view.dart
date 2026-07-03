@@ -1,376 +1,318 @@
+import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
 import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
+import 'package:aqedu/features/platform/services/local_analytics_service.dart';
+import 'package:aqedu/features/prerequisite_subjects/screens/view_prequisite_subjects.dart';
+import 'package:aqedu/features/program_training/screens/program_training_view.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
+import 'package:aqedu/features/task/screens/local_task_screen.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
-import 'package:aqedu/features/program_training/screens/program_training_view.dart';
-import '../../../prerequisite_subjects/screens/view_prequisite_subjects.dart';
-import '../../../course_register/screens/view_courses_register.dart';
 
-class HocTapView extends StatelessWidget {
-  const HocTapView({super.key});
+class HocTapView extends StatefulWidget {
+  const HocTapView({super.key, this.analyticsService});
+
+  final LocalAnalyticsService? analyticsService;
+
+  @override
+  State<HocTapView> createState() => _HocTapViewState();
+}
+
+class _HocTapViewState extends State<HocTapView> {
+  final _searchController = TextEditingController();
+  late final LocalAnalyticsService _analyticsService;
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _analyticsService = widget.analyticsService ?? LocalAnalyticsService();
+    _analyticsService.recordEvent(
+      eventName: 'open',
+      featureName: 'learning_portal',
+    );
+    _searchController.addListener(() {
+      setState(() => _query = _searchController.text.trim().toLowerCase());
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = const Color(0xff0047A8);
-    final Color textBlue = const Color(0xff355070);
-    final Color backgroundColor = const Color(0xffF5F8FC);
-    final Color cardColor = Colors.white;
-    final Color borderColor = const Color(0xffE4EAF2);
-    final Color mutedTextColor = const Color(0xff6B7280);
+    final groups = _filteredGroups(context);
+    final totalItems = kLearningPortalGroups.fold<int>(
+      0,
+      (sum, group) => sum + group.items.length,
+    );
+    final visibleItems = groups.fold<int>(
+      0,
+      (sum, group) => sum + group.items.length,
+    );
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: const Color(0xffF5F8FC),
       appBar: AppBar(
         elevation: 0,
-        centerTitle: false, // ← Căn trái
-        backgroundColor: primaryColor, // ← Màu xanh theo dự án
-        surfaceTintColor: primaryColor,
-        foregroundColor: Colors.white, // ← Chữ trắng cho dễ nhìn
+        centerTitle: false,
+        backgroundColor: const Color(0xff0047A8),
+        surfaceTintColor: const Color(0xff0047A8),
+        foregroundColor: Colors.white,
         title: const Text(
-          'Học tập',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.2,
-            color: Colors.white, // Đảm bảo chữ trắng
-          ),
+          'Cổng học tập',
+          style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
         ),
       ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            _buildHeroHeader(primaryColor, textBlue),
-            const SizedBox(height: 16),
-            const SizedBox(height: 22),
-
-            _buildSectionHeader(
-              title: 'HỌC VỤ',
-              subtitle:
-                  'Các chức năng liên quan đến đào tạo và kết quả học tập',
-              mutedTextColor: mutedTextColor,
+            _LearningStats(
+              totalItems: totalItems,
+              visibleItems: visibleItems,
+              groupCount: kLearningPortalGroups.length,
             ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.school_outlined,
-                  title: 'CT đào tạo',
-                  subtitle: 'Xem chương trình đào tạo và lộ trình học',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProgramTrainingView(),
-                      ),
-                    );
-                  },
+            const SizedBox(height: 14),
+            TextField(
+              key: const Key('learning-search-field'),
+              controller: _searchController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: 'Tìm chức năng học tập',
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide.none,
                 ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.list_alt_outlined,
-                  title: 'Môn tiên quyết',
-                  subtitle: 'Kiểm tra các môn cần học trước',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PrerequisiteView(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.calendar_today_outlined,
-                  title: 'KQ điểm danh',
-                  subtitle: 'Theo dõi kết quả điểm danh theo lớp học',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.grade_outlined,
-                  title: 'Xem điểm',
-                  subtitle: 'Tra cứu điểm thành phần và điểm tổng kết',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScoreStudentView(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.checklist_rtl_outlined,
-                  title: 'Điểm rèn luyện',
-                  subtitle: 'Xem kết quả rèn luyện của sinh viên',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-              ],
+              ),
+              onSubmitted: (_) => _analyticsService.recordEvent(
+                eventName: 'search',
+                featureName: 'learning_portal',
+                metadata: const {'source': 'search_box'},
+              ),
             ),
-
             const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'LỊCH HỌC – THI CỬ',
-              subtitle: 'Xem lịch học và lịch thi theo ngày hoặc theo học kỳ',
-              mutedTextColor: mutedTextColor,
-            ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.today_outlined,
-                  title: 'TKB ngày',
-                  subtitle: 'Xem thời khóa biểu trong ngày',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScheduleScreen(),
-                      ),
-                    );
-                  },
+            if (groups.isEmpty)
+              const _LearningEmptyState()
+            else
+              for (final group in groups) ...[
+                _SectionHeader(title: group.title, subtitle: group.subtitle),
+                _FeatureCard(
+                  items: group.items,
+                  onTap: (item) => _openItem(context, item),
                 ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.calendar_month_outlined,
-                  title: 'TKB học kỳ',
-                  subtitle: 'Xem thời khóa biểu theo học kỳ',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.access_time_outlined,
-                  title: 'Lịch thi',
-                  subtitle: 'Theo dõi lịch thi sắp tới',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
+                const SizedBox(height: 18),
               ],
-            ),
-
-            const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'ĐĂNG KÝ & THỦ TỤC',
-              subtitle: 'Các mục đăng ký môn học và thủ tục học vụ',
-              mutedTextColor: mutedTextColor,
-            ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.edit_calendar_outlined,
-                  title: 'ĐK môn học',
-                  subtitle: 'Đăng ký hoặc điều chỉnh môn học',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CourseRegisterView(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.favorite_border,
-                  title: 'ĐK môn nguyện vọng',
-                  subtitle: 'Đăng ký môn theo nguyện vọng của bạn',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'CÁ NHÂN & TIỆN ÍCH',
-              subtitle: 'Thông tin cá nhân và các công cụ hỗ trợ',
-              mutedTextColor: mutedTextColor,
-            ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.poll_outlined,
-                  title: 'Khảo sát',
-                  subtitle: 'Tham gia các khảo sát từ nhà trường',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.account_box_outlined,
-                  title: 'Lý lịch',
-                  subtitle: 'Xem và cập nhật thông tin cá nhân',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const InforStudentView(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'TÀI CHÍNH – HỌC PHÍ',
-              subtitle:
-                  'Theo dõi và thực hiện các thao tác liên quan đến học phí',
-              mutedTextColor: mutedTextColor,
-            ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.monetization_on_outlined,
-                  title: 'Học phí',
-                  subtitle: 'Xem tình trạng và chi tiết học phí',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HocPhiView(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.payments_outlined,
-                  title: 'Đóng học phí',
-                  subtitle: 'Thực hiện thanh toán học phí trực tuyến',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 18),
-            _buildSectionHeader(
-              title: 'TIỆN ÍCH NÂNG CAO',
-              subtitle: 'Các tính năng hỗ trợ học tập nâng cao',
-              mutedTextColor: mutedTextColor,
-            ),
-            _buildCard(
-              cardColor: cardColor,
-              borderColor: borderColor,
-              children: [
-                _buildActionTile(
-                  icon: Icons.bar_chart_outlined,
-                  title: 'Phân tích học tập',
-                  subtitle: 'Xem thống kê và biểu đồ kết quả học tập',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScoreAnalysisView(),
-                      ),
-                    );
-                  },
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.menu_book_outlined,
-                  title: 'Kho học liệu',
-                  subtitle: 'Tài nguyên học tập và tài liệu tham khảo',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-                _buildDivider(borderColor),
-                _buildActionTile(
-                  icon: Icons.auto_awesome_outlined,
-                  title: 'AI học tập',
-                  subtitle: 'Trợ lý hỗ trợ học tập thông minh',
-                  primaryColor: primaryColor,
-                  mutedTextColor: mutedTextColor,
-                  onTap: () {},
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeroHeader(Color primaryColor, Color textBlue) {
+  List<LearningPortalGroup> _filteredGroups(BuildContext context) {
+    if (_query.isEmpty) return kLearningPortalGroups;
+    return [
+      for (final group in kLearningPortalGroups)
+        LearningPortalGroup(
+          title: group.title,
+          subtitle: group.subtitle,
+          items: group.items.where(_matchesQuery).toList(),
+        ),
+    ].where((group) => group.items.isNotEmpty).toList();
+  }
+
+  bool _matchesQuery(LearningPortalItem item) {
+    final haystack = '${item.title} ${item.subtitle} ${item.key}'.toLowerCase();
+    return haystack.contains(_query);
+  }
+
+  void _openItem(BuildContext context, LearningPortalItem item) {
+    _analyticsService.recordEvent(
+      eventName: 'open_item',
+      featureName: 'learning_portal',
+      metadata: {'item': item.key},
+    );
+    Navigator.push(context, MaterialPageRoute(builder: item.builder));
+  }
+}
+
+class LearningPortalGroup {
+  const LearningPortalGroup({
+    required this.title,
+    required this.subtitle,
+    required this.items,
+  });
+
+  final String title;
+  final String subtitle;
+  final List<LearningPortalItem> items;
+}
+
+class LearningPortalItem {
+  const LearningPortalItem({
+    required this.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.builder,
+  });
+
+  final String key;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final WidgetBuilder builder;
+}
+
+const kLearningPortalGroups = <LearningPortalGroup>[
+  LearningPortalGroup(
+    title: 'Học vụ',
+    subtitle: 'Đào tạo, kết quả học tập và thông tin cá nhân',
+    items: [
+      LearningPortalItem(
+        key: 'program',
+        icon: Icons.school_outlined,
+        title: 'CT đào tạo',
+        subtitle: 'Xem chương trình đào tạo và lộ trình học',
+        builder: _programTrainingBuilder,
+      ),
+      LearningPortalItem(
+        key: 'prerequisites',
+        icon: Icons.list_alt_outlined,
+        title: 'Môn tiên quyết',
+        subtitle: 'Kiểm tra các môn cần học trước',
+        builder: _prerequisiteBuilder,
+      ),
+      LearningPortalItem(
+        key: 'scores',
+        icon: Icons.grade_outlined,
+        title: 'Xem điểm',
+        subtitle: 'Tra cứu điểm thành phần và điểm tổng kết',
+        builder: _scoreBuilder,
+      ),
+      LearningPortalItem(
+        key: 'profile',
+        icon: Icons.account_box_outlined,
+        title: 'Lý lịch',
+        subtitle: 'Xem và cập nhật thông tin cá nhân',
+        builder: _profileBuilder,
+      ),
+    ],
+  ),
+  LearningPortalGroup(
+    title: 'Lịch học - thi cử',
+    subtitle: 'Lịch học, lịch thi và đăng ký học phần',
+    items: [
+      LearningPortalItem(
+        key: 'schedule',
+        icon: Icons.today_outlined,
+        title: 'TKB ngày',
+        subtitle: 'Xem thời khóa biểu trong ngày',
+        builder: _scheduleBuilder,
+      ),
+      LearningPortalItem(
+        key: 'course_register',
+        icon: Icons.edit_calendar_outlined,
+        title: 'ĐK môn học',
+        subtitle: 'Đăng ký hoặc điều chỉnh môn học',
+        builder: _courseRegisterBuilder,
+      ),
+    ],
+  ),
+  LearningPortalGroup(
+    title: 'Tiện ích',
+    subtitle: 'Theo dõi tài chính, phân tích và todo offline',
+    items: [
+      LearningPortalItem(
+        key: 'tuition',
+        icon: Icons.monetization_on_outlined,
+        title: 'Học phí',
+        subtitle: 'Xem tình trạng và chi tiết học phí',
+        builder: _tuitionBuilder,
+      ),
+      LearningPortalItem(
+        key: 'analytics',
+        icon: Icons.bar_chart_outlined,
+        title: 'Phân tích học tập',
+        subtitle: 'Xem thống kê và biểu đồ kết quả học tập',
+        builder: _scoreAnalysisBuilder,
+      ),
+      LearningPortalItem(
+        key: 'tasks',
+        icon: Icons.task_alt_outlined,
+        title: 'Todo offline',
+        subtitle: 'Quản lý đầu việc local-first',
+        builder: _taskBuilder,
+      ),
+    ],
+  ),
+];
+
+Widget _programTrainingBuilder(BuildContext context) {
+  return const ProgramTrainingView();
+}
+
+Widget _prerequisiteBuilder(BuildContext context) {
+  return const PrerequisiteView();
+}
+
+Widget _scoreBuilder(BuildContext context) {
+  return const ScoreStudentView();
+}
+
+Widget _profileBuilder(BuildContext context) {
+  return const InforStudentView();
+}
+
+Widget _scheduleBuilder(BuildContext context) {
+  return const ScheduleScreen();
+}
+
+Widget _courseRegisterBuilder(BuildContext context) {
+  return const CourseRegisterView();
+}
+
+Widget _tuitionBuilder(BuildContext context) {
+  return const HocPhiView();
+}
+
+Widget _scoreAnalysisBuilder(BuildContext context) {
+  return const ScoreAnalysisView();
+}
+
+Widget _taskBuilder(BuildContext context) {
+  return const LocalTaskScreen();
+}
+
+class _LearningStats extends StatelessWidget {
+  const _LearningStats({
+    required this.totalItems,
+    required this.visibleItems,
+    required this.groupCount,
+  });
+
+  final int totalItems;
+  final int visibleItems;
+  final int groupCount;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor, primaryColor.withOpacity(0.92), textBlue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.18),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: const Color(0xff0047A8),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
         children: [
-          Container(
-            width: 68,
-            height: 68,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.16),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.22),
-                width: 1.2,
-              ),
-            ),
-            child: const Icon(
-              Icons.school_rounded,
-              color: Colors.white,
-              size: 36,
-            ),
-          ),
-          const SizedBox(width: 16),
+          const Icon(Icons.school_rounded, color: Colors.white, size: 34),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,26 +321,17 @@ class HocTapView extends StatelessWidget {
                   'Cổng học tập',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
+                    fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Truy cập nhanh các chức năng học vụ, lịch học và học phí',
+                  '$visibleItems/$totalItems chức năng · $groupCount nhóm',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.88),
-                    fontSize: 13.5,
-                    height: 1.4,
+                    color: Colors.white.withValues(alpha: 0.86),
+                    fontSize: 13,
                   ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    _buildHeaderChip('Đang hoạt động'),
-                    const SizedBox(width: 8),
-                    _buildHeaderChip('Đã đồng bộ'),
-                  ],
                 ),
               ],
             ),
@@ -407,70 +340,16 @@ class HocTapView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSummaryCard({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color accentColor,
-    required Color cardColor,
-    required Color borderColor,
-    required Color mutedTextColor,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: accentColor, size: 22),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: Color(0xff111827),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.5,
-              color: mutedTextColor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, required this.subtitle});
 
-  Widget _buildSectionHeader({
-    required String title,
-    required String subtitle,
-    required Color mutedTextColor,
-  }) {
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 10),
       child: Column(
@@ -487,8 +366,8 @@ class HocTapView extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: TextStyle(
-              color: mutedTextColor,
+            style: const TextStyle(
+              color: Color(0xff6B7280),
               fontSize: 12.5,
               height: 1.4,
             ),
@@ -497,97 +376,95 @@ class HocTapView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildCard({
-    required Color cardColor,
-    required Color borderColor,
-    required List<Widget> children,
-  }) {
-    return Container(
+class _FeatureCard extends StatelessWidget {
+  const _FeatureCard({required this.items, required this.onTap});
+
+  final List<LearningPortalItem> items;
+  final ValueChanged<LearningPortalItem> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
       decoration: BoxDecoration(
-        color: cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
+        border: Border.all(color: const Color(0xffE4EAF2)),
+      ),
+      child: Column(
+        children: [
+          for (var index = 0; index < items.length; index++) ...[
+            ListTile(
+              key: Key('learning-item-${items[index].key}'),
+              onTap: () => onTap(items[index]),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 6,
+              ),
+              leading: Container(
+                width: 46,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: const Color(0xff0047A8).withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(items[index].icon, color: const Color(0xff0047A8)),
+              ),
+              title: Text(
+                items[index].title,
+                style: const TextStyle(
+                  color: Color(0xff111827),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.5,
+                ),
+              ),
+              subtitle: Text(
+                items[index].subtitle,
+                style: const TextStyle(
+                  color: Color(0xff6B7280),
+                  fontSize: 12.5,
+                  height: 1.3,
+                ),
+              ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+            ),
+            if (index != items.length - 1)
+              const Divider(height: 1, indent: 16, endIndent: 16),
+          ],
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
-        child: Column(children: children),
-      ),
     );
   }
+}
 
-  Widget _buildDivider(Color borderColor) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, right: 16),
-      child: Divider(height: 1, thickness: 1, color: borderColor),
-    );
-  }
+class _LearningEmptyState extends StatelessWidget {
+  const _LearningEmptyState();
 
-  Widget _buildActionTile({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color primaryColor,
-    required Color mutedTextColor,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      leading: Container(
-        width: 46,
-        height: 46,
-        decoration: BoxDecoration(
-          color: primaryColor.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Icon(icon, color: primaryColor, size: 23),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xff111827),
-          fontWeight: FontWeight.w700,
-          fontSize: 14.5,
-        ),
-      ),
-      subtitle: Padding(
-        padding: const EdgeInsets.only(top: 3),
-        child: Text(
-          subtitle,
-          style: TextStyle(color: mutedTextColor, fontSize: 12.5, height: 1.3),
-        ),
-      ),
-      trailing: Icon(
-        Icons.chevron_right_rounded,
-        color: Colors.grey.shade400,
-        size: 24,
-      ),
-    );
-  }
-
-  Widget _buildHeaderChip(String text) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.16),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withOpacity(0.18)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xffE4EAF2)),
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11.5,
-          fontWeight: FontWeight.w600,
-        ),
+      child: const Column(
+        children: [
+          Icon(Icons.search_off_outlined, size: 42, color: Color(0xff6B7280)),
+          SizedBox(height: 12),
+          Text(
+            'Không tìm thấy chức năng',
+            style: TextStyle(fontWeight: FontWeight.w800),
+          ),
+          SizedBox(height: 4),
+          Text(
+            'Thử từ khóa khác hoặc xóa nội dung tìm kiếm.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xff6B7280)),
+          ),
+        ],
       ),
     );
   }

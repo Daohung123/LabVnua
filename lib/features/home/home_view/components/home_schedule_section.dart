@@ -1,8 +1,11 @@
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
+import 'package:aqedu/features/class_session/screens/class_session_detail_screen.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
 import 'package:aqedu/features/schedure/screens/today_schedule_view.dart';
+import 'package:aqedu/features/task/models/task_models.dart';
+import 'package:aqedu/features/task/screens/local_task_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScheduleSection extends StatelessWidget {
@@ -55,7 +58,7 @@ class HomeScheduleSection extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return _ScheduleTile(
                     schedule: schedules[index],
-                    onTap: () => _openTodaySchedule(context),
+                    onTap: () => _openClassSession(context, schedules[index]),
                   );
                 },
               ),
@@ -69,6 +72,15 @@ class HomeScheduleSection extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const TodayScheduleView()),
+    );
+  }
+
+  void _openClassSession(BuildContext context, ThoiKhoaBieu schedule) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ClassSessionDetailScreen(schedule: schedule),
+      ),
     );
   }
 
@@ -191,20 +203,112 @@ class _ScheduleTile extends StatelessWidget {
 }
 
 class HomeDeadlineSection extends StatelessWidget {
-  const HomeDeadlineSection({super.key});
+  const HomeDeadlineSection({
+    super.key,
+    required this.tasks,
+    required this.hasError,
+  });
+
+  final List<LocalTask> tasks;
+  final bool hasError;
 
   @override
   Widget build(BuildContext context) {
     return AppCard(
       borderRadius: AppRadius.xl,
       padding: EdgeInsets.all(AppSpacing.lg),
-      child: const _ScheduleStateMessage(
-        icon: Icons.assignment_late_outlined,
-        title: 'Chưa có nguồn deadline chính thức',
-        subtitle: 'Deadline và luồng nộp bài sẽ được bật khi có contract.',
-        color: AppColors.warning,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            title: 'Deadline cá nhân',
+            subtitle: 'Todo offline đang chờ đồng bộ',
+            actionLabel: 'Mở todo',
+            onAction: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LocalTaskScreen()),
+            ),
+          ),
+          SizedBox(height: AppSpacing.lg),
+          if (hasError)
+            const _ScheduleStateMessage(
+              icon: Icons.cloud_off_outlined,
+              title: 'Không thể tải todo offline',
+              subtitle: 'Mở mục Todo để kiểm tra lại dữ liệu cục bộ.',
+              color: AppColors.error,
+            )
+          else if (tasks.isEmpty)
+            const _ScheduleStateMessage(
+              icon: Icons.assignment_late_outlined,
+              title: 'Chưa có nguồn deadline chính thức',
+              subtitle:
+                  'Todo offline sẽ hiển thị ở đây; deadline/nộp bài cần contract.',
+              color: AppColors.warning,
+            )
+          else
+            Column(
+              children: [
+                for (final task in tasks.take(3)) _DeadlineTile(task: task),
+              ],
+            ),
+        ],
       ),
     );
+  }
+
+}
+
+class _DeadlineTile extends StatelessWidget {
+  const _DeadlineTile({required this.task});
+
+  final LocalTask task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: Key('home-deadline-${task.id}'),
+      width: double.infinity,
+      margin: EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withValues(alpha: AppOpacity.bg10),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(
+          color: AppColors.warning.withValues(alpha: AppOpacity.bg18),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.task_alt_outlined, color: AppColors.warning),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  task.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.actionTileTitle,
+                ),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  _dueLabel(task.dueAt),
+                  style: AppTextStyles.actionTileSubtitle,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _dueLabel(DateTime? dueAt) {
+    if (dueAt == null) return 'Chưa có hạn';
+    final day = dueAt.day.toString().padLeft(2, '0');
+    final month = dueAt.month.toString().padLeft(2, '0');
+    return 'Hạn $day/$month/${dueAt.year}';
   }
 }
 

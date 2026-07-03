@@ -1,3 +1,4 @@
+import 'package:aqedu/config/syncData.dart' as sync_data;
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
 import 'package:aqedu/features/home/home_view/services/home_shortcut_service.dart';
@@ -5,27 +6,36 @@ import 'package:aqedu/features/notification/controllers/ctrl_noti_student.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:aqedu/features/schedure/controllers/ctrl_schedure.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/task/controllers/local_task_controller.dart';
+import 'package:aqedu/features/task/models/task_models.dart';
 
 abstract class HomeDashboardDataSource {
   Future<List<ThoiKhoaBieu>> loadTodaySchedule();
 
   Future<List<NotificationItem>> loadNotifications();
 
+  Future<List<LocalTask>> loadUpcomingTasks();
+
   Future<List<HomeShortcutPreference>> loadShortcutPreferences();
 
   Future<void> saveShortcutPreferences(
     List<HomeShortcutPreference> preferences,
   );
+
+  Future<sync_data.SyncDataResult> syncData();
 }
 
 class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
   DefaultHomeDashboardDataSource({
     HomeShortcutService? shortcutService,
+    LocalTaskController? taskController,
     List<HomeShortcutDefinition>? catalog,
   }) : _shortcutService = shortcutService ?? HomeShortcutService(),
+       _taskController = taskController ?? LocalTaskController(),
        _catalog = catalog ?? kHomeShortcutCatalog;
 
   final HomeShortcutService _shortcutService;
+  final LocalTaskController _taskController;
   final List<HomeShortcutDefinition> _catalog;
 
   @override
@@ -37,6 +47,11 @@ class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
   @override
   Future<List<NotificationItem>> loadNotifications() {
     return CtrlNotiStudent().getNotification();
+  }
+
+  @override
+  Future<List<LocalTask>> loadUpcomingTasks() {
+    return _taskController.loadUpcomingTasks();
   }
 
   @override
@@ -57,6 +72,11 @@ class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
     final profileId = await _shortcutService.resolveProfileId();
     final normalized = normalizeHomeShortcutPreferences(_catalog, preferences);
     await _shortcutService.savePreferences(profileId, normalized);
+  }
+
+  @override
+  Future<sync_data.SyncDataResult> syncData() {
+    return sync_data.syncData();
   }
 
   bool _preferencesChanged(
@@ -96,6 +116,8 @@ class HomeDashboardController {
     Object? scheduleError;
     var notifications = <NotificationItem>[];
     Object? notificationError;
+    var upcomingTasks = <LocalTask>[];
+    Object? taskError;
     var shortcuts = buildDefaultHomeShortcutPreferences(catalog);
     Object? shortcutError;
 
@@ -119,6 +141,12 @@ class HomeDashboardController {
     }
 
     try {
+      upcomingTasks = await _dataSource.loadUpcomingTasks();
+    } catch (error) {
+      taskError = error;
+    }
+
+    try {
       shortcuts = normalizeHomeShortcutPreferences(
         catalog,
         await _dataSource.loadShortcutPreferences(),
@@ -132,6 +160,8 @@ class HomeDashboardController {
       scheduleError: scheduleError,
       notifications: notifications,
       notificationError: notificationError,
+      upcomingTasks: upcomingTasks,
+      taskError: taskError,
       shortcutPreferences: shortcuts,
       shortcutError: shortcutError,
     );
@@ -143,6 +173,10 @@ class HomeDashboardController {
     final normalized = normalizeHomeShortcutPreferences(catalog, preferences);
     await _dataSource.saveShortcutPreferences(normalized);
     return normalized;
+  }
+
+  Future<sync_data.SyncDataResult> syncData() {
+    return _dataSource.syncData();
   }
 
   bool _isDisplayableSchedule(ThoiKhoaBieu item) {

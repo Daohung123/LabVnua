@@ -1,68 +1,90 @@
+import 'dart:convert';
 import 'dart:developer';
 
-import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
-import 'package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart';
+import 'package:aqedu/core/constants/api/api_daotao.dart';
+import 'package:aqedu/core/services_root/api_daotao/daotao_read_payloads.dart';
+import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
+import 'package:aqedu/core/services_root/sqlite/schedure/schedure_sqlite.dart';
 
 import '../models/Schedure_Student.dart';
-import '../services/api_daotao/schedure_student_services.dart';
+import '../services/api_daotao/date_time_helper.dart';
+import '../services/api_daotao/schedure_constants.dart';
 
 class CtrlSchedure {
-  final String _cookie;
-  final String _token;
+  CtrlSchedure._();
 
-  CtrlSchedure._(this._cookie, this._token);
+  final ServiceSqlTkb _scheduleStore = ServiceSqlTkb();
+  final ApiResponseCacheService _cacheService = ApiResponseCacheService();
 
   static Future<CtrlSchedure> create() async {
-    final cookie = await GETDB.getCookie();
-    final token = await GETDB.getToken();
-    return CtrlSchedure._(cookie, token);
+    return CtrlSchedure._();
   }
 
-  // Long_sua :(Cập nhật hàm để nhận thêm tham số semesterId khi gọi API)
   Future<TkbResponse?> getFullTkbResponse({int? semesterId}) async {
     try {
-      return await core_services_get_TkbResponse(_cookie, _token);
+      final cachedBody = await _cacheService.getResponseBody(
+        method: 'POST',
+        path: APISCHEDURE,
+        requestBody: daotaoSchedulePayload(),
+      );
+      if (cachedBody == null) return null;
+
+      final decoded = jsonDecode(cachedBody);
+      if (decoded is! Map<String, dynamic>) return null;
+      return TkbResponse.fromJson(decoded);
     } catch (e) {
-      log("Lỗi lấy TkbResponse: $e");
+      log("Lỗi lấy TkbResponse từ SQLite: $e");
       return null;
     }
   }
 
   Future<List<ThoiKhoaBieu>> getTkbToday() async {
     try {
-      final tkb = await core_services_get_TkbResponse(_cookie, _token);
-      if (tkb == null) return [];
-      final scheduleInWeek = await TkbService.getScheduleInWeek(tkb);
-      return await TkbService.getScheduleInDay(scheduleInWeek);
+      final schedules = await _scheduleStore.getAllSchedules();
+      final today = DateTimeHelper.getTodayAtMidnight();
+      return schedules.where((schedule) {
+        final scheduleDate = DateTimeHelper.tryParseDateFlexible(
+          schedule.ngayhoc,
+        );
+        return scheduleDate != null &&
+            DateTimeHelper.isSameDay(scheduleDate, today);
+      }).toList();
     } catch (e) {
-      log("Lỗi lấy TKB: $e");
+      log("Lỗi lấy TKB hôm nay từ SQLite: $e");
       return [];
     }
   }
 
   Future<ThoiKhoaBieu> getTkbTodayItem() async {
     try {
-      return await TkbService.getScheduleToday(_cookie, _token);
+      final schedules = await getTkbToday();
+      if (schedules.isEmpty) return _createEmptySchedule();
+      schedules.sort((a, b) => a.tietBatDau.compareTo(b.tietBatDau));
+      return schedules.first;
     } catch (e) {
-      log("Lỗi lấy TKB hôm nay: $e");
-      return ThoiKhoaBieu(
-        giangVien: "Không có giảng viên",
-        ngayhoc: "",
-        phong: "Không có phòng học",
-        soTiet: 0,
-        tenMon: "Không có lịch học hôm nay",
-        thu: 0,
-        tietBatDau: 0,
-      );
+      log("Lỗi lấy TKB hôm nay từ SQLite: $e");
+      return _createEmptySchedule();
     }
   }
 
   Future<List<ThoiKhoaBieu>> getTkbInSemester() async {
     try {
-      return await TkbService.getScheduleByDayInSemester(_cookie, _token);
+      return await _scheduleStore.getAllSchedules();
     } catch (e) {
-      log("Lỗi lấy lịch học trong kỳ: $e");
+      log("Lỗi lấy lịch học trong kỳ từ SQLite: $e");
       return [];
     }
+  }
+
+  ThoiKhoaBieu _createEmptySchedule() {
+    return ThoiKhoaBieu(
+      thu: 0,
+      tietBatDau: 0,
+      soTiet: 0,
+      tenMon: ScheduleConstants.noScheduleTodayMessage,
+      giangVien: '',
+      phong: '',
+      ngayhoc: '',
+    );
   }
 }

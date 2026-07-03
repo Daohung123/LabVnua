@@ -1,17 +1,20 @@
 import 'dart:convert';
-import 'package:aqedu/config/syncData.dart';
+
+import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:http/http.dart' as http;
+
 import '../../../models/sqlite/Session.dart';
 import '../../../constants/api/api_daotao.dart';
 
 class ApiHelper {
   String? cookie;
   String? token;
+  final ApiResponseCacheService _cacheService = ApiResponseCacheService();
 
   ApiHelper();
-  ApiHelper.withSession(String cookie_in, String token_in) {
-    cookie = cookie_in;
-    token = token_in;
+  ApiHelper.withSession(String cookieIn, String tokenIn) {
+    cookie = cookieIn;
+    token = tokenIn;
   }
 
   String _getCookie(String raw, String key) =>
@@ -20,9 +23,7 @@ class ApiHelper {
   /// LOGIN
   Future<SessionModel?> login(String user, String pass) async {
     try {
-      final auth = await http.get(
-        Uri.parse(APIAUTH),
-      );
+      final auth = await http.get(Uri.parse(APIAUTH));
 
       final rawCookie = auth.headers['set-cookie']!;
       final session = _getCookie(rawCookie, "ASP.NET_SessionId");
@@ -64,39 +65,102 @@ class ApiHelper {
       );
 
       token = currUser["access_token"];
+
       ///syncData
-      
 
       /// tạo SessionModel
-      return SessionModel(user:user, pass:pass, cookie: cookie!, token: token!);
+      return SessionModel(
+        user: user,
+        pass: pass,
+        cookie: cookie!,
+        token: token!,
+      );
     } catch (e) {
-      print("Ngon Luon! Sai mat khau r");
       return null;
     }
   }
 
   /// GET API
   Future<dynamic> get(String path) async {
-    final res = await http.get(
-      Uri.parse("$APIDAOTAO$path"),
-      headers: {"cookie": cookie ?? "", "authorization": "Bearer $token"},
-    );
-
-    return jsonDecode(res.body);
+    return _request('GET', path);
   }
 
   /// POST API
   Future<dynamic> post(String path, Map body) async {
-    final res = await http.post(
-      Uri.parse("$APIDAOTAO$path"),
-      headers: {
-        "cookie": cookie ?? "",
-        "authorization": "Bearer $token",
-        "content-type": "application/json",
-      },
-      body: jsonEncode(body),
-    );
+    return _request('POST', path, body: body);
+  }
 
-    return jsonDecode(res.body);
+  Future<dynamic> _request(String method, String path, {Map? body}) async {
+    final uri = Uri.parse("$APIDAOTAO$path");
+    final requestBody = body ?? const {};
+
+    try {
+      final response = method == 'GET'
+          ? await http.get(uri, headers: _headers())
+          : await http.post(
+              uri,
+              headers: _headers(contentTypeJson: true),
+              body: jsonEncode(requestBody),
+            );
+
+      if (_shouldCache(response)) {
+        await _cacheService.saveResponse(
+          method: method,
+          path: path,
+          requestBody: requestBody,
+          responseBody: response.body,
+          responseStatus: response.statusCode,
+          sourceUrl: uri.toString(),
+        );
+        final cachedBody = await _cacheService.getResponseBody(
+          method: method,
+          path: path,
+          requestBody: requestBody,
+        );
+        return _decode(cachedBody ?? response.body);
+      }
+
+      return _decode(response.body);
+    } catch (_) {
+      final cachedBody = await _cacheService.getResponseBody(
+        method: method,
+        path: path,
+        requestBody: requestBody,
+      );
+      if (cachedBody != null) {
+        return _decode(cachedBody);
+      }
+      rethrow;
+    }
+  }
+
+  Map<String, String> _headers({bool contentTypeJson = false}) {
+    return {
+      "cookie": cookie ?? "",
+      "authorization": "Bearer $token",
+      if (contentTypeJson) "content-type": "application/json",
+    };
+  }
+
+  bool _shouldCache(http.Response response) {
+    if (response.statusCode < 200 || response.statusCode >= 300) return false;
+    if (response.body.trim().isEmpty) return false;
+    if (response.body.contains("<!DOCTYPE")) return false;
+
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map && decoded['result'] == false) return false;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  dynamic _decode(String rawBody) {
+    try {
+      return jsonDecode(rawBody);
+    } catch (_) {
+      return rawBody;
+    }
   }
 }

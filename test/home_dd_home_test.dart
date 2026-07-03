@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aqedu/config/syncData.dart' as sync_data;
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/home/home_view/components/home_quick_actions.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
@@ -7,6 +8,7 @@ import 'package:aqedu/features/home/home_view/controllers/home_dashboard_control
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/task/models/task_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -68,6 +70,53 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Hôm nay không có lịch học'), findsOneWidget);
+    });
+
+    testWidgets('shows upcoming local todo in deadline section', (
+      tester,
+    ) async {
+      await _pumpHome(
+        tester,
+        FakeHomeDashboardDataSource(
+          upcomingTasks: [
+            LocalTask(
+              id: 'task-1',
+              title: 'Nộp báo cáo nhóm',
+              dueAt: DateTime(2026, 7, 5),
+              createdAt: DateTime(2026, 7, 3),
+              updatedAt: DateTime(2026, 7, 3),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Deadline cá nhân'), findsOneWidget);
+      expect(find.text('Nộp báo cáo nhóm'), findsOneWidget);
+      expect(find.text('Hạn 05/07/2026'), findsOneWidget);
+    });
+
+    testWidgets('sync button triggers dashboard sync and refresh', (
+      tester,
+    ) async {
+      final source = FakeHomeDashboardDataSource(
+        syncResult: const sync_data.SyncDataResult(
+          total: 3,
+          success: 3,
+          failed: 0,
+          errors: [],
+        ),
+      );
+
+      await _pumpHome(tester, source);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('home-sync-data-button')));
+      await tester.pumpAndSettle();
+
+      expect(source.syncCallCount, 1);
+      expect(source.loadScheduleCount, 2);
+      expect(find.textContaining('Đã đồng bộ 3/3'), findsOneWidget);
     });
 
     testWidgets('shows schedule error without hiding other sections', (
@@ -220,24 +269,36 @@ class FakeHomeDashboardDataSource implements HomeDashboardDataSource {
   FakeHomeDashboardDataSource({
     this.schedules = const [],
     this.notifications = const [],
+    this.upcomingTasks = const [],
     this.shortcutPreferences,
     this.scheduleError,
     this.notificationError,
     this.shortcutError,
     this.scheduleCompleter,
+    this.syncResult = const sync_data.SyncDataResult(
+      total: 0,
+      success: 0,
+      failed: 0,
+      errors: [],
+    ),
   });
 
   final List<ThoiKhoaBieu> schedules;
   final List<NotificationItem> notifications;
+  final List<LocalTask> upcomingTasks;
   final List<HomeShortcutPreference>? shortcutPreferences;
   final Object? scheduleError;
   final Object? notificationError;
   final Object? shortcutError;
   final Completer<List<ThoiKhoaBieu>>? scheduleCompleter;
+  final sync_data.SyncDataResult syncResult;
   List<HomeShortcutPreference> savedPreferences = const [];
+  int syncCallCount = 0;
+  int loadScheduleCount = 0;
 
   @override
   Future<List<ThoiKhoaBieu>> loadTodaySchedule() async {
+    loadScheduleCount++;
     if (scheduleCompleter != null) return scheduleCompleter!.future;
     if (scheduleError != null) throw scheduleError!;
     return schedules;
@@ -247,6 +308,11 @@ class FakeHomeDashboardDataSource implements HomeDashboardDataSource {
   Future<List<NotificationItem>> loadNotifications() async {
     if (notificationError != null) throw notificationError!;
     return notifications;
+  }
+
+  @override
+  Future<List<LocalTask>> loadUpcomingTasks() async {
+    return upcomingTasks;
   }
 
   @override
@@ -261,5 +327,11 @@ class FakeHomeDashboardDataSource implements HomeDashboardDataSource {
     List<HomeShortcutPreference> preferences,
   ) async {
     savedPreferences = preferences;
+  }
+
+  @override
+  Future<sync_data.SyncDataResult> syncData() async {
+    syncCallCount++;
+    return syncResult;
   }
 }

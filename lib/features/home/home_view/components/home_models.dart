@@ -1,5 +1,6 @@
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/task/models/task_models.dart';
 import 'package:flutter/material.dart';
 
 const int kHomeMaxEnabledShortcuts = 8;
@@ -8,7 +9,7 @@ const List<String> kDefaultHomeShortcutKeys = [
   'schedule',
   'scores',
   'tuition',
-  'chat',
+  'ai',
 ];
 
 class HomeShortcutDefinition {
@@ -51,9 +52,11 @@ class HomeDashboardState {
   const HomeDashboardState({
     required this.todaySchedule,
     required this.notifications,
+    required this.upcomingTasks,
     required this.shortcutPreferences,
     this.scheduleError,
     this.notificationError,
+    this.taskError,
     this.shortcutError,
   });
 
@@ -61,11 +64,14 @@ class HomeDashboardState {
   final Object? scheduleError;
   final List<NotificationItem> notifications;
   final Object? notificationError;
+  final List<LocalTask> upcomingTasks;
+  final Object? taskError;
   final List<HomeShortcutPreference> shortcutPreferences;
   final Object? shortcutError;
 
   bool get hasScheduleError => scheduleError != null;
   bool get hasNotificationError => notificationError != null;
+  bool get hasTaskError => taskError != null;
 }
 
 List<HomeShortcutPreference> buildDefaultHomeShortcutPreferences(

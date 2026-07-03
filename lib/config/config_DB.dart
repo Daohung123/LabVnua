@@ -17,7 +17,7 @@ class DataBaseConfig {
 
     return openDatabase(
       path,
-      version: 4,
+      version: 6,
       onCreate: (db, version) async {
         // bảng session
         await db.execute('''
@@ -166,6 +166,9 @@ class DataBaseConfig {
 
         await _createChangeNotificationTables(db);
         await _createHomeShortcutTable(db);
+        await _createTaskPlatformTables(db);
+        await _createClassSessionTables(db);
+        await _createApiResponseCacheTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 3) {
@@ -173,6 +176,13 @@ class DataBaseConfig {
         }
         if (oldVersion < 4) {
           await _createHomeShortcutTable(db);
+        }
+        if (oldVersion < 5) {
+          await _createTaskPlatformTables(db);
+          await _createClassSessionTables(db);
+        }
+        if (oldVersion < 6) {
+          await _createApiResponseCacheTable(db);
         }
       },
     );
@@ -266,6 +276,80 @@ class DataBaseConfig {
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_home_shortcuts_profile_order
       ON home_shortcuts(profile_id, sort_order)
+    ''');
+  }
+
+  Future<void> _createTaskPlatformTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS tasks(
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        type TEXT NOT NULL DEFAULT 'todo',
+        course_or_session_link TEXT,
+        due_at TEXT,
+        status TEXT NOT NULL DEFAULT 'open',
+        sync_status TEXT NOT NULL DEFAULT 'pending',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_tasks_status_due
+      ON tasks(status, due_at)
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS analytics_events(
+        id TEXT PRIMARY KEY,
+        event_name TEXT NOT NULL,
+        feature_name TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'anonymous',
+        metadata TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_analytics_events_feature_time
+      ON analytics_events(feature_name, created_at DESC)
+    ''');
+  }
+
+  Future<void> _createClassSessionTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS class_session_notes(
+        id TEXT PRIMARY KEY,
+        session_key TEXT NOT NULL,
+        owner_hash TEXT NOT NULL,
+        content TEXT NOT NULL,
+        sync_status TEXT NOT NULL DEFAULT 'pending',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_class_session_notes_session
+      ON class_session_notes(session_key, updated_at DESC)
+    ''');
+  }
+
+  Future<void> _createApiResponseCacheTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS api_response_cache(
+        id TEXT PRIMARY KEY,
+        method TEXT NOT NULL,
+        path TEXT NOT NULL,
+        request_hash TEXT NOT NULL,
+        request_body TEXT NOT NULL,
+        response_body TEXT NOT NULL,
+        response_status INTEGER NOT NULL,
+        source_url TEXT NOT NULL,
+        cached_at TEXT NOT NULL,
+        UNIQUE(method, path, request_hash)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_api_response_cache_path
+      ON api_response_cache(path, cached_at DESC)
     ''');
   }
 

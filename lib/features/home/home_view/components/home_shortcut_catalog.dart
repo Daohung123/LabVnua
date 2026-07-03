@@ -1,6 +1,6 @@
 import 'package:aqedu/core/theme/app_theme.dart';
-import 'package:aqedu/features/chat/screens/chat_list_screen.dart';
 import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
+import 'package:aqedu/features/ai_assistant/screens/ai_chat_screen.dart';
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/notification/screens/view_noti_student.dart';
 import 'package:aqedu/features/prerequisite_subjects/screens/view_prequisite_subjects.dart';
@@ -8,6 +8,7 @@ import 'package:aqedu/features/program_training/screens/program_training_view.da
 import 'package:aqedu/features/qr_code/screens/view_qr_code.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
+import 'package:aqedu/features/task/screens/local_task_screen.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 
@@ -34,11 +35,18 @@ final List<HomeShortcutDefinition> kHomeShortcutCatalog = [
     builder: (_) => const HocPhiView(),
   ),
   HomeShortcutDefinition(
-    key: 'chat',
-    label: 'Chat',
-    icon: Icons.forum_outlined,
+    key: 'ai',
+    label: 'AI',
+    icon: Icons.auto_awesome_outlined,
     color: AppColors.materialsColor,
-    builder: (_) => const ChatListScreen(),
+    builder: (_) => const AIChatScreen(),
+  ),
+  HomeShortcutDefinition(
+    key: 'tasks',
+    label: 'Todo',
+    icon: Icons.task_alt_outlined,
+    color: AppColors.warning,
+    builder: (_) => const LocalTaskScreen(),
   ),
   HomeShortcutDefinition(
     key: 'notifications',
