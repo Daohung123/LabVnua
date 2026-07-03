@@ -17,4 +17,6 @@
 ## OPEN_QUESTION
 - `OPEN_QUESTION-DD-01:` No repo-owned Markdown API DD package template exists with the requested `Study2Work_API_DD_Template` structure.
 - `OPEN_QUESTION-DD-02:` No repo-owned Markdown module DD folder template exists with `Overall.md`, `List_Features.md`, `Function_List.md`, `Views.md`, and `Import_File.md`.
-- `OPEN_QUESTION-DD-03:` `docs/base/BasicDesign_LearningApp.docx` exists, but its business rules were not extracted during this bootstrap.
+
+## Resolved Notes
+- `RESOLVED-DD-03:` `docs/base/BasicDesign_LearningApp.docx` was extracted into `docs/BD/BasicDesign_LearningApp.md` on 2026-07-02.

@@ -6,7 +6,7 @@
 | CODING | 0 | - | 10 completed worklogs |
 | TEST | 0 | - | 10 completed worklogs |
 | BUG | 0 | - | 10 completed worklogs |
-| CREATE_DD | 0 | - | 10 completed worklogs |
+| CREATE_DD | 1 | - | 10 completed worklogs |
 
 ## Skills
 | ID | TYPE | Pattern | Trigger | File | Evidence |
