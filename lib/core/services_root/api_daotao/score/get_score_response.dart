@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
@@ -15,7 +16,12 @@ Future<ScoreResponse?> getScoreResponse(
   try {
     //kiểm tra
     if (retry > 2) {
-      print("Retry quá số lần cho phép");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/score/get_score_response.dart',
+        duLieu: "Retry quá số lần cho phép",
+      );
       return null;
     }
 
@@ -27,23 +33,51 @@ Future<ScoreResponse?> getScoreResponse(
     final res = await api.post(APISCOREDATA, payload);
 
     /// debug
-    print("TYPE: ${res.runtimeType}");
-    print("BODY: $res");
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/score/get_score_response.dart',
+      duLieu: "TYPE: ${res.runtimeType}",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/score/get_score_response.dart',
+      duLieu: "BODY: $res",
+    );
 
     /// ❌ HTML (hết session)
     /// Nếu session còn thì sẽ trả về json nhưng nếu session hết hạn thì sẽ trả về html
     if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn (HTML response)");
-      print("Login lại...");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/score/get_score_response.dart',
+        duLieu: "Session hết hạn (HTML response)",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/score/get_score_response.dart',
+        duLieu: "Login lại...",
+      );
       bool kt = await reLogin();
       if (kt == false) {
-        print("Lỗi đăng nhập");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/score/get_score_response.dart',
+          duLieu: "Lỗi đăng nhập",
+        );
         return null;
       }
       SqliteServices db = SqliteServices();
       SessionModel? sqlite = await db.getSession();
       if (sqlite == null) {
-        print("Không lấy được session");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/score/get_score_response.dart',
+          duLieu: "Không lấy được session",
+        );
         return null;
       }
       return getScoreResponse(sqlite.cookie, sqlite.token, retry: retry + 1);
@@ -56,21 +90,46 @@ Future<ScoreResponse?> getScoreResponse(
 
     /// ❌ API báo lỗi
     if (jsonData["result"] == false) {
-      print("API lỗi: ${jsonData["message"]}");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/score/get_score_response.dart',
+        duLieu: "API lỗi: ${jsonData["message"]}",
+      );
 
       /// 🔥 xử lý riêng expired
       if (jsonData["message"] == "expired") {
-        print("Token hết hạn → cần login lại");
-        print("Login lại...");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/score/get_score_response.dart',
+          duLieu: "Token hết hạn → cần login lại",
+        );
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/score/get_score_response.dart',
+          duLieu: "Login lại...",
+        );
         bool kt = await reLogin();
         if (kt == false) {
-          print("Lỗi đăng nhập");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/score/get_score_response.dart',
+            duLieu: "Lỗi đăng nhập",
+          );
           return null;
         }
         SqliteServices db = SqliteServices();
         SessionModel? sqlite = await db.getSession();
         if (sqlite == null) {
-          print("Không lấy được session");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/score/get_score_response.dart',
+            duLieu: "Không lấy được session",
+          );
           return null;
         }
         return getScoreResponse(sqlite.cookie, sqlite.token, retry: retry + 1);
@@ -81,14 +140,27 @@ Future<ScoreResponse?> getScoreResponse(
 
     /// ❌ data null
     if (jsonData["data"] == null) {
-      print("Data null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/score/get_score_response.dart',
+        duLieu: "Data null",
+      );
       return null;
     }
 
     return ScoreResponse.fromJson(res);
   } catch (e) {
-    print("Hey ERROR");
-    print(e);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/score/get_score_response.dart',
+      duLieu: "Hey ERROR",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/score/get_score_response.dart',
+      duLieu: e,
+    );
     return null;
   }
 }

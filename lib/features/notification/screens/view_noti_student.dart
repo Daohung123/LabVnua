@@ -1,5 +1,4 @@
-import 'package:aqedu/core/models/sqlite/session.dart';
-import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/notification/controllers/ctrl_noti_student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -30,14 +29,37 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   void initState() {
     super.initState();
+    AppLog.vongDoi(
+      'Màn hình trung tâm thông báo được mở',
+      khuVuc: 'Trung tâm thông báo',
+    );
     _futureNotifications = _loadNotifications();
   }
 
   Future<List<NotificationItem>> _loadNotifications() async {
+    AppLog.thongBao(
+      'Bắt đầu tải danh sách thông báo',
+      khuVuc: 'Trung tâm thông báo',
+    );
     try {
       final ctrl = CtrlNotiStudent();
-      return await ctrl.getNotification();
-    } catch (e) {
+      final notifications = await ctrl.getNotification();
+      AppLog.thongBao(
+        'Tải danh sách thông báo hoàn tất',
+        khuVuc: 'Trung tâm thông báo',
+        duLieu: {
+          'so_luong': notifications.length,
+          'chua_doc': notifications.where((e) => !(e.isDaDoc ?? false)).length,
+        },
+      );
+      return notifications;
+    } catch (e, stackTrace) {
+      AppLog.loi(
+        'Tải danh sách thông báo gặp lỗi',
+        khuVuc: 'Trung tâm thông báo',
+        loi: e,
+        stackTrace: stackTrace,
+      );
       return [];
     }
   }
@@ -430,6 +452,15 @@ class _NotificationViewState extends State<NotificationView> {
   }
 
   void _showDetail(BuildContext context, NotificationItem item) {
+    AppLog.thaoTacNguoiDung(
+      'Người dùng mở chi tiết thông báo',
+      khuVuc: 'Trung tâm thông báo',
+      duLieu: {
+        'ma_thong_bao': item.id,
+        'da_doc': item.isDaDoc,
+        'bat_buoc_xem': item.isPhaiXem,
+      },
+    );
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,

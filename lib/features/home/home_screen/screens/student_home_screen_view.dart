@@ -1,8 +1,9 @@
-﻿// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'dart:ui';
 
 import 'package:aqedu/config/sync_data.dart';
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/home/other_view/screens/student_other_view.dart';
@@ -35,11 +36,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    AppLog.vongDoi('Màn hình khung chính được mở', khuVuc: 'Khung chính');
     _loadData();
   }
 
   Future<void> _loadData() async {
-    await syncData();
+    AppLog.dongBo(
+      'Tự động đồng bộ dữ liệu khi mở khung chính',
+      khuVuc: 'Khung chính',
+    );
+    final result = await syncData();
+    AppLog.dongBo(
+      'Tự động đồng bộ dữ liệu khi mở khung chính hoàn tất',
+      khuVuc: 'Khung chính',
+      duLieu: {
+        'tong_so_nhom': result.total,
+        'thanh_cong': result.success,
+        'that_bai': result.failed,
+      },
+    );
   }
 
   static const _destinations = <_NavDest>[
@@ -60,6 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _setTab(int i) {
     if (_currentIndex == i) return;
+    AppLog.thaoTacNguoiDung(
+      'Người dùng chuyển tab trong khung chính',
+      khuVuc: 'Khung chính',
+      duLieu: {
+        'tab_cu': _destinations[_currentIndex].label,
+        'tab_moi': _destinations[i].label,
+      },
+    );
     HapticFeedback.selectionClick();
     setState(() => _currentIndex = i);
   }

@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/features/auth/student/controllers/ctrl_login_student.dart';
@@ -52,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
+    AppLog.vongDoi('Màn hình đăng nhập được mở', khuVuc: 'Đăng nhập');
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -70,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
+    AppLog.vongDoi('Màn hình đăng nhập được đóng', khuVuc: 'Đăng nhập');
     _emailController.dispose();
     _passwordController.dispose();
     _emailFocus.dispose();
@@ -94,6 +97,17 @@ class _LoginScreenState extends State<LoginScreen>
         valid = false;
       }
     });
+    if (!valid) {
+      AppLog.thaoTacNguoiDung(
+        'Người dùng gửi form đăng nhập chưa hợp lệ',
+        khuVuc: 'Đăng nhập',
+        duLieu: {
+          'thieu_tai_khoan': _emailError != null,
+          'thieu_mat_khau': _passwordError != null,
+        },
+        ketQua: 'Hiển thị lỗi nhập liệu trên form.',
+      );
+    }
     return valid;
   }
 
@@ -102,6 +116,11 @@ class _LoginScreenState extends State<LoginScreen>
     FocusScope.of(context).unfocus();
     if (!_validate()) return;
 
+    AppLog.thaoTacNguoiDung(
+      'Người dùng bấm nút đăng nhập',
+      khuVuc: 'Đăng nhập',
+      duLieu: {'co_tai_khoan': _emailController.text.trim().isNotEmpty},
+    );
     setState(() => _isLoading = true);
 
     try {
@@ -114,6 +133,11 @@ class _LoginScreenState extends State<LoginScreen>
       if (!mounted) return;
 
       if (success) {
+        AppLog.thaoTacNguoiDung(
+          'Đăng nhập từ màn hình đăng nhập thành công',
+          khuVuc: 'Đăng nhập',
+          ketQua: 'Chuẩn bị chuyển sang màn hình chính.',
+        );
         _showSnackBar('Đăng nhập thành công', isSuccess: true);
         await Future.delayed(const Duration(milliseconds: 400));
         if (!mounted) return;
@@ -123,9 +147,20 @@ class _LoginScreenState extends State<LoginScreen>
           (_) => false,
         );
       } else {
+        AppLog.thaoTacNguoiDung(
+          'Đăng nhập từ màn hình đăng nhập không thành công',
+          khuVuc: 'Đăng nhập',
+          ketQua: 'Hiển thị thông báo sai tài khoản hoặc mật khẩu.',
+        );
         _showSnackBar('Sai tài khoản hoặc mật khẩu', isSuccess: false);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AppLog.loi(
+        'Đăng nhập từ màn hình đăng nhập gặp lỗi',
+        khuVuc: 'Đăng nhập',
+        loi: error,
+        stackTrace: stackTrace,
+      );
       if (mounted) {
         _showSnackBar('Đã xảy ra lỗi. Vui lòng thử lại.', isSuccess: false);
       }
@@ -206,6 +241,11 @@ class _LoginScreenState extends State<LoginScreen>
                           obscurePassword: _obscurePassword,
                           isLoading: _isLoading,
                           onTogglePassword: () {
+                            AppLog.thaoTacNguoiDung(
+                              'Người dùng bật hoặc tắt hiển thị mật khẩu',
+                              khuVuc: 'Đăng nhập',
+                              duLieu: {'hien_mat_khau': !_obscurePassword},
+                            );
                             setState(
                               () => _obscurePassword = !_obscurePassword,
                             );

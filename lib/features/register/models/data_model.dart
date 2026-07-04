@@ -1,4 +1,4 @@
-﻿import 'package:aqedu/features/register/models/khoa.dart';
+import 'package:aqedu/features/register/models/khoa.dart';
 import 'package:aqedu/features/register/models/lop.dart';
 import 'package:aqedu/features/register/models/mon_hoc.dart';
 import 'package:aqedu/features/register/models/nhom_to.dart';

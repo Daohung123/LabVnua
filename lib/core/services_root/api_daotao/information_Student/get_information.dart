@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
@@ -16,7 +17,12 @@ Future<StudentResponse?> getInformationResponse(
   try {
     /// retry max
     if (retry > 2) {
-      print("Retry quá số lần cho phép");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Retry quá số lần cho phép",
+      );
       return null;
     }
 
@@ -28,19 +34,44 @@ Future<StudentResponse?> getInformationResponse(
     /// call api
     final res = await api.post(APIINFORMATION, payload); //thay api
 
-    print("========== RESPONSE ==========");
-    print(res);
-    print("TYPE: ${res.runtimeType}");
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "========== RESPONSE ==========",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: res,
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "TYPE: ${res.runtimeType}",
+    );
 
     /// response null
     if (res == null) {
-      print("Response null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Response null",
+      );
       return null;
     }
 
     /// session expired -> html
     if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn (HTML response)");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Session hết hạn (HTML response)",
+      );
       return await _handleRelogin(retry);
     }
 
@@ -50,30 +81,70 @@ Future<StudentResponse?> getInformationResponse(
     try {
       decoded = res is String ? jsonDecode(res) : res;
     } catch (e) {
-      print("JSON decode error");
-      print(e);
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "JSON decode error",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: e,
+      );
       return null;
     }
 
     /// check map
     if (decoded is! Map<String, dynamic>) {
-      print("Response không phải Map<String,dynamic>");
-      print(decoded.runtimeType);
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Response không phải Map<String,dynamic>",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: decoded.runtimeType,
+      );
       return null;
     }
 
     final Map<String, dynamic> jsonData = decoded;
 
-    print("========== JSON ==========");
-    print(jsonEncode(jsonData));
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "========== JSON ==========",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: jsonEncode(jsonData),
+    );
 
     /// api result false
     if (jsonData["result"] == false) {
-      print("API lỗi: ${jsonData["message"]}");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "API lỗi: ${jsonData["message"]}",
+      );
 
       /// token expired
       if (jsonData["message"]?.toString().toLowerCase() == "expired") {
-        print("Token hết hạn");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+          duLieu: "Token hết hạn",
+        );
         return await _handleRelogin(retry);
       }
 
@@ -84,15 +155,35 @@ Future<StudentResponse?> getInformationResponse(
     final data = jsonData["data"];
 
     if (data == null) {
-      print("Data null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Data null",
+      );
       return null;
     }
 
     /// data not map
     if (data is! Map<String, dynamic>) {
-      print("Data không đúng format");
-      print("TYPE DATA: ${data.runtimeType}");
-      print(data);
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Data không đúng format",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "TYPE DATA: ${data.runtimeType}",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: data,
+      );
       return null;
     }
 
@@ -100,14 +191,39 @@ Future<StudentResponse?> getInformationResponse(
     try {
       return StudentResponse.fromJson(jsonData);
     } catch (e) {
-      print("Parse StudentResponse lỗi");
-      print(e);
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Parse StudentResponse lỗi",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: e,
+      );
       return null;
     }
   } catch (e, stackTrace) {
-    print("========== ERROR ==========");
-    print(e);
-    print(stackTrace);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "========== ERROR ==========",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: e,
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: stackTrace,
+    );
     return null;
   }
 }
@@ -115,12 +231,21 @@ Future<StudentResponse?> getInformationResponse(
 /// handle relogin
 Future<StudentResponse?> _handleRelogin(int retry) async {
   try {
-    print("Login lại...");
-
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "Login lại...",
+    );
     bool kt = await reLogin();
 
     if (!kt) {
-      print("Lỗi đăng nhập");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Lỗi đăng nhập",
+      );
       return null;
     }
 
@@ -129,7 +254,12 @@ Future<StudentResponse?> _handleRelogin(int retry) async {
     SessionModel? sqlite = await db.getSession();
 
     if (sqlite == null) {
-      print("Không lấy được session");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+        duLieu: "Không lấy được session",
+      );
       return null;
     }
 
@@ -139,8 +269,18 @@ Future<StudentResponse?> _handleRelogin(int retry) async {
       retry: retry + 1,
     );
   } catch (e) {
-    print("Relogin error");
-    print(e);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: "Relogin error",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/information_Student/get_information.dart',
+      duLieu: e,
+    );
     return null;
   }
 }

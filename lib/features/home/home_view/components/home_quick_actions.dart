@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
@@ -32,6 +33,11 @@ class _HomeQuickActionsState extends State<HomeQuickActions> {
     _preferences = normalizeHomeShortcutPreferences(
       widget.catalog,
       widget.preferences,
+    );
+    AppLog.vongDoi(
+      'Khối lối tắt trang chủ được khởi tạo',
+      khuVuc: 'Lối tắt trang chủ',
+      duLieu: {'so_luong_loi_tat': _preferences.length},
     );
   }
 
@@ -79,7 +85,14 @@ class _HomeQuickActionsState extends State<HomeQuickActions> {
               ),
               TextButton.icon(
                 key: const Key('home-shortcuts-edit-toggle'),
-                onPressed: () => setState(() => _isEditing = !_isEditing),
+                onPressed: () {
+                  AppLog.thaoTacNguoiDung(
+                    'Người dùng bật hoặc tắt chế độ sửa lối tắt',
+                    khuVuc: 'Lối tắt trang chủ',
+                    duLieu: {'dang_sua_sau_khi_bam': !_isEditing},
+                  );
+                  setState(() => _isEditing = !_isEditing);
+                },
                 icon: Icon(
                   _isEditing ? Icons.check_rounded : Icons.tune_rounded,
                 ),
@@ -131,13 +144,25 @@ class _HomeQuickActionsState extends State<HomeQuickActions> {
 
   Future<void> _toggleShortcut(int index, bool enabled) async {
     final enabledCount = _preferences.where((item) => item.enabled).length;
+    final key = _preferences[index].key;
     if (enabled &&
         !_preferences[index].enabled &&
         enabledCount >= kHomeMaxEnabledShortcuts) {
+      AppLog.thaoTacNguoiDung(
+        'Người dùng bật lối tắt nhưng đã đạt giới hạn',
+        khuVuc: 'Lối tắt trang chủ',
+        duLieu: {'ma_loi_tat': key, 'gioi_han': kHomeMaxEnabledShortcuts},
+        ketQua: 'Hiển thị cảnh báo giới hạn.',
+      );
       setState(() => _showLimitWarning = true);
       return;
     }
 
+    AppLog.thaoTacNguoiDung(
+      'Người dùng thay đổi trạng thái lối tắt',
+      khuVuc: 'Lối tắt trang chủ',
+      duLieu: {'ma_loi_tat': key, 'bat': enabled},
+    );
     final updated = [..._preferences];
     updated[index] = updated[index].copyWith(enabled: enabled);
     await _commitPreferences(updated);
@@ -146,6 +171,15 @@ class _HomeQuickActionsState extends State<HomeQuickActions> {
   Future<void> _moveShortcut(int index, int direction) async {
     final target = index + direction;
     if (target < 0 || target >= _preferences.length) return;
+    AppLog.thaoTacNguoiDung(
+      'Người dùng đổi thứ tự lối tắt',
+      khuVuc: 'Lối tắt trang chủ',
+      duLieu: {
+        'ma_loi_tat': _preferences[index].key,
+        'vi_tri_cu': index,
+        'vi_tri_moi': target,
+      },
+    );
     final updated = [..._preferences];
     final item = updated.removeAt(index);
     updated.insert(target, item);
@@ -170,7 +204,20 @@ class _HomeQuickActionsState extends State<HomeQuickActions> {
 
     try {
       await widget.onPreferencesChanged?.call(normalized);
-    } catch (_) {
+      AppLog.coSoDuLieu(
+        'Lưu cấu hình lối tắt từ giao diện hoàn tất',
+        khuVuc: 'Lối tắt trang chủ',
+        duLieu: {
+          'so_luong': normalized.length,
+          'so_luong_bat': normalized.where((item) => item.enabled).length,
+        },
+      );
+    } catch (error) {
+      AppLog.loi(
+        'Lưu cấu hình lối tắt từ giao diện gặp lỗi',
+        khuVuc: 'Lối tắt trang chủ',
+        loi: error,
+      );
       if (!mounted) return;
       setState(() => _showLimitWarning = true);
       ScaffoldMessenger.of(
@@ -212,6 +259,11 @@ class _ShortcutTile extends StatelessWidget {
       key: Key('home-shortcut-tile-${shortcut.key}'),
       borderRadius: BorderRadius.circular(AppRadius.lg),
       onTap: () {
+        AppLog.thaoTacNguoiDung(
+          'Người dùng mở chức năng từ lối tắt',
+          khuVuc: 'Lối tắt trang chủ',
+          duLieu: {'ma_loi_tat': shortcut.key, 'ten_loi_tat': shortcut.label},
+        );
         Navigator.push(context, MaterialPageRoute(builder: shortcut.builder));
       },
       child: Container(

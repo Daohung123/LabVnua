@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/ctrls_prequisite_subjects.dart';
@@ -88,32 +89,62 @@ class _PrerequisiteViewState extends State<PrerequisiteView>
   @override
   void initState() {
     super.initState();
+    AppLog.vongDoi(
+      'Màn hình môn học điều kiện được mở',
+      khuVuc: 'Môn học điều kiện',
+    );
     _fadeCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 340));
+      vsync: this,
+      duration: const Duration(milliseconds: 340),
+    );
     _fadeAnim = CurvedAnimation(parent: _fadeCtrl, curve: Curves.easeOut);
     loadPrerequisite();
   }
 
   @override
   void dispose() {
+    AppLog.vongDoi(
+      'Màn hình môn học điều kiện được đóng',
+      khuVuc: 'Môn học điều kiện',
+    );
     _fadeCtrl.dispose();
     super.dispose();
   }
 
   Future<void> loadPrerequisite() async {
+    AppLog.api(
+      'Bắt đầu tải danh sách môn học điều kiện',
+      khuVuc: 'Môn học điều kiện',
+      duLieu: {'loai_tien_quyet': selectedLoaiTienQuyet},
+    );
     setState(() => isLoading = true);
     _fadeCtrl.reset();
     try {
       final controller = await CtrlPrerequisite.create();
       final result = await controller.getPrerequisiteSubjects(
-          loaiTienQuyet: selectedLoaiTienQuyet);
+        loaiTienQuyet: selectedLoaiTienQuyet,
+      );
       setState(() {
         subjects = result;
         isLoading = false;
       });
+      AppLog.api(
+        'Tải danh sách môn học điều kiện hoàn tất',
+        khuVuc: 'Môn học điều kiện',
+        duLieu: {
+          'loai_tien_quyet': selectedLoaiTienQuyet,
+          'so_luong': result.length,
+        },
+      );
       _fadeCtrl.forward();
-    } catch (e) {
-      debugPrint('Lỗi loadPrerequisite: $e');
+    } catch (e, stackTrace) {
+      AppLog.loi(
+        'Tải danh sách môn học điều kiện gặp lỗi',
+        khuVuc: 'Môn học điều kiện',
+        duLieu: {'loai_tien_quyet': selectedLoaiTienQuyet},
+        loi: e,
+        stackTrace: stackTrace,
+      );
       setState(() {
         subjects = [];
         isLoading = false;
@@ -130,14 +161,16 @@ class _PrerequisiteViewState extends State<PrerequisiteView>
       backgroundColor: _Colors.bg,
       body: CustomScrollView(
         slivers: [
-          _AppHeader(
-            filter: filter,
-            onRefresh: loadPrerequisite,
-          ),
+          _AppHeader(filter: filter, onRefresh: loadPrerequisite),
           SliverToBoxAdapter(
             child: _FilterChips(
               selected: selectedLoaiTienQuyet,
               onChanged: (v) {
+                AppLog.thaoTacNguoiDung(
+                  'Người dùng đổi bộ lọc môn học điều kiện',
+                  khuVuc: 'Môn học điều kiện',
+                  duLieu: {'loai_tien_quyet_moi': v},
+                );
                 setState(() => selectedLoaiTienQuyet = v);
                 loadPrerequisite();
               },
@@ -275,17 +308,20 @@ class _FilterChips extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: _filters
-            .map((f) => Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        right: f.value < _filters.length ? 8 : 0),
-                    child: _ChipItem(
-                      filter: f,
-                      isSelected: selected == f.value,
-                      onTap: () => onChanged(f.value),
-                    ),
+            .map(
+              (f) => Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    right: f.value < _filters.length ? 8 : 0,
                   ),
-                ))
+                  child: _ChipItem(
+                    filter: f,
+                    isSelected: selected == f.value,
+                    onTap: () => onChanged(f.value),
+                  ),
+                ),
+              ),
+            )
             .toList(),
       ),
     );
@@ -297,10 +333,11 @@ class _ChipItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _ChipItem(
-      {required this.filter,
-      required this.isSelected,
-      required this.onTap});
+  const _ChipItem({
+    required this.filter,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -313,9 +350,7 @@ class _ChipItem extends StatelessWidget {
           color: isSelected ? filter.color : filter.surface,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: isSelected
-                ? filter.color
-                : filter.color.withOpacity(0.2),
+            color: isSelected ? filter.color : filter.color.withOpacity(0.2),
             width: 1.5,
           ),
         ),
@@ -332,8 +367,7 @@ class _ChipItem extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
-                fontWeight:
-                    isSelected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? Colors.white : filter.color,
               ),
             ),
@@ -350,8 +384,11 @@ class _PrerequisiteCard extends StatelessWidget {
   final _FilterOption filter;
   final int index;
 
-  const _PrerequisiteCard(
-      {required this.item, required this.filter, required this.index});
+  const _PrerequisiteCard({
+    required this.item,
+    required this.filter,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -374,8 +411,9 @@ class _PrerequisiteCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
             decoration: BoxDecoration(
               color: _Colors.primarySurface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
             ),
             child: Row(
               children: [
@@ -386,8 +424,11 @@ class _PrerequisiteCard extends StatelessWidget {
                     color: _Colors.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.menu_book_rounded,
-                      color: Colors.white, size: 18),
+                  child: const Icon(
+                    Icons.menu_book_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -450,18 +491,20 @@ class _PrerequisiteCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: filter.surface,
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                            color: filter.color.withOpacity(0.25)),
+                          color: filter.color.withOpacity(0.25),
+                        ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(filter.icon,
-                              size: 13, color: filter.color),
+                          Icon(filter.icon, size: 13, color: filter.color),
                           const SizedBox(width: 4),
                           Text(
                             filter.label,
@@ -477,7 +520,10 @@ class _PrerequisiteCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Divider(
-                          color: _Colors.divider, thickness: 1, height: 1),
+                        color: _Colors.divider,
+                        thickness: 1,
+                        height: 1,
+                      ),
                     ),
                   ],
                 ),
@@ -492,7 +538,9 @@ class _PrerequisiteCard extends StatelessWidget {
                     color: filter.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: filter.color.withOpacity(0.2), width: 1),
+                      color: filter.color.withOpacity(0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -549,8 +597,7 @@ class _PrerequisiteCard extends StatelessWidget {
                           text: item.khoi!,
                           label: 'Khối',
                         ),
-                      if (item.heDaoTao != null &&
-                          item.heDaoTao!.isNotEmpty)
+                      if (item.heDaoTao != null && item.heDaoTao!.isNotEmpty)
                         _Tag(
                           icon: Icons.layers_outlined,
                           text: item.heDaoTao!,
@@ -574,8 +621,7 @@ class _Tag extends StatelessWidget {
   final String text;
   final IconData icon;
 
-  const _Tag(
-      {required this.label, required this.text, required this.icon});
+  const _Tag({required this.label, required this.text, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -584,8 +630,7 @@ class _Tag extends StatelessWidget {
       decoration: BoxDecoration(
         color: _Colors.primarySurface,
         borderRadius: BorderRadius.circular(8),
-        border:
-            Border.all(color: _Colors.primary.withOpacity(0.15), width: 1),
+        border: Border.all(color: _Colors.primary.withOpacity(0.15), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -624,10 +669,7 @@ class _LoadingState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(
-            color: _Colors.primary,
-            strokeWidth: 2.5,
-          ),
+          CircularProgressIndicator(color: _Colors.primary, strokeWidth: 2.5),
           SizedBox(height: 16),
           Text(
             'Đang tải dữ liệu...',

@@ -1,5 +1,6 @@
-﻿import 'package:aqedu/config/sync_data.dart' as sync_data;
+import 'package:aqedu/config/sync_data.dart' as sync_data;
 import 'package:aqedu/core/di/app_dependencies.dart';
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
 import 'package:aqedu/features/home/home_view/services/home_shortcut_service.dart';
@@ -42,28 +43,55 @@ class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
 
   @override
   Future<List<ThoiKhoaBieu>> loadTodaySchedule() async {
+    AppLog.ungDung(
+      'Bắt đầu tải lịch học hôm nay cho trang chủ',
+      khuVuc: 'Trang chủ',
+    );
     final controller = await CtrlSchedure.create();
-    return controller.getTkbToday();
+    final result = await controller.getTkbToday();
+    AppLog.ungDung(
+      'Tải lịch học hôm nay cho trang chủ hoàn tất',
+      khuVuc: 'Trang chủ',
+      duLieu: {'so_luong': result.length},
+    );
+    return result;
   }
 
   @override
   Future<List<NotificationItem>> loadNotifications() {
+    AppLog.thongBao('Bắt đầu tải thông báo cho trang chủ', khuVuc: 'Trang chủ');
     return CtrlNotiStudent().getNotification();
   }
 
   @override
   Future<List<LocalTask>> loadUpcomingTasks() {
+    AppLog.ungDung(
+      'Bắt đầu tải công việc sắp tới cho trang chủ',
+      khuVuc: 'Trang chủ',
+    );
     return _taskController.loadUpcomingTasks();
   }
 
   @override
   Future<List<HomeShortcutPreference>> loadShortcutPreferences() async {
+    AppLog.coSoDuLieu(
+      'Bắt đầu tải cấu hình lối tắt trang chủ',
+      khuVuc: 'Trang chủ',
+    );
     final profileId = await _shortcutService.resolveProfileId();
     final stored = await _shortcutService.loadPreferences(profileId);
     final normalized = normalizeHomeShortcutPreferences(_catalog, stored);
     if (_preferencesChanged(stored, normalized)) {
       await _shortcutService.savePreferences(profileId, normalized);
     }
+    AppLog.coSoDuLieu(
+      'Tải cấu hình lối tắt trang chủ hoàn tất',
+      khuVuc: 'Trang chủ',
+      duLieu: {
+        'so_luong': normalized.length,
+        'da_chuan_hoa': _preferencesChanged(stored, normalized),
+      },
+    );
     return normalized;
   }
 
@@ -74,6 +102,14 @@ class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
     final profileId = await _shortcutService.resolveProfileId();
     final normalized = normalizeHomeShortcutPreferences(_catalog, preferences);
     await _shortcutService.savePreferences(profileId, normalized);
+    AppLog.coSoDuLieu(
+      'Đã lưu cấu hình lối tắt trang chủ',
+      khuVuc: 'Trang chủ',
+      duLieu: {
+        'so_luong': normalized.length,
+        'so_luong_bat': normalized.where((item) => item.enabled).length,
+      },
+    );
   }
 
   @override
@@ -114,6 +150,10 @@ class HomeDashboardController {
   final List<HomeShortcutDefinition> catalog;
 
   Future<HomeDashboardState> load() async {
+    AppLog.ungDung(
+      'Bắt đầu tải dữ liệu tổng hợp trang chủ',
+      khuVuc: 'Trang chủ',
+    );
     var todaySchedule = <ThoiKhoaBieu>[];
     Object? scheduleError;
     var notifications = <NotificationItem>[];
@@ -129,6 +169,11 @@ class HomeDashboardController {
         ..sort((a, b) => a.tietBatDau.compareTo(b.tietBatDau));
     } catch (error) {
       scheduleError = error;
+      AppLog.loi(
+        'Tải lịch học trang chủ gặp lỗi',
+        khuVuc: 'Trang chủ',
+        loi: error,
+      );
     }
 
     try {
@@ -140,12 +185,22 @@ class HomeDashboardController {
       });
     } catch (error) {
       notificationError = error;
+      AppLog.loi(
+        'Tải thông báo trang chủ gặp lỗi',
+        khuVuc: 'Trang chủ',
+        loi: error,
+      );
     }
 
     try {
       upcomingTasks = await _dataSource.loadUpcomingTasks();
     } catch (error) {
       taskError = error;
+      AppLog.loi(
+        'Tải công việc sắp tới trang chủ gặp lỗi',
+        khuVuc: 'Trang chủ',
+        loi: error,
+      );
     }
 
     try {
@@ -155,7 +210,28 @@ class HomeDashboardController {
       );
     } catch (error) {
       shortcutError = error;
+      AppLog.loi(
+        'Tải cấu hình lối tắt trang chủ gặp lỗi',
+        khuVuc: 'Trang chủ',
+        loi: error,
+      );
     }
+
+    AppLog.ungDung(
+      'Tải dữ liệu tổng hợp trang chủ hoàn tất',
+      khuVuc: 'Trang chủ',
+      duLieu: {
+        'lich_hoc': todaySchedule.length,
+        'thong_bao': notifications.length,
+        'cong_viec': upcomingTasks.length,
+        'loi_tat': shortcuts.length,
+        'co_loi':
+            scheduleError != null ||
+            notificationError != null ||
+            taskError != null ||
+            shortcutError != null,
+      },
+    );
 
     return HomeDashboardState(
       todaySchedule: todaySchedule,

@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
@@ -14,7 +15,11 @@ Future<HocPhiResponse?> getHocPhiResponse(
 }) async {
   try {
     if (retry > 2) {
-      print("Retry quá số lần cho phép");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+        duLieu: "Retry quá số lần cho phép",
+      );
       return null;
     }
 
@@ -25,22 +30,42 @@ Future<HocPhiResponse?> getHocPhiResponse(
     final payload = {};
     final res = await api.post(APITUITON, payload);
 
-    print("TYPE: ${res.runtimeType}");
-    print("BODY: $res");
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+      duLieu: "TYPE: ${res.runtimeType}",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+      duLieu: "BODY: $res",
+    );
 
     /// Nếu session hết hạn thì server thường trả về HTML
     if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn (HTML response)");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+        duLieu: "Session hết hạn (HTML response)",
+      );
       bool kt = await reLogin();
       if (!kt) {
-        print("Lỗi đăng nhập lại");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+          duLieu: "Lỗi đăng nhập lại",
+        );
         return null;
       }
 
       SqliteServices db = SqliteServices();
       SessionModel? sqlite = await db.getSession();
       if (sqlite == null) {
-        print("Không lấy được session mới");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+          duLieu: "Không lấy được session mới",
+        );
         return null;
       }
 
@@ -54,22 +79,39 @@ Future<HocPhiResponse?> getHocPhiResponse(
 
     /// API báo lỗi
     if (jsonData["result"] == false) {
-      print("API lỗi: ${jsonData["message"]}");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+        duLieu: "API lỗi: ${jsonData["message"]}",
+      );
 
       /// Xử lý riêng expired nếu API có trả message này
       if (jsonData["message"] == "expired") {
-        print("Token hết hạn → login lại");
-
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+          duLieu: "Token hết hạn → login lại",
+        );
         bool kt = await reLogin();
         if (!kt) {
-          print("Lỗi đăng nhập lại");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+            duLieu: "Lỗi đăng nhập lại",
+          );
           return null;
         }
 
         SqliteServices db = SqliteServices();
         SessionModel? sqlite = await db.getSession();
         if (sqlite == null) {
-          print("Không lấy được session mới");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+            duLieu: "Không lấy được session mới",
+          );
           return null;
         }
 
@@ -81,15 +123,27 @@ Future<HocPhiResponse?> getHocPhiResponse(
 
     /// Data null
     if (jsonData["data"] == null) {
-      print("Data null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+        duLieu: "Data null",
+      );
       return null;
     }
 
     /// Parse sang model
     return HocPhiResponse.fromJson(jsonData);
   } catch (e) {
-    print("ERROR getHocPhiResponse");
-    print(e);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+      duLieu: "ERROR getHocPhiResponse",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc: 'lib/core/services_root/api_daotao/tuition/get_tuition.dart',
+      duLieu: e,
+    );
     return null;
   }
 }

@@ -1,4 +1,4 @@
-﻿import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
+import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
 import 'package:aqedu/core/di/app_dependencies.dart';
 import 'package:aqedu/features/infor/screens/view_infor_student.dart';
 import 'package:aqedu/features/platform/domain/usecases/record_analytics_event.dart';

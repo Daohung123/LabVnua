@@ -1,4 +1,5 @@
-﻿import '../../../core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
+import 'package:aqedu/core/logging/app_log.dart';
+import '../../../core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
 import '../models/model_course_register.dart';
 
 class CourseRegisterService {
@@ -24,7 +25,12 @@ class CourseRegisterService {
 
       return classes;
     } catch (e) {
-      print("Lỗi CourseRegisterService.getClasses: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/course_register/services/service_courses_register.dart',
+        duLieu: "Lỗi CourseRegisterService.getClasses: $e",
+      );
       return [];
     }
   }
@@ -36,7 +42,12 @@ class CourseRegisterService {
     try {
       return await getCourseRegisterResponse(cookie, token);
     } catch (e) {
-      print("Lỗi CourseRegisterService.getCourseRegisterFull: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/course_register/services/service_courses_register.dart',
+        duLieu: "Lỗi CourseRegisterService.getCourseRegisterFull: $e",
+      );
       return null;
     }
   }

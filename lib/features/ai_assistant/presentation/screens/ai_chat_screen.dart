@@ -1,4 +1,5 @@
 import 'package:aqedu/core/di/app_dependencies.dart';
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:flutter/material.dart';
 
 typedef AiAskHandler = Future<String> Function(String prompt);
@@ -26,7 +27,14 @@ class _AIChatScreenState extends State<AIChatScreen> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+    AppLog.vongDoi('Màn hình trợ lý AI được mở', khuVuc: 'Trợ lý AI');
+  }
+
+  @override
   void dispose() {
+    AppLog.vongDoi('Màn hình trợ lý AI được đóng', khuVuc: 'Trợ lý AI');
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -35,6 +43,14 @@ class _AIChatScreenState extends State<AIChatScreen> {
   Future<void> _send() async {
     final text = _messageController.text.trim();
     if (text.isEmpty || _isLoading) return;
+    AppLog.thaoTacNguoiDung(
+      'Người dùng gửi câu hỏi cho trợ lý AI',
+      khuVuc: 'Trợ lý AI',
+      duLieu: {
+        'do_dai_cau_hoi': text.length,
+        'so_tin_nhan_truoc_khi_gui': _messages.length,
+      },
+    );
     setState(() {
       _messages.add(
         _AiMessage(text: text, isUser: true, timestamp: DateTime.now()),
@@ -47,6 +63,11 @@ class _AIChatScreenState extends State<AIChatScreen> {
     final ask =
         widget.askHandler ?? AppDependencies.instance.aiController().ask;
     final response = await ask(text);
+    AppLog.ungDung(
+      'Trợ lý AI đã trả lời câu hỏi',
+      khuVuc: 'Trợ lý AI',
+      duLieu: {'do_dai_cau_tra_loi': response.length},
+    );
     if (!mounted) return;
     setState(() {
       _messages.add(

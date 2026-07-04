@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aqedu/config/config_db.dart';
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:crypto/crypto.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,6 +26,16 @@ class ApiResponseCacheService {
     final normalizedRequest = encodeRequestBody(requestBody);
     final requestHash = hashRequestBody(requestBody);
     final now = DateTime.now().toIso8601String();
+    AppLog.coSoDuLieu(
+      'Lưu phản hồi API vào cache SQLite',
+      khuVuc: 'Cache API SQLite',
+      duLieu: {
+        'phuong_thuc': normalizedMethod,
+        'duong_dan': path,
+        'ma_trang_thai': responseStatus,
+        'do_dai_phan_hoi': responseBody.length,
+      },
+    );
 
     await db.insert(tableName, {
       'id': cacheId(
@@ -49,6 +60,11 @@ class ApiResponseCacheService {
     Object? requestBody,
   }) async {
     final db = await _dbConfig.database;
+    AppLog.coSoDuLieu(
+      'Tìm phản hồi API trong cache SQLite',
+      khuVuc: 'Cache API SQLite',
+      duLieu: {'phuong_thuc': method.toUpperCase(), 'duong_dan': path},
+    );
     final result = await db.query(
       tableName,
       columns: const ['response_body'],
@@ -58,7 +74,19 @@ class ApiResponseCacheService {
       limit: 1,
     );
 
-    if (result.isEmpty) return null;
+    if (result.isEmpty) {
+      AppLog.coSoDuLieu(
+        'Không tìm thấy phản hồi API trong cache SQLite',
+        khuVuc: 'Cache API SQLite',
+        duLieu: {'phuong_thuc': method.toUpperCase(), 'duong_dan': path},
+      );
+      return null;
+    }
+    AppLog.coSoDuLieu(
+      'Tìm thấy phản hồi API trong cache SQLite',
+      khuVuc: 'Cache API SQLite',
+      duLieu: {'phuong_thuc': method.toUpperCase(), 'duong_dan': path},
+    );
     return result.first['response_body'] as String?;
   }
 

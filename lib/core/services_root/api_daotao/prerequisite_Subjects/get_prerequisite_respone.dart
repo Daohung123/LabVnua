@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
@@ -15,7 +16,12 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
 }) async {
   try {
     if (retry > 2) {
-      print("Retry quá số lần cho phép");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+        duLieu: "Retry quá số lần cho phép",
+      );
       return null;
     }
 
@@ -33,16 +39,39 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
 
     final res = await api.post(APIPREREQUISTESUBJECT, payload);
 
-    print("TYPE: ${res.runtimeType}");
-    print("BODY: $res");
-
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+      duLieu: "TYPE: ${res.runtimeType}",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+      duLieu: "BODY: $res",
+    );
     if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn (HTML response)");
-      print("Login lại...");
-
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+        duLieu: "Session hết hạn (HTML response)",
+      );
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+        duLieu: "Login lại...",
+      );
       bool kt = await reLogin();
       if (kt == false) {
-        print("Lỗi đăng nhập");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+          duLieu: "Lỗi đăng nhập",
+        );
         return null;
       }
 
@@ -50,7 +79,12 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
       SessionModel? sqlite = await db.getSession();
 
       if (sqlite == null) {
-        print("Không lấy được session");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+          duLieu: "Không lấy được session",
+        );
         return null;
       }
 
@@ -67,15 +101,33 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
         : res as Map<String, dynamic>;
 
     if (jsonData["result"] == false) {
-      print("API lỗi: ${jsonData["message"]}");
-
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+        duLieu: "API lỗi: ${jsonData["message"]}",
+      );
       if (jsonData["message"] == "expired") {
-        print("Token hết hạn → cần login lại");
-        print("Login lại...");
-
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+          duLieu: "Token hết hạn → cần login lại",
+        );
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+          duLieu: "Login lại...",
+        );
         bool kt = await reLogin();
         if (kt == false) {
-          print("Lỗi đăng nhập");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+            duLieu: "Lỗi đăng nhập",
+          );
           return null;
         }
 
@@ -83,7 +135,12 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
         SessionModel? sqlite = await db.getSession();
 
         if (sqlite == null) {
-          print("Không lấy được session");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+            duLieu: "Không lấy được session",
+          );
           return null;
         }
 
@@ -99,14 +156,29 @@ Future<PrerequisiteResponse?> getPrerequisiteResponse(
     }
 
     if (jsonData["data"] == null) {
-      print("Data null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+        duLieu: "Data null",
+      );
       return null;
     }
 
     return PrerequisiteResponse.fromJson(jsonData);
   } catch (e) {
-    print("Hey ERROR");
-    print(e);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+      duLieu: "Hey ERROR",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart',
+      duLieu: e,
+    );
     return null;
   }
 }

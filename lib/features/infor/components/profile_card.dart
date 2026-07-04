@@ -1,4 +1,5 @@
-﻿import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
+import 'package:aqedu/core/logging/app_log.dart';
+import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/UI/styles/colors.dart';
 
@@ -40,7 +41,11 @@ class ProfileCard extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              debugPrint("QR Code");
+              AppLog.thaoTacNguoiDung(
+                'Người dùng bấm nút QR trong thẻ hồ sơ',
+                khuVuc: 'Thông tin sinh viên',
+                duLieu: {'co_ma_sinh_vien': student.maSv.trim().isNotEmpty},
+              );
             },
             icon: const Icon(Icons.qr_code_2, color: Colors.white, size: 36),
           ),

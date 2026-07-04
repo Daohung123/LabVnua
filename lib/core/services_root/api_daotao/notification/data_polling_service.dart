@@ -1,4 +1,4 @@
-﻿import 'package:aqedu/core/models/sqlite/session.dart';
+import 'package:aqedu/core/models/sqlite/session.dart';
 import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
 import 'package:aqedu/core/services_root/api_daotao/notification/get_notification.dart';
 import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';

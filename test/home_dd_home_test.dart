@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:aqedu/config/sync_data.dart' as sync_data;
 import 'package:aqedu/features/home/home_view/components/home_models.dart';

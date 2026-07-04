@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/sqlite/infomationStudent/information_sqlite.dart';
 import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:aqedu/features/infor/models/models_infor_student.dart';
@@ -14,7 +15,12 @@ class ServiceSqlInformationStudent {
     final StudentData? result = await serviceApi.getStudentInformation();
 
     if (result == null) {
-      print("Lỗi lấy thông tin sinh viên từ API");
+      AppLog.coSoDuLieu(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/infor/services/service_sqlite_information_student.dart',
+        duLieu: "Lỗi lấy thông tin sinh viên từ API",
+      );
       return;
     }
 
@@ -32,7 +38,12 @@ class ServiceSqlInformationStudent {
     try {
       final StudentData? data = await getAllInformation();
       if (data == null) {
-        print("Lỗi lấy thông tin sinh viên từ SQLite");
+        AppLog.coSoDuLieu(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/features/infor/services/service_sqlite_information_student.dart',
+          duLieu: "Lỗi lấy thông tin sinh viên từ SQLite",
+        );
         return null;
       }
       InforStudentFillData? student = InforStudentFillData(
@@ -49,7 +60,12 @@ class ServiceSqlInformationStudent {
       );
       return student;
     } catch (e) {
-      print("Lỗi getInforStudentFill: $e");
+      AppLog.coSoDuLieu(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/infor/services/service_sqlite_information_student.dart',
+        duLieu: "Lỗi getInforStudentFill: $e",
+      );
       return null;
     }
   }

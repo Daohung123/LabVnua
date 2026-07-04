@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
@@ -84,6 +85,11 @@ class HomeNotificationSection extends StatelessWidget {
   }
 
   void _openNotifications(BuildContext context) {
+    AppLog.thaoTacNguoiDung(
+      'Người dùng mở danh sách thông báo từ trang chủ',
+      khuVuc: 'Thông báo trang chủ',
+      duLieu: {'so_luong_hien_co': notifications.length},
+    );
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const NotificationView()),

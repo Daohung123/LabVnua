@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart';
 import '../models/model_prequisite_subjects.dart';
 
@@ -26,7 +27,12 @@ class PrerequisiteService {
 
       return subjects;
     } catch (e) {
-      print("Lỗi PrerequisiteService.getPrerequisiteSubjects: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/prerequisite_subjects/services/service_prequisite_subjects.dart',
+        duLieu: "Lỗi PrerequisiteService.getPrerequisiteSubjects: $e",
+      );
       return [];
     }
   }

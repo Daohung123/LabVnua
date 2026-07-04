@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
@@ -27,6 +28,7 @@ class _HomeStudentState extends State<HomeStudent> {
   @override
   void initState() {
     super.initState();
+    AppLog.vongDoi('Màn hình trang chủ được mở', khuVuc: 'Trang chủ');
     _controller = widget.controller ?? HomeDashboardController();
     _dashboardFuture = _controller.load();
   }
@@ -41,9 +43,20 @@ class _HomeStudentState extends State<HomeStudent> {
   }
 
   Future<void> _syncDashboardData() async {
-    if (_isSyncing) return;
+    if (_isSyncing) {
+      AppLog.thaoTacNguoiDung(
+        'Người dùng bấm đồng bộ khi tiến trình đang chạy',
+        khuVuc: 'Trang chủ',
+        ketQua: 'Bỏ qua thao tác trùng.',
+      );
+      return;
+    }
 
     final messenger = ScaffoldMessenger.of(context);
+    AppLog.thaoTacNguoiDung(
+      'Người dùng bấm nút đồng bộ dữ liệu',
+      khuVuc: 'Trang chủ',
+    );
     setState(() => _isSyncing = true);
 
     try {
@@ -54,6 +67,15 @@ class _HomeStudentState extends State<HomeStudent> {
         _dashboardFuture = _controller.load();
         _isSyncing = false;
       });
+      AppLog.dongBo(
+        'Đồng bộ dữ liệu từ trang chủ hoàn tất',
+        khuVuc: 'Trang chủ',
+        duLieu: {
+          'tong_so_nhom': result.total,
+          'thanh_cong': result.success,
+          'that_bai': result.failed,
+        },
+      );
 
       messenger.showSnackBar(
         SnackBar(
@@ -67,6 +89,11 @@ class _HomeStudentState extends State<HomeStudent> {
     } catch (error) {
       if (!mounted) return;
       setState(() => _isSyncing = false);
+      AppLog.loi(
+        'Đồng bộ dữ liệu từ trang chủ gặp lỗi',
+        khuVuc: 'Trang chủ',
+        loi: error,
+      );
       messenger.showSnackBar(
         SnackBar(content: Text('Không thể đồng bộ dữ liệu: $error')),
       );

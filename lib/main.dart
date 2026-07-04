@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/notification/notification_manager.dart';
 import 'package:aqedu/core/services_root/notification/notification_router.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
@@ -15,6 +16,11 @@ import 'app.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
+  AppLog.ungDung(
+    'Ứng dụng bắt đầu khởi tạo',
+    khuVuc: 'Khởi động ứng dụng',
+    ketQua: 'Đã chuẩn bị Flutter binding và HTTP override.',
+  );
 
   runApp(
     MaterialApp(
@@ -23,6 +29,12 @@ void main() {
       home: const MyWidget(),
     ),
   );
+  AppLog.ungDung(
+    'Ứng dụng đã dựng giao diện gốc',
+    khuVuc: 'Khởi động ứng dụng',
+    ketQua:
+        'Màn hình đầu tiên có thể hiển thị trước khi dịch vụ tùy chọn chạy xong.',
+  );
 
   unawaited(_initializeOptionalServices());
 }
@@ -30,6 +42,11 @@ void main() {
 /// A failure in an optional startup service must not prevent Flutter from
 /// rendering the login or offline UI.
 Future<void> _initializeOptionalServices() async {
+  AppLog.ungDung(
+    'Bắt đầu khởi tạo các dịch vụ tùy chọn',
+    khuVuc: 'Khởi động ứng dụng',
+  );
+
   await _runStartupStep('local notifications', () async {
     await NotificationService().init();
     await NotificationManager.instance.init(
@@ -48,8 +65,11 @@ Future<void> _initializeOptionalServices() async {
       await SupabaseConfig.init();
     });
   } else {
-    debugPrint(
-      'Supabase is not configured. Chat is unavailable, but the app can continue.',
+    AppLog.chat(
+      'Bỏ qua khởi tạo Supabase vì chưa có cấu hình',
+      khuVuc: 'Khởi động ứng dụng',
+      ketQua:
+          'Ứng dụng vẫn tiếp tục chạy, tính năng chat chưa khả dụng ở phiên này.',
     );
   }
 
@@ -64,10 +84,28 @@ Future<void> _runStartupStep(
   String name,
   Future<void> Function() action,
 ) async {
+  AppLog.ungDung(
+    'Bắt đầu bước khởi tạo',
+    khuVuc: 'Khởi động ứng dụng',
+    duLieu: {'buoc': name},
+  );
+
   try {
     await action();
+    AppLog.ungDung(
+      'Hoàn tất bước khởi tạo',
+      khuVuc: 'Khởi động ứng dụng',
+      duLieu: {'buoc': name},
+      ketQua: 'Bước khởi tạo đã chạy xong.',
+    );
   } catch (error, stackTrace) {
-    debugPrint('Startup step "$name" failed: $error');
-    debugPrintStack(stackTrace: stackTrace);
+    AppLog.loi(
+      'Bước khởi tạo ứng dụng gặp lỗi',
+      khuVuc: 'Khởi động ứng dụng',
+      duLieu: {'buoc': name},
+      loi: error,
+      stackTrace: stackTrace,
+      ketQua: 'Đã bỏ qua lỗi để giao diện chính tiếp tục hoạt động.',
+    );
   }
 }

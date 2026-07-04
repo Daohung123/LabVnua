@@ -1,4 +1,5 @@
-﻿import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_fillter.dart';
+import 'package:aqedu/core/logging/app_log.dart';
+import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_fillter.dart';
 import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
 import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_result_response.dart';
 import 'package:aqedu/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart';
@@ -28,17 +29,34 @@ class SyncDataResult {
 }
 
 Future<SyncDataResult> syncData() async {
+  AppLog.dongBo('Bắt đầu đồng bộ dữ liệu về SQLite', khuVuc: 'Đồng bộ dữ liệu');
   final errors = <String>[];
   var total = 0;
   var success = 0;
 
   Future<void> runSync(String label, Future<void> Function() action) async {
     total++;
+    AppLog.dongBo(
+      'Bắt đầu đồng bộ nhóm dữ liệu',
+      khuVuc: 'Đồng bộ dữ liệu',
+      duLieu: {'nhom_du_lieu': label},
+    );
     try {
       await action();
       success++;
+      AppLog.dongBo(
+        'Đồng bộ nhóm dữ liệu hoàn tất',
+        khuVuc: 'Đồng bộ dữ liệu',
+        duLieu: {'nhom_du_lieu': label},
+      );
     } catch (error) {
       errors.add('$label: $error');
+      AppLog.loi(
+        'Đồng bộ nhóm dữ liệu gặp lỗi',
+        khuVuc: 'Đồng bộ dữ liệu',
+        duLieu: {'nhom_du_lieu': label},
+        loi: error,
+      );
     }
   }
 
@@ -56,8 +74,18 @@ Future<SyncDataResult> syncData() async {
   try {
     cookie = await GETDB.getCookie();
     token = await GETDB.getToken();
+    AppLog.coSoDuLieu(
+      'Đã đọc thông tin session phục vụ đồng bộ',
+      khuVuc: 'Đồng bộ dữ liệu',
+      duLieu: {'co_cookie': cookie.isNotEmpty, 'co_token': token.isNotEmpty},
+    );
   } catch (error) {
     errors.add('session: $error');
+    AppLog.loi(
+      'Đọc session phục vụ đồng bộ gặp lỗi',
+      khuVuc: 'Đồng bộ dữ liệu',
+      loi: error,
+    );
   }
 
   if (cookie != null && token != null) {
@@ -133,12 +161,31 @@ Future<SyncDataResult> syncData() async {
         throw StateError('course register result response is empty');
       }
     });
+  } else {
+    AppLog.dongBo(
+      'Bỏ qua các nhóm đồng bộ cần session hệ thống đào tạo',
+      khuVuc: 'Đồng bộ dữ liệu',
+      ketQua: 'Không có đủ cookie và token.',
+    );
   }
 
-  return SyncDataResult(
+  final result = SyncDataResult(
     total: total,
     success: success,
     failed: total - success,
     errors: errors,
   );
+  AppLog.dongBo(
+    'Hoàn tất phiên đồng bộ dữ liệu',
+    khuVuc: 'Đồng bộ dữ liệu',
+    duLieu: {
+      'tong_so_nhom': result.total,
+      'thanh_cong': result.success,
+      'that_bai': result.failed,
+    },
+    ketQua: result.hasFailures
+        ? 'Một số nhóm dữ liệu chưa đồng bộ được.'
+        : 'Tất cả nhóm dữ liệu đã đồng bộ thành công.',
+  );
+  return result;
 }

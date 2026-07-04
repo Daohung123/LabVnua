@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/qr_code/screens/view_qr_code.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
@@ -41,6 +42,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               NotificationButton(
                 onPressed: () {
+                  AppLog.thaoTacNguoiDung(
+                    'Người dùng mở trung tâm thông báo từ thanh trên',
+                    khuVuc: 'Thanh trên trang chủ',
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -52,6 +57,10 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: 4),
               QRScanButton(
                 onPressed: () {
+                  AppLog.thaoTacNguoiDung(
+                    'Người dùng mở màn hình quét QR',
+                    khuVuc: 'Thanh trên trang chủ',
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const QRScannerView()),
@@ -84,6 +93,10 @@ class _AvatarMenuButton extends StatelessWidget {
   final VoidCallback? onLogoutPressed;
 
   void _openSettings(BuildContext context) {
+    AppLog.thaoTacNguoiDung(
+      'Người dùng mở cài đặt từ menu tài khoản',
+      khuVuc: 'Menu tài khoản',
+    );
     if (onSettingsPressed != null) {
       onSettingsPressed!();
       return;
@@ -96,12 +109,21 @@ class _AvatarMenuButton extends StatelessWidget {
   }
 
   Future<void> _logout(BuildContext context) async {
+    AppLog.thaoTacNguoiDung(
+      'Người dùng chọn đăng xuất từ menu tài khoản',
+      khuVuc: 'Menu tài khoản',
+    );
     if (onLogoutPressed != null) {
       onLogoutPressed!();
       return;
     }
 
     await ControllerSettings.logOut();
+    AppLog.coSoDuLieu(
+      'Đã xóa session khi đăng xuất',
+      khuVuc: 'Menu tài khoản',
+      ketQua: 'Chuẩn bị chuyển về màn hình đăng nhập.',
+    );
     if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(
       context,
@@ -118,6 +140,11 @@ class _AvatarMenuButton extends StatelessWidget {
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       onSelected: (action) {
+        AppLog.thaoTacNguoiDung(
+          'Người dùng chọn mục trong menu tài khoản',
+          khuVuc: 'Menu tài khoản',
+          duLieu: {'hanh_dong': action.name},
+        );
         switch (action) {
           case _AvatarMenuAction.settings:
             _openSettings(context);

@@ -1,4 +1,5 @@
-﻿import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
+import 'package:aqedu/core/logging/app_log.dart';
+import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
 import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'date_time_helper.dart';
 import 'schedure_constants.dart';
@@ -136,11 +137,21 @@ class TkbService {
 
   static void _logError(String method, dynamic error) {
     // TODO: Replace with proper logging service
-    print('$method Error: $error');
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/features/schedure/services/api_daotao/schedure_student_services.dart',
+      duLieu: '$method Error: $error',
+    );
   }
 
   static void _logDebug(String message) {
     // TODO: Replace with proper logging service
-    print(message);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/features/schedure/services/api_daotao/schedure_student_services.dart',
+      duLieu: message,
+    );
   }
 }

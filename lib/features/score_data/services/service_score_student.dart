@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/api_daotao/score/get_score_response.dart';
 import 'package:aqedu/features/score_data/models/model_score_student.dart';
 
@@ -21,7 +22,11 @@ class ScoreService {
 
       return semesters;
     } catch (e) {
-      print("Lỗi ScoreService.getSemesterScores: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/features/score_data/services/service_score_student.dart',
+        duLieu: "Lỗi ScoreService.getSemesterScores: $e",
+      );
       return [];
     }
   }

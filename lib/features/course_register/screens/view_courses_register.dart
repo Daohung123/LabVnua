@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:diacritic/diacritic.dart';
 
 import '../controllers/ctrl_courses_register.dart';

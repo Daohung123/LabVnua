@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import '../../../core/services_root/api_daotao/course_Register/get_course_register_action.dart';
 import '../models/model_course_register_action.dart';
 
@@ -23,7 +24,12 @@ class CourseRegisterActionService {
 
       return response;
     } catch (e) {
-      print("Lỗi CourseRegisterActionService.actionCourseRegister: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/features/course_register/services/service_courses_register_action.dart',
+        duLieu: "Lỗi CourseRegisterActionService.actionCourseRegister: $e",
+      );
       return null;
     }
   }

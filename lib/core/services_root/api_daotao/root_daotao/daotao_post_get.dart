@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,6 +24,11 @@ class ApiHelper {
   /// LOGIN
   Future<SessionModel?> login(String user, String pass) async {
     try {
+      AppLog.api(
+        'Bắt đầu đăng nhập hệ thống đào tạo',
+        khuVuc: 'API đào tạo',
+        duLieu: {'co_tai_khoan': user.trim().isNotEmpty},
+      );
       final auth = await http.get(Uri.parse(APIAUTH));
 
       final rawCookie = auth.headers['set-cookie']!;
@@ -65,6 +71,11 @@ class ApiHelper {
       );
 
       token = currUser["access_token"];
+      AppLog.api(
+        'Đăng nhập hệ thống đào tạo thành công',
+        khuVuc: 'API đào tạo',
+        duLieu: {'co_cookie': cookie != null, 'co_token': token != null},
+      );
 
       ///syncData
 
@@ -75,7 +86,13 @@ class ApiHelper {
         cookie: cookie!,
         token: token!,
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      AppLog.loi(
+        'Đăng nhập hệ thống đào tạo gặp lỗi',
+        khuVuc: 'API đào tạo',
+        loi: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -93,6 +110,15 @@ class ApiHelper {
   Future<dynamic> _request(String method, String path, {Map? body}) async {
     final uri = Uri.parse("$APIDAOTAO$path");
     final requestBody = body ?? const {};
+    AppLog.api(
+      'Bắt đầu gọi API đào tạo',
+      khuVuc: 'API đào tạo',
+      duLieu: {
+        'phuong_thuc': method,
+        'duong_dan': path,
+        'co_body': requestBody.isNotEmpty,
+      },
+    );
 
     try {
       final response = method == 'GET'
@@ -102,6 +128,16 @@ class ApiHelper {
               headers: _headers(contentTypeJson: true),
               body: jsonEncode(requestBody),
             );
+      AppLog.api(
+        'API đào tạo đã phản hồi',
+        khuVuc: 'API đào tạo',
+        duLieu: {
+          'phuong_thuc': method,
+          'duong_dan': path,
+          'ma_trang_thai': response.statusCode,
+          'do_dai_phan_hoi': response.body.length,
+        },
+      );
 
       if (_shouldCache(response)) {
         await _cacheService.saveResponse(
@@ -112,6 +148,15 @@ class ApiHelper {
           responseStatus: response.statusCode,
           sourceUrl: uri.toString(),
         );
+        AppLog.coSoDuLieu(
+          'Đã lưu phản hồi API đào tạo vào cache SQLite',
+          khuVuc: 'API đào tạo',
+          duLieu: {
+            'phuong_thuc': method,
+            'duong_dan': path,
+            'ma_trang_thai': response.statusCode,
+          },
+        );
         final cachedBody = await _cacheService.getResponseBody(
           method: method,
           path: path,
@@ -121,13 +166,30 @@ class ApiHelper {
       }
 
       return _decode(response.body);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AppLog.loi(
+        'Gọi API đào tạo gặp lỗi',
+        khuVuc: 'API đào tạo',
+        duLieu: {'phuong_thuc': method, 'duong_dan': path},
+        loi: error,
+        stackTrace: stackTrace,
+        ketQua: 'Đang kiểm tra cache SQLite để fallback.',
+      );
       final cachedBody = await _cacheService.getResponseBody(
         method: method,
         path: path,
         requestBody: requestBody,
       );
       if (cachedBody != null) {
+        AppLog.coSoDuLieu(
+          'Dùng phản hồi API từ cache SQLite',
+          khuVuc: 'API đào tạo',
+          duLieu: {
+            'phuong_thuc': method,
+            'duong_dan': path,
+            'do_dai_cache': cachedBody.length,
+          },
+        );
         return _decode(cachedBody);
       }
       rethrow;

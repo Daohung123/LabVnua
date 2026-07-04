@@ -1,4 +1,5 @@
-﻿import 'dart:convert';
+import 'package:aqedu/core/logging/app_log.dart';
+import 'dart:convert';
 
 import 'package:aqedu/core/constants/api/api_daotao.dart';
 import 'package:aqedu/core/models/sqlite/session.dart';
@@ -18,7 +19,12 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
 }) async {
   try {
     if (retry > 2) {
-      print("Retry quá số lần cho phép");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+        duLieu: "Retry quá số lần cho phép",
+      );
       return null;
     }
 
@@ -33,20 +39,48 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
       },
     };
 
-    print("===== ACTION PAYLOAD =====");
-    print(payload);
-
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: "===== ACTION PAYLOAD =====",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: payload,
+    );
     final res = await api.post(APICOURSEREGISTERACTION, payload);
 
-    print("TYPE COURSE REGISTER ACTION: ${res.runtimeType}");
-    print("BODY COURSE REGISTER ACTION: $res");
-
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: "TYPE COURSE REGISTER ACTION: ${res.runtimeType}",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: "BODY COURSE REGISTER ACTION: $res",
+    );
     if (res.toString().contains("<!DOCTYPE")) {
-      print("Session hết hạn HTML");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+        duLieu: "Session hết hạn HTML",
+      );
       final kt = await reLogin();
 
       if (kt == false) {
-        print("Lỗi đăng nhập lại");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+          duLieu: "Lỗi đăng nhập lại",
+        );
         return null;
       }
 
@@ -54,7 +88,12 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
       final SessionModel? sqlite = await db.getSession();
 
       if (sqlite == null) {
-        print("Không lấy được session");
+        AppLog.api(
+          'Ghi nhận hoạt động runtime',
+          khuVuc:
+              'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+          duLieu: "Không lấy được session",
+        );
         return null;
       }
 
@@ -72,18 +111,32 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
     final jsonData = res is String ? jsonDecode(res) : res;
 
     if (jsonData is! Map<String, dynamic>) {
-      print("Course register action response không phải Map");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+        duLieu: "Course register action response không phải Map",
+      );
       return null;
     }
 
     if (jsonData["result"] == false) {
-      print("API lỗi: ${jsonData["message"]}");
-
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+        duLieu: "API lỗi: ${jsonData["message"]}",
+      );
       if (jsonData["message"] == "expired") {
         final kt = await reLogin();
 
         if (kt == false) {
-          print("Lỗi đăng nhập lại");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+            duLieu: "Lỗi đăng nhập lại",
+          );
           return null;
         }
 
@@ -91,7 +144,12 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
         final SessionModel? sqlite = await db.getSession();
 
         if (sqlite == null) {
-          print("Không lấy được session");
+          AppLog.api(
+            'Ghi nhận hoạt động runtime',
+            khuVuc:
+                'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+            duLieu: "Không lấy được session",
+          );
           return null;
         }
 
@@ -110,14 +168,29 @@ Future<CourseRegisterActionResponse?> actionCourseRegisterResponse(
     }
 
     if (jsonData["data"] == null) {
-      print("Data null");
+      AppLog.api(
+        'Ghi nhận hoạt động runtime',
+        khuVuc:
+            'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+        duLieu: "Data null",
+      );
       return null;
     }
 
     return CourseRegisterActionResponse.fromJson(jsonData);
   } catch (e) {
-    print("ERROR actionCourseRegisterResponse");
-    print(e);
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: "ERROR actionCourseRegisterResponse",
+    );
+    AppLog.api(
+      'Ghi nhận hoạt động runtime',
+      khuVuc:
+          'lib/core/services_root/api_daotao/course_Register/get_course_register_action.dart',
+      duLieu: e,
+    );
     return null;
   }
 }

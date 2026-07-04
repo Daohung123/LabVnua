@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/services_root/api_daotao/tuition/get_tuition.dart';
 import 'package:aqedu/features/tuition/models/model_data.dart';
 import 'package:aqedu/features/tuition/models/model_item.dart';
@@ -14,7 +15,11 @@ class HocPhiService {
 
       return response.data;
     } catch (e) {
-      print("Lỗi HocPhiService.getHocPhiData: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/features/tuition/services/service_tuition.dart',
+        duLieu: "Lỗi HocPhiService.getHocPhiData: $e",
+      );
       return null;
     }
   }
@@ -38,7 +43,11 @@ class HocPhiService {
 
       return dsHocPhiHocKy;
     } catch (e) {
-      print("Lỗi HocPhiService.getHocPhiHocKyList: $e");
+      AppLog.ungDung(
+        'Ghi nhận hoạt động runtime',
+        khuVuc: 'lib/features/tuition/services/service_tuition.dart',
+        duLieu: "Lỗi HocPhiService.getHocPhiHocKyList: $e",
+      );
       return [];
     }
   }

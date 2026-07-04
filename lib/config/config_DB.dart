@@ -1,3 +1,4 @@
+import 'package:aqedu/core/logging/app_log.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -6,7 +7,10 @@ class DataBaseConfig {
 
   /// mở database
   Future<Database> get database async {
-    if (_database != null) return _database!;
+    if (_database != null) {
+      AppLog.coSoDuLieu('Dùng lại kết nối SQLite hiện có', khuVuc: 'SQLite');
+      return _database!;
+    }
 
     _database = await _initDB();
     return _database!;
@@ -14,11 +18,21 @@ class DataBaseConfig {
 
   Future<Database> _initDB() async {
     final path = join(await getDatabasesPath(), 'auth.db');
+    AppLog.coSoDuLieu(
+      'Mở cơ sở dữ liệu SQLite',
+      khuVuc: 'SQLite',
+      duLieu: {'ten_file': 'auth.db'},
+    );
 
     return openDatabase(
       path,
       version: 6,
       onCreate: (db, version) async {
+        AppLog.coSoDuLieu(
+          'Tạo mới schema SQLite',
+          khuVuc: 'SQLite',
+          duLieu: {'version': version},
+        );
         // bảng session
         await db.execute('''
         CREATE TABLE session(
@@ -171,6 +185,11 @@ class DataBaseConfig {
         await _createApiResponseCacheTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
+        AppLog.coSoDuLieu(
+          'Nâng cấp schema SQLite',
+          khuVuc: 'SQLite',
+          duLieu: {'version_cu': oldVersion, 'version_moi': newVersion},
+        );
         if (oldVersion < 3) {
           await _createChangeNotificationTables(db);
         }
@@ -189,6 +208,10 @@ class DataBaseConfig {
   }
 
   Future<void> _createChangeNotificationTables(Database db) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra nhóm bảng thông báo thay đổi',
+      khuVuc: 'SQLite',
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS notification_history(
         id TEXT PRIMARY KEY,
@@ -263,6 +286,10 @@ class DataBaseConfig {
   }
 
   Future<void> _createHomeShortcutTable(Database db) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra bảng lối tắt trang chủ',
+      khuVuc: 'SQLite',
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS home_shortcuts(
         profile_id TEXT NOT NULL,
@@ -280,6 +307,10 @@ class DataBaseConfig {
   }
 
   Future<void> _createTaskPlatformTables(Database db) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra nhóm bảng task và analytics',
+      khuVuc: 'SQLite',
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS tasks(
         id TEXT PRIMARY KEY,
@@ -315,6 +346,10 @@ class DataBaseConfig {
   }
 
   Future<void> _createClassSessionTables(Database db) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra bảng ghi chú buổi học',
+      khuVuc: 'SQLite',
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS class_session_notes(
         id TEXT PRIMARY KEY,
@@ -333,6 +368,10 @@ class DataBaseConfig {
   }
 
   Future<void> _createApiResponseCacheTable(Database db) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra bảng cache phản hồi API',
+      khuVuc: 'SQLite',
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS api_response_cache(
         id TEXT PRIMARY KEY,
@@ -354,6 +393,11 @@ class DataBaseConfig {
   }
 
   Future<void> _createCachedDataTable(Database db, String tableName) async {
+    AppLog.coSoDuLieu(
+      'Tạo hoặc kiểm tra bảng cache dữ liệu học tập',
+      khuVuc: 'SQLite',
+      duLieu: {'ten_bang': tableName},
+    );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS $tableName(
         id TEXT PRIMARY KEY,

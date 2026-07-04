@@ -1,4 +1,4 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 
 import 'package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart';
 import '../models/model_course_register_fillter.dart';
