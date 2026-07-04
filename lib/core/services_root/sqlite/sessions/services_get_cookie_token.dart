@@ -1,5 +1,5 @@
 import 'core_service_session.dart';
-import '../../../models/sqlite/Session.dart';
+import '../../../models/sqlite/session.dart';
 
 class GETDB {
   static Future<String> getCookie() async {

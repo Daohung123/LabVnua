@@ -4,11 +4,11 @@
 
 - lib/features/auth/student/screens/student_login_view.dart
 - lib/features/auth/student/screens/role_view.dart
-- lib/features/auth/student/controllers/ctrl_login_Student.dart
-- lib/core/services_root/api_daotao/auth/checkLogin.dart
-- lib/core/services_root/api_daotao/auth/reLogin.dart
+- lib/features/auth/student/controllers/ctrl_login_student.dart
+- lib/core/services_root/api_daotao/auth/check_login.dart
+- lib/core/services_root/api_daotao/auth/re_login.dart
 - lib/core/services_root/sqlite/sessions/core_service_session.dart
-- lib/config/config_DB.dart
+- lib/config/config_db.dart
 - lib/features/home/home_view/components/home_app_bar.dart
 
 ## Significant file/layer mapping
@@ -17,7 +17,7 @@
 |---|---|
 | Feature UI | Dùng thư mục screens/widgets/components trong feature tương ứng dưới `lib/features/`. |
 | Controller/service | Dùng controller/service trong feature hoặc shared service dưới `lib/core/services_root/`. |
-| Persistence | SQLite đi qua `lib/config/config_DB.dart` hoặc service dưới `lib/core/services_root/sqlite/`. |
+| Persistence | SQLite đi qua `lib/config/config_db.dart` hoặc service dưới `lib/core/services_root/sqlite/`. |
 | External API | Endpoint/service phải có source hoặc contract; nếu chưa có thì ghi `OPEN_QUESTION`. |
 | Theme/shared UI | Ưu tiên `lib/core/theme` theo architecture note. |
 

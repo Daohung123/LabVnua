@@ -1,6 +1,6 @@
 import 'package:aqedu/features/notification/models/notification_student.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
-import 'package:aqedu/features/task/models/task_models.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
+import 'package:aqedu/features/task/domain/entities/local_task.dart';
 import 'package:flutter/material.dart';
 
 const int kHomeMaxEnabledShortcuts = 8;

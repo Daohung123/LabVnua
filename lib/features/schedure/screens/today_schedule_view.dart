@@ -1,5 +1,5 @@
 import 'package:aqedu/features/schedure/controllers/ctrl_schedure.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -132,7 +132,7 @@ class _TodayScheduleViewState extends State<TodayScheduleView>
   Future<ThoiKhoaBieu> _loadData() async {
     final ctrl = await CtrlSchedure.create();
     ThoiKhoaBieu data = await ctrl.getTkbTodayItem();
-    
+
     return data;
   }
 

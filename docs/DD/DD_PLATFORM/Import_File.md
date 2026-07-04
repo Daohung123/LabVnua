@@ -2,8 +2,8 @@
 
 ## Actual dependencies / evidence paths
 
-- lib/config/config_DB.dart
-- lib/config/syncData.dart
+- lib/config/config_db.dart
+- lib/config/sync_data.dart
 - lib/features/notification/services/background_sync_service.dart
 - lib/features/notification/services/data_change_detector_service.dart
 - lib/core/services_root/sqlite/notification/data_change_sqlite.dart
@@ -15,7 +15,7 @@
 |---|---|
 | Feature UI | Dùng thư mục screens/widgets/components trong feature tương ứng dưới `lib/features/`. |
 | Controller/service | Dùng controller/service trong feature hoặc shared service dưới `lib/core/services_root/`. |
-| Persistence | SQLite đi qua `lib/config/config_DB.dart` hoặc service dưới `lib/core/services_root/sqlite/`. |
+| Persistence | SQLite đi qua `lib/config/config_db.dart` hoặc service dưới `lib/core/services_root/sqlite/`. |
 | External API | Endpoint/service phải có source hoặc contract; nếu chưa có thì ghi `OPEN_QUESTION`. |
 | Theme/shared UI | Ưu tiên `lib/core/theme` theo architecture note. |
 

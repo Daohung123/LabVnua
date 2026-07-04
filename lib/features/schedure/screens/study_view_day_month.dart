@@ -1,6 +1,6 @@
 // ============================================================
 //  THỜI KHÓA BIỂU – View (MVC) – v2 + Conflict Detection
-//  Model:      Schedure_Student.dart  (TkbResponse, TuanTkb, ThoiKhoaBieu, TietTrongNgay)
+//  Model:      schedure_student.dart  (TkbResponse, TuanTkb, ThoiKhoaBieu, TietTrongNgay)
 //  Controller: ctrl_schedure.dart     (CtrlSchedure)
 //  Màu chủ đạo: #0047A8 + trắng
 // ============================================================
@@ -45,7 +45,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 // ── Import từ dự án thực ─────────────────────────────────────
-import '../models/Schedure_Student.dart';
+import '../models/schedure_student.dart';
 import '../controllers/ctrl_schedure.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -267,8 +267,7 @@ class _ScheduleScreenState extends State<ScheduleScreen>
     return _allItems.where((s) {
       final d = _parseDate(s.ngayhoc);
       return d != null && _isSameDay(d, date);
-    }).toList()
-      ..sort((a, b) => a.tietBatDau.compareTo(b.tietBatDau));
+    }).toList()..sort((a, b) => a.tietBatDau.compareTo(b.tietBatDau));
   }
 
   /// Kiểm tra ngày đó có tiết bị trùng không (dùng cho _WeekStrip + _DayTab)
@@ -452,7 +451,8 @@ class _DayTab extends StatelessWidget {
   final DateTime today;
   final Map<int, TietTrongNgay> periodMap;
   final bool Function(DateTime) hasLesson;
-  final bool Function(DateTime) hasConflict; // [NEW] kiểm tra ngày có trùng tiết
+  final bool Function(DateTime)
+  hasConflict; // [NEW] kiểm tra ngày có trùng tiết
   final List<ThoiKhoaBieu> Function(DateTime) scheduleForDay;
   final ValueChanged<DateTime> onDateChanged;
 
@@ -536,10 +536,7 @@ class _ConflictBanner extends StatelessWidget {
   final int conflictCount;
   final List<String> names;
 
-  const _ConflictBanner({
-    required this.conflictCount,
-    required this.names,
-  });
+  const _ConflictBanner({required this.conflictCount, required this.names});
 
   @override
   Widget build(BuildContext context) {
@@ -909,9 +906,7 @@ class _LessonCard extends StatelessWidget {
                 // Separator
                 Container(
                   width: 1,
-                  color: isConflict
-                      ? kConflict.withOpacity(0.2)
-                      : kBorderLight,
+                  color: isConflict ? kConflict.withOpacity(0.2) : kBorderLight,
                 ),
 
                 // ── Nội dung chính ─────────────────────────
@@ -1369,7 +1364,10 @@ class _WeekPicker extends StatelessWidget {
                       children: [
                         Text(
                           "${t.dsThoiKhoaBieu.length} buổi học",
-                          style: TextStyle(fontSize: 11, color: Colors.grey[500]),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[500],
+                          ),
                         ),
                         // [NEW] badge trùng tiết trong picker
                         if (hasConf) ...[
@@ -1512,7 +1510,11 @@ class _WeekGrid extends StatelessWidget {
             child: Stack(
               children: [
                 _buildGridLines(maxTiet),
-                ..._buildBlocks(context, maxTiet, weekConflicts), // [NEW] pass conflicts
+                ..._buildBlocks(
+                  context,
+                  maxTiet,
+                  weekConflicts,
+                ), // [NEW] pass conflicts
               ],
             ),
           ),
@@ -1642,8 +1644,7 @@ class _WeekGrid extends StatelessWidget {
                   color: kCardBg,
                   border: Border(
                     right: BorderSide(color: Colors.blue.shade100),
-                    bottom:
-                        BorderSide(color: Colors.blue.shade50, width: 0.5),
+                    bottom: BorderSide(color: Colors.blue.shade50, width: 0.5),
                   ),
                 ),
                 child: Column(
@@ -1660,8 +1661,7 @@ class _WeekGrid extends StatelessWidget {
                     if (gio.isNotEmpty)
                       Text(
                         gio,
-                        style:
-                            TextStyle(fontSize: 8, color: Colors.grey[400]),
+                        style: TextStyle(fontSize: 8, color: Colors.grey[400]),
                       ),
                   ],
                 ),
@@ -1675,8 +1675,7 @@ class _WeekGrid extends StatelessWidget {
           (di) => Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border:
-                    Border(right: BorderSide(color: Colors.blue.shade50)),
+                border: Border(right: BorderSide(color: Colors.blue.shade50)),
               ),
               child: Column(
                 children: List.generate(
@@ -1830,8 +1829,7 @@ class _LoadingState extends StatelessWidget {
           const SizedBox(
             width: 40,
             height: 40,
-            child: CircularProgressIndicator(
-                color: kPrimary, strokeWidth: 2.5),
+            child: CircularProgressIndicator(color: kPrimary, strokeWidth: 2.5),
           ),
           const SizedBox(height: 16),
           Text(
@@ -2029,8 +2027,7 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
               GestureDetector(
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (_) => const ScheduleScreen()),
+                  MaterialPageRoute(builder: (_) => const ScheduleScreen()),
                 ),
                 child: const Row(
                   children: [
@@ -2075,8 +2072,7 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
                   return Center(
                     child: Text(
                       "Không tải được lịch",
-                      style:
-                          TextStyle(color: Colors.grey[400], fontSize: 13),
+                      style: TextStyle(color: Colors.grey[400], fontSize: 13),
                     ),
                   );
                 }
@@ -2093,8 +2089,7 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
                       const SizedBox(height: 8),
                       Text(
                         "Hôm nay không có lịch học",
-                        style: TextStyle(
-                            color: Colors.grey[400], fontSize: 12),
+                        style: TextStyle(color: Colors.grey[400], fontSize: 12),
                       ),
                     ],
                   );
@@ -2150,10 +2145,7 @@ class _HomeCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(kRadiusSm),
-        border: Border.all(
-          color: borderColor,
-          width: isConflict ? 1.5 : 1,
-        ),
+        border: Border.all(color: borderColor, width: isConflict ? 1.5 : 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -2170,10 +2162,7 @@ class _HomeCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
                   color: kConflict.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(4),
@@ -2215,8 +2204,7 @@ class _HomeCard extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              const Icon(Icons.schedule_outlined,
-                  size: 12, color: Colors.grey),
+              const Icon(Icons.schedule_outlined, size: 12, color: Colors.grey),
               const SizedBox(width: 4),
               Text(
                 "Tiết ${item.tietBatDau}  (${item.soTiet} tiết)",
@@ -2236,8 +2224,7 @@ class _HomeCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   "Phòng ${item.phong}",
-                  style:
-                      const TextStyle(fontSize: 11, color: Colors.black54),
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -2251,8 +2238,7 @@ class _HomeCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   item.giangVien,
-                  style: const TextStyle(
-                      fontSize: 10, color: Colors.blueGrey),
+                  style: const TextStyle(fontSize: 10, color: Colors.blueGrey),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

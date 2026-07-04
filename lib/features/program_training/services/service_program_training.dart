@@ -1,4 +1,4 @@
-import '../../../core/services_root/api_daotao/trainning_Program/getTrainingProgramRespone.dart';
+import '../../../core/services_root/api_daotao/trainning_Program/get_training_program_respone.dart';
 import '../models/model_program_data.dart';
 
 class ProgramTrainingService {

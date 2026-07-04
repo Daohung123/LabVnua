@@ -1,4 +1,4 @@
-import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
+﻿import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/UI/styles/colors.dart';
 

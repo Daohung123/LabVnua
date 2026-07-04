@@ -1,14 +1,10 @@
-
-import 'package:aqedu/core/services_root/api_daotao/tuition/getTuiTion.dart';
+import 'package:aqedu/core/services_root/api_daotao/tuition/get_tuition.dart';
 import 'package:aqedu/features/tuition/models/model_data.dart';
 import 'package:aqedu/features/tuition/models/model_item.dart';
 import 'package:aqedu/features/tuition/models/models_tuition.dart';
 
 class HocPhiService {
-  static Future<Data?> getHocPhiData(
-    String cookie,
-    String token,
-  ) async {
+  static Future<Data?> getHocPhiData(String cookie, String token) async {
     try {
       final HocPhiResponse? response = await getHocPhiResponse(cookie, token);
 

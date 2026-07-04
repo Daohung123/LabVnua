@@ -1,5 +1,5 @@
-import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+﻿import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'date_time_helper.dart';
 import 'schedure_constants.dart';
 

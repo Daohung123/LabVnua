@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:aqedu/config/config_DB.dart';
-import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import 'package:aqedu/config/config_db.dart';
+import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
 import 'package:sqflite/sqflite.dart';
 
@@ -19,27 +19,20 @@ class ServiceSqlInformationStudentRoot {
     final data = student.toJson();
 
     // Convert List -> JSON String
-    data['ds_menu_cam_xem'] =
-        jsonEncode(student.dsMenuCamXem);
+    data['ds_menu_cam_xem'] = jsonEncode(student.dsMenuCamXem);
 
     // Convert bool -> int
-    data['doi_mat_khau'] =
-        student.doiMatKhau ? 1 : 0;
+    data['doi_mat_khau'] = student.doiMatKhau ? 1 : 0;
 
-    data['is_master_pass'] =
-        student.isMasterPass ? 1 : 0;
+    data['is_master_pass'] = student.isMasterPass ? 1 : 0;
 
-    data['is_cvht_dang_nhap'] =
-        student.isCvhtDangNhap ? 1 : 0;
+    data['is_cvht_dang_nhap'] = student.isCvhtDangNhap ? 1 : 0;
 
-    data['is_phu_huynh_dang_nhap'] =
-        student.isPhuHuynhDangNhap ? 1 : 0;
+    data['is_phu_huynh_dang_nhap'] = student.isPhuHuynhDangNhap ? 1 : 0;
 
-    data['is_nhap_dia_chi_moi'] =
-        student.isNhapDiaChiMoi ? 1 : 0;
+    data['is_nhap_dia_chi_moi'] = student.isNhapDiaChiMoi ? 1 : 0;
 
-    data['is_xac_nhan_email'] =
-        student.isXacNhanEmail ? 1 : 0;
+    data['is_xac_nhan_email'] = student.isXacNhanEmail ? 1 : 0;
 
     return await db.insert(
       tableName,
@@ -54,37 +47,27 @@ class ServiceSqlInformationStudentRoot {
   Future<StudentData?> getStudent() async {
     final Database db = await _dbConfig.database;
 
-    final result = await db.query(
-      tableName,
-      limit: 1,
-    );
+    final result = await db.query(tableName, limit: 1);
 
     if (result.isEmpty) return null;
 
     final map = Map<String, dynamic>.from(result.first);
 
     // Convert JSON String -> List
-    map['ds_menu_cam_xem'] =
-        jsonDecode(map['ds_menu_cam_xem'] ?? '[]');
+    map['ds_menu_cam_xem'] = jsonDecode(map['ds_menu_cam_xem'] ?? '[]');
 
     // Convert int -> bool
-    map['doi_mat_khau'] =
-        (map['doi_mat_khau'] ?? 0) == 1;
+    map['doi_mat_khau'] = (map['doi_mat_khau'] ?? 0) == 1;
 
-    map['is_master_pass'] =
-        (map['is_master_pass'] ?? 0) == 1;
+    map['is_master_pass'] = (map['is_master_pass'] ?? 0) == 1;
 
-    map['is_cvht_dang_nhap'] =
-        (map['is_cvht_dang_nhap'] ?? 0) == 1;
+    map['is_cvht_dang_nhap'] = (map['is_cvht_dang_nhap'] ?? 0) == 1;
 
-    map['is_phu_huynh_dang_nhap'] =
-        (map['is_phu_huynh_dang_nhap'] ?? 0) == 1;
+    map['is_phu_huynh_dang_nhap'] = (map['is_phu_huynh_dang_nhap'] ?? 0) == 1;
 
-    map['is_nhap_dia_chi_moi'] =
-        (map['is_nhap_dia_chi_moi'] ?? 0) == 1;
+    map['is_nhap_dia_chi_moi'] = (map['is_nhap_dia_chi_moi'] ?? 0) == 1;
 
-    map['is_xac_nhan_email'] =
-        (map['is_xac_nhan_email'] ?? 0) == 1;
+    map['is_xac_nhan_email'] = (map['is_xac_nhan_email'] ?? 0) == 1;
 
     return StudentData.fromJson(map);
   }
@@ -97,26 +80,19 @@ class ServiceSqlInformationStudentRoot {
 
     final data = student.toJson();
 
-    data['ds_menu_cam_xem'] =
-        jsonEncode(student.dsMenuCamXem);
+    data['ds_menu_cam_xem'] = jsonEncode(student.dsMenuCamXem);
 
-    data['doi_mat_khau'] =
-        student.doiMatKhau ? 1 : 0;
+    data['doi_mat_khau'] = student.doiMatKhau ? 1 : 0;
 
-    data['is_master_pass'] =
-        student.isMasterPass ? 1 : 0;
+    data['is_master_pass'] = student.isMasterPass ? 1 : 0;
 
-    data['is_cvht_dang_nhap'] =
-        student.isCvhtDangNhap ? 1 : 0;
+    data['is_cvht_dang_nhap'] = student.isCvhtDangNhap ? 1 : 0;
 
-    data['is_phu_huynh_dang_nhap'] =
-        student.isPhuHuynhDangNhap ? 1 : 0;
+    data['is_phu_huynh_dang_nhap'] = student.isPhuHuynhDangNhap ? 1 : 0;
 
-    data['is_nhap_dia_chi_moi'] =
-        student.isNhapDiaChiMoi ? 1 : 0;
+    data['is_nhap_dia_chi_moi'] = student.isNhapDiaChiMoi ? 1 : 0;
 
-    data['is_xac_nhan_email'] =
-        student.isXacNhanEmail ? 1 : 0;
+    data['is_xac_nhan_email'] = student.isXacNhanEmail ? 1 : 0;
 
     return await db.update(
       tableName,
@@ -132,11 +108,7 @@ class ServiceSqlInformationStudentRoot {
   Future<int> deleteStudent(String maSv) async {
     final Database db = await _dbConfig.database;
 
-    return await db.delete(
-      tableName,
-      where: 'ma_sv = ?',
-      whereArgs: [maSv],
-    );
+    return await db.delete(tableName, where: 'ma_sv = ?', whereArgs: [maSv]);
   }
 
   /// =====================================================

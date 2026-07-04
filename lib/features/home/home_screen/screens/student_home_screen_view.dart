@@ -1,9 +1,9 @@
-// ignore_for_file: deprecated_member_use
+﻿// ignore_for_file: deprecated_member_use
 
 import 'dart:ui';
 
-import 'package:aqedu/config/syncData.dart';
-import 'package:aqedu/features/ai_assistant/screens/ai_chat_screen.dart';
+import 'package:aqedu/config/sync_data.dart';
+import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/home/other_view/screens/student_other_view.dart';
 import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';

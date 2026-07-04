@@ -5,7 +5,7 @@ import 'week_constants.dart';
 import 'week_grid.dart';
 import 'subject_block.dart';
 import 'week_selector.dart';
-import '../../../models/Schedure_Student.dart';
+import '../../../models/schedure_student.dart';
 
 class WeekViewPage extends StatefulWidget {
   final List<ThoiKhoaBieu> allSchedule;
@@ -27,7 +27,7 @@ class WeekViewPage extends StatefulWidget {
 class _WeekViewPageState extends State<WeekViewPage> {
   TkbResponse? _fullData;
   TuanTkb? _selectedWeek;
-  
+
   final List<Map<String, dynamic>> _semesters = [
     {"id": 20252, "name": "Học kỳ 2 - Năm học 2025 - 2026"},
     {"id": 20251, "name": "Học kỳ 1 - Năm học 2025 - 2026"},
@@ -36,7 +36,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
     {"id": 20232, "name": "Học kỳ 2 - Năm học 2023 - 2024"},
     {"id": 20231, "name": "Học kỳ 1 - Năm học 2023 - 2024"},
   ];
-  
+
   late Map<String, dynamic> _selectedSemester;
   bool _isLoading = true;
 
@@ -52,7 +52,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
     setState(() => _isLoading = true);
     final ctrl = await CtrlSchedure.create();
     final data = await ctrl.getFullTkbResponse(semesterId: semesterId);
-    
+
     if (mounted) {
       setState(() {
         _fullData = data;
@@ -109,7 +109,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
     required Function(T) onSelected,
   }) {
     int selectedIndex = items.indexOf(selectedItem as T);
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -134,11 +134,21 @@ class _WeekViewPageState extends State<WeekViewPage> {
               child: Column(
                 children: [
                   Container(
-                    width: 40, height: 5,
+                    width: 40,
+                    height: 5,
                     margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                   const Divider(),
                   Expanded(
                     child: ListView.builder(
@@ -147,21 +157,36 @@ class _WeekViewPageState extends State<WeekViewPage> {
                       itemBuilder: (context, index) {
                         final item = items[index];
                         bool isSelected = item == selectedItem;
-                        bool isRealNow = (item is TuanTkb) && _isCurrentWeek(item.thongTinTuan);
+                        bool isRealNow =
+                            (item is TuanTkb) &&
+                            _isCurrentWeek(item.thongTinTuan);
 
                         return ListTile(
                           leading: Icon(
                             Icons.calendar_today,
-                            color: isRealNow ? Colors.orange : (isSelected ? const Color(0xff104492) : Colors.grey),
+                            color: isRealNow
+                                ? Colors.orange
+                                : (isSelected
+                                      ? const Color(0xff104492)
+                                      : Colors.grey),
                           ),
                           title: Text(
                             labelBuilder(item),
                             style: TextStyle(
-                              color: isSelected ? const Color(0xff104492) : Colors.black87,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected
+                                  ? const Color(0xff104492)
+                                  : Colors.black87,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
-                          trailing: isSelected ? const Icon(Icons.check_circle, color: Color(0xff104492)) : null,
+                          trailing: isSelected
+                              ? const Icon(
+                                  Icons.check_circle,
+                                  color: Color(0xff104492),
+                                )
+                              : null,
                           onTap: () {
                             onSelected(item);
                             Navigator.pop(context);
@@ -204,12 +229,17 @@ class _WeekViewPageState extends State<WeekViewPage> {
             },
             onWeekTap: null,
           ),
-          const Expanded(child: Center(child: Text("Học kỳ được chọn chưa có thời khóa biểu"))),
+          const Expanded(
+            child: Center(
+              child: Text("Học kỳ được chọn chưa có thời khóa biểu"),
+            ),
+          ),
         ],
       );
     }
 
-    DateTime firstDay = _parseStartDate(_selectedWeek?.thongTinTuan ?? "") ?? DateTime.now();
+    DateTime firstDay =
+        _parseStartDate(_selectedWeek?.thongTinTuan ?? "") ?? DateTime.now();
 
     return Container(
       color: const Color(0xfff5f5f5),
@@ -243,7 +273,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
                 );
               },
             ),
-            
+
             _buildDayHeader(firstDay),
 
             SizedBox(
@@ -252,7 +282,11 @@ class _WeekViewPageState extends State<WeekViewPage> {
                 children: [
                   const WeekGrid(),
                   if (_selectedWeek != null)
-                    ..._buildSubjectBlocks(context, firstDay, _selectedWeek!.dsThoiKhoaBieu),
+                    ..._buildSubjectBlocks(
+                      context,
+                      firstDay,
+                      _selectedWeek!.dsThoiKhoaBieu,
+                    ),
                 ],
               ),
             ),
@@ -264,7 +298,10 @@ class _WeekViewPageState extends State<WeekViewPage> {
 
   Widget _buildDayHeader(DateTime firstDay) {
     return Container(
-      padding: const EdgeInsets.only(left: WeekConstants.timeColumnWidth, right: WeekConstants.timeColumnWidth),
+      padding: const EdgeInsets.only(
+        left: WeekConstants.timeColumnWidth,
+        right: WeekConstants.timeColumnWidth,
+      ),
       height: 45,
       decoration: BoxDecoration(
         color: const Color(0xff104492),
@@ -276,13 +313,22 @@ class _WeekViewPageState extends State<WeekViewPage> {
           return Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border: Border(right: BorderSide(color: Colors.white.withOpacity(0.2), width: 0.5)),
+                border: Border(
+                  right: BorderSide(
+                    color: Colors.white.withOpacity(0.2),
+                    width: 0.5,
+                  ),
+                ),
               ),
               child: Center(
                 child: Text(
                   "Th ${index + 2 == 8 ? 'CN' : index + 2}\n${date.day}/${date.month}",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -292,7 +338,11 @@ class _WeekViewPageState extends State<WeekViewPage> {
     );
   }
 
-  List<Widget> _buildSubjectBlocks(BuildContext context, DateTime firstDay, List<ThoiKhoaBieu> schedule) {
+  List<Widget> _buildSubjectBlocks(
+    BuildContext context,
+    DateTime firstDay,
+    List<ThoiKhoaBieu> schedule,
+  ) {
     double screenWidth = MediaQuery.of(context).size.width;
     double dayWidth = (screenWidth - (WeekConstants.timeColumnWidth * 2)) / 7;
 
@@ -300,11 +350,15 @@ class _WeekViewPageState extends State<WeekViewPage> {
       int dayIndex = subject.thu - 2;
       if (dayIndex < 0) dayIndex = 6;
 
-      bool isOverlap = schedule.any((s) =>
-          s != subject &&
-          s.thu == subject.thu &&
-          ((s.tietBatDau >= subject.tietBatDau && s.tietBatDau < subject.tietBatDau + subject.soTiet) ||
-              (subject.tietBatDau >= s.tietBatDau && subject.tietBatDau < s.tietBatDau + s.soTiet)));
+      bool isOverlap = schedule.any(
+        (s) =>
+            s != subject &&
+            s.thu == subject.thu &&
+            ((s.tietBatDau >= subject.tietBatDau &&
+                    s.tietBatDau < subject.tietBatDau + subject.soTiet) ||
+                (subject.tietBatDau >= s.tietBatDau &&
+                    subject.tietBatDau < s.tietBatDau + s.soTiet)),
+      );
 
       return Positioned(
         left: WeekConstants.timeColumnWidth + (dayIndex * dayWidth),

@@ -1,0 +1,102 @@
+import 'dart:convert';
+
+import 'package:aqedu/core/constants/api/api_daotao.dart';
+import 'package:aqedu/core/models/sqlite/session.dart';
+import 'package:aqedu/core/services_root/api_daotao/auth/re_login.dart';
+import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
+import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
+
+import '../../../../features/course_register/models/model_course_register_results.dart';
+
+Future<CourseRegisterResultResponse?> getCourseRegisterResultResponse(
+  String cookie,
+  String token, {
+  int retry = 0,
+}) async {
+  try {
+    if (retry > 2) {
+      print("Retry quá số lần cho phép");
+      return null;
+    }
+
+    final api = ApiHelper.withSession(cookie, token);
+
+    final payload = {"is_CVHT": false, "is_Clear": false};
+
+    final res = await api.post(APICOUREGISTERRESULT, payload);
+
+    print("TYPE COURSE REGISTER RESULT: ${res.runtimeType}");
+    print("BODY COURSE REGISTER RESULT: $res");
+
+    if (res.toString().contains("<!DOCTYPE")) {
+      print("Session hết hạn HTML");
+      final kt = await reLogin();
+
+      if (kt == false) {
+        print("Lỗi đăng nhập lại");
+        return null;
+      }
+
+      final db = SqliteServices();
+      final SessionModel? sqlite = await db.getSession();
+
+      if (sqlite == null) {
+        print("Không lấy được session");
+        return null;
+      }
+
+      return getCourseRegisterResultResponse(
+        sqlite.cookie,
+        sqlite.token,
+        retry: retry + 1,
+      );
+    }
+
+    final jsonData = res is String ? jsonDecode(res) : res;
+
+    if (jsonData is! Map<String, dynamic>) {
+      print("Course register result response không phải Map");
+      return null;
+    }
+
+    if (jsonData["result"] == false) {
+      print("API lỗi: ${jsonData["message"]}");
+
+      if (jsonData["message"] == "expired") {
+        final kt = await reLogin();
+
+        if (kt == false) {
+          print("Lỗi đăng nhập lại");
+          return null;
+        }
+
+        final db = SqliteServices();
+        final SessionModel? sqlite = await db.getSession();
+
+        if (sqlite == null) {
+          print("Không lấy được session");
+          return null;
+        }
+
+        return getCourseRegisterResultResponse(
+          sqlite.cookie,
+          sqlite.token,
+          retry: retry + 1,
+        );
+      }
+
+      return null;
+    }
+
+    if (jsonData["data"] == null) {
+      print("Data null");
+      return null;
+    }
+
+    return CourseRegisterResultResponse.fromJson(jsonData);
+  } catch (e) {
+    print("ERROR getCourseRegisterResultResponse");
+    print(e);
+    return null;
+  }
+}

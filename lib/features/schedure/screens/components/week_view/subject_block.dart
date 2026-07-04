@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'week_constants.dart';
 import 'striped_painter.dart';
-import '../../../models/Schedure_Student.dart';
+import '../../../models/schedure_student.dart';
 
 class SubjectBlock extends StatelessWidget {
   final ThoiKhoaBieu subject;
@@ -17,8 +17,8 @@ class SubjectBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     // Xác định màu sắc dựa trên buổi (Sáng/Chiều)
     // Giả định tiết 1-5 là sáng, 6-14 là chiều
-    Color bgColor = subject.tietBatDau <= 5 
-        ? WeekConstants.morningColor 
+    Color bgColor = subject.tietBatDau <= 5
+        ? WeekConstants.morningColor
         : WeekConstants.afternoonColor;
 
     return Container(
@@ -32,19 +32,19 @@ class SubjectBlock extends StatelessWidget {
         children: [
           // Nếu trùng lịch thì vẽ gạch xám
           if (isOverlap)
-            Positioned.fill(
-              child: CustomPaint(
-                painter: StripedPainter(),
-              ),
-            ),
-          
+            Positioned.fill(child: CustomPaint(painter: StripedPainter())),
+
           Padding(
             padding: const EdgeInsets.all(2.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (subject.soTiet >= 2)
-                  const Icon(Icons.edit_calendar, size: 12, color: Colors.blueGrey),
+                  const Icon(
+                    Icons.edit_calendar,
+                    size: 12,
+                    color: Colors.blueGrey,
+                  ),
                 Expanded(
                   child: Text(
                     subject.tenMon,

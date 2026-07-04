@@ -1,6 +1,6 @@
-import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/models/sqlite/session.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../../../config/config_DB.dart';
+import '../../../../config/config_db.dart';
 
 class SqliteServices extends DataBaseConfig {
   /// Lưu session

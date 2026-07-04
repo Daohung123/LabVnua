@@ -1,11 +1,11 @@
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/widgets/components/app_card.dart';
-import 'package:aqedu/features/class_session/screens/class_session_detail_screen.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/class_session/presentation/screens/class_session_detail_screen.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'package:aqedu/features/schedure/screens/today_schedule_view.dart';
-import 'package:aqedu/features/task/models/task_models.dart';
-import 'package:aqedu/features/task/screens/local_task_screen.dart';
+import 'package:aqedu/features/task/domain/entities/local_task.dart';
+import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScheduleSection extends StatelessWidget {
@@ -255,7 +255,6 @@ class HomeDeadlineSection extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class _DeadlineTile extends StatelessWidget {

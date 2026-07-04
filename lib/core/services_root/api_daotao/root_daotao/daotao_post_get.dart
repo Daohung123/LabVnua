@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:http/http.dart' as http;
 
-import '../../../models/sqlite/Session.dart';
+import '../../../models/sqlite/session.dart';
 import '../../../constants/api/api_daotao.dart';
 
 class ApiHelper {

@@ -1,5 +1,5 @@
-import 'package:aqedu/core/services_root/api_daotao/information_Student/getInformation.dart';
-import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import 'package:aqedu/core/services_root/api_daotao/information_Student/get_information.dart';
+import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
 class CourseRegisterStudentService {
   static Future<StudentData?> getStudentData(

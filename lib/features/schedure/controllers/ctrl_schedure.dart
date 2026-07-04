@@ -6,7 +6,7 @@ import 'package:aqedu/core/services_root/api_daotao/daotao_read_payloads.dart';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:aqedu/core/services_root/sqlite/schedure/schedure_sqlite.dart';
 
-import '../models/Schedure_Student.dart';
+import '../models/schedure_student.dart';
 import '../services/api_daotao/date_time_helper.dart';
 import '../services/api_daotao/schedure_constants.dart';
 

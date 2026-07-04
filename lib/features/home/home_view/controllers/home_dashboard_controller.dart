@@ -1,13 +1,14 @@
-import 'package:aqedu/config/syncData.dart' as sync_data;
+﻿import 'package:aqedu/config/sync_data.dart' as sync_data;
+import 'package:aqedu/core/di/app_dependencies.dart';
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
 import 'package:aqedu/features/home/home_view/services/home_shortcut_service.dart';
 import 'package:aqedu/features/notification/controllers/ctrl_noti_student.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:aqedu/features/schedure/controllers/ctrl_schedure.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
-import 'package:aqedu/features/task/controllers/local_task_controller.dart';
-import 'package:aqedu/features/task/models/task_models.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
+import 'package:aqedu/features/task/domain/entities/local_task.dart';
+import 'package:aqedu/features/task/presentation/controllers/local_task_controller.dart';
 
 abstract class HomeDashboardDataSource {
   Future<List<ThoiKhoaBieu>> loadTodaySchedule();
@@ -31,7 +32,8 @@ class DefaultHomeDashboardDataSource implements HomeDashboardDataSource {
     LocalTaskController? taskController,
     List<HomeShortcutDefinition>? catalog,
   }) : _shortcutService = shortcutService ?? HomeShortcutService(),
-       _taskController = taskController ?? LocalTaskController(),
+       _taskController =
+           taskController ?? AppDependencies.instance.localTaskController(),
        _catalog = catalog ?? kHomeShortcutCatalog;
 
   final HomeShortcutService _shortcutService;

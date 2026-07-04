@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:diacritic/diacritic.dart';
 
 import '../controllers/ctrl_courses_register.dart';
 import '../models/model_course_register.dart';
 import '../models/model_course_register_action.dart';
 import '../models/model_course_register_fillter.dart';
-import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
 class CourseRegisterView extends StatefulWidget {
   const CourseRegisterView({super.key});

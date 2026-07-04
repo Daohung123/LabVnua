@@ -1,7 +1,7 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:aqedu/core/screens/screen_loading.dart';
-import 'package:aqedu/core/services_root/api_daotao/auth/checkLogin.dart';
+import 'package:aqedu/core/services_root/api_daotao/auth/check_login.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/auth/student/screens/student_login_view.dart';

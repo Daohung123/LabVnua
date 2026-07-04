@@ -1,4 +1,4 @@
-import '../../../core/services_root/api_daotao/course_Register/getCourseRegisterAction.dart';
+import '../../../core/services_root/api_daotao/course_Register/get_course_register_action.dart';
 import '../models/model_course_register_action.dart';
 
 class CourseRegisterActionService {
@@ -13,13 +13,13 @@ class CourseRegisterActionService {
     try {
       final CourseRegisterActionResponse? response =
           await actionCourseRegisterResponse(
-        cookie,
-        token,
-        idToHoc: idToHoc,
-        isChecked: isChecked,
-        svNganh: svNganh,
-        idRs: idRs,
-      );
+            cookie,
+            token,
+            idToHoc: idToHoc,
+            isChecked: isChecked,
+            svNganh: svNganh,
+            idRs: idRs,
+          );
 
       return response;
     } catch (e) {

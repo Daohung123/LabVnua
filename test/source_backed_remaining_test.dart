@@ -1,17 +1,22 @@
-import 'package:aqedu/features/ai_assistant/screens/ai_chat_screen.dart';
-import 'package:aqedu/features/ai_assistant/services/ai_context_service.dart';
+import 'package:aqedu/features/ai_assistant/domain/services/ai_context_selector.dart';
+import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
-import 'package:aqedu/features/class_session/controllers/class_session_note_controller.dart';
-import 'package:aqedu/features/class_session/models/class_session_note.dart';
-import 'package:aqedu/features/class_session/screens/class_session_detail_screen.dart';
+import 'package:aqedu/features/class_session/domain/entities/class_session_note.dart';
+import 'package:aqedu/features/class_session/domain/repositories/class_session_note_repository.dart';
+import 'package:aqedu/features/class_session/domain/usecases/manage_class_session_notes.dart';
+import 'package:aqedu/features/class_session/presentation/controllers/class_session_note_controller.dart';
+import 'package:aqedu/features/class_session/presentation/screens/class_session_detail_screen.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
 import 'package:aqedu/features/home/study_view/screens/study_view.dart';
-import 'package:aqedu/features/platform/models/analytics_event.dart';
-import 'package:aqedu/features/platform/services/local_analytics_service.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
-import 'package:aqedu/features/task/controllers/local_task_controller.dart';
-import 'package:aqedu/features/task/models/task_models.dart';
-import 'package:aqedu/features/task/screens/local_task_screen.dart';
+import 'package:aqedu/features/platform/domain/repositories/analytics_repository.dart';
+import 'package:aqedu/features/platform/domain/services/analytics_event_validator.dart';
+import 'package:aqedu/features/platform/domain/usecases/record_analytics_event.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
+import 'package:aqedu/features/task/domain/entities/local_task.dart';
+import 'package:aqedu/features/task/domain/repositories/local_task_repository.dart';
+import 'package:aqedu/features/task/domain/usecases/manage_local_tasks.dart';
+import 'package:aqedu/features/task/presentation/controllers/local_task_controller.dart';
+import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -70,9 +75,7 @@ void main() {
   group('Learning portal source-backed slice', () {
     testWidgets('filters catalog and shows empty state', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: HocTapView(analyticsService: _NoopAnalyticsService()),
-        ),
+        MaterialApp(home: HocTapView(analyticsService: _noopAnalytics())),
       );
       await tester.pumpAndSettle();
 
@@ -106,13 +109,15 @@ void main() {
 
     testWidgets('local todo CRUD flow renders created task', (tester) async {
       final repository = _FakeTaskRepository();
-      final controller = LocalTaskController(repository: repository);
+      final controller = LocalTaskController(
+        manageLocalTasks: ManageLocalTasks(repository),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: LocalTaskScreen(
             controller: controller,
-            analyticsService: _NoopAnalyticsService(),
+            recordAnalytics: _noopAnalytics(),
           ),
         ),
       );
@@ -138,14 +143,16 @@ void main() {
   group('Class session local slice', () {
     testWidgets('renders schedule detail and creates note', (tester) async {
       final repository = _FakeClassSessionNoteRepository();
-      final controller = ClassSessionNoteController(repository: repository);
+      final controller = ClassSessionNoteController(
+        manageClassSessionNotes: ManageClassSessionNotes(repository),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: ClassSessionDetailScreen(
             schedule: _schedule(),
             noteController: controller,
-            analyticsService: _NoopAnalyticsService(),
+            analyticsService: _noopAnalytics(),
           ),
         ),
       );
@@ -177,7 +184,11 @@ void main() {
   });
 }
 
-class _NoopAnalyticsService extends LocalAnalyticsService {
+RecordAnalyticsEvent _noopAnalytics() {
+  return RecordAnalyticsEvent(_NoopAnalyticsRepository());
+}
+
+class _NoopAnalyticsRepository implements AnalyticsRepository {
   @override
   Future<void> recordEvent({
     required String eventName,

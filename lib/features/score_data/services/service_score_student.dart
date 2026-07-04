@@ -1,6 +1,5 @@
-import 'package:aqedu/core/services_root/api_daotao/score/getScoreResponse.dart';
+import 'package:aqedu/core/services_root/api_daotao/score/get_score_response.dart';
 import 'package:aqedu/features/score_data/models/model_score_student.dart';
-
 
 class ScoreService {
   static Future<List<SemesterScore>> getSemesterScores(

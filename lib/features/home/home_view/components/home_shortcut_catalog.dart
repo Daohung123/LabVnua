@@ -1,6 +1,6 @@
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
-import 'package:aqedu/features/ai_assistant/screens/ai_chat_screen.dart';
+import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/notification/screens/view_noti_student.dart';
 import 'package:aqedu/features/prerequisite_subjects/screens/view_prequisite_subjects.dart';
@@ -8,7 +8,7 @@ import 'package:aqedu/features/program_training/screens/program_training_view.da
 import 'package:aqedu/features/qr_code/screens/view_qr_code.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
-import 'package:aqedu/features/task/screens/local_task_screen.dart';
+import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aqedu/config/config_DB.dart';
+import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:sqflite/sqflite.dart';
 

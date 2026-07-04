@@ -1,4 +1,4 @@
-# WL-20260703-10 Offline SQLite Sync
+﻿# WL-20260703-10 Offline SQLite Sync
 
 - `STATUS:` DONE
 - `TYPE:` CODING
@@ -12,10 +12,10 @@ Implemented daotao read-response caching in SQLite, offline startup access for l
 
 ## Files
 
-- `lib/config/config_DB.dart`
+- `lib/config/config_db.dart`
 - `lib/core/services_root/sqlite/api_cache/api_response_cache.dart`
 - `lib/core/services_root/api_daotao/root_daotao/daotao_post_get.dart`
-- `lib/config/syncData.dart`
+- `lib/config/sync_data.dart`
 - `lib/app.dart`
 - `lib/features/schedure/controllers/ctrl_schedure.dart`
 - `lib/features/home/home_view/controllers/home_dashboard_controller.dart`

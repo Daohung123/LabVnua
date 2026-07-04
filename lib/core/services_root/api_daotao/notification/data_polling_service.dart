@@ -1,16 +1,16 @@
-import 'package:aqedu/core/models/sqlite/Session.dart';
-import 'package:aqedu/core/services_root/api_daotao/course_Register/getCourseRegisterRespone.dart';
-import 'package:aqedu/core/services_root/api_daotao/notification/getNotification.dart';
-import 'package:aqedu/core/services_root/api_daotao/schedure/getTkbResponse.dart';
-import 'package:aqedu/core/services_root/api_daotao/score/getScoreResponse.dart';
-import 'package:aqedu/core/services_root/api_daotao/tuition/getTuition.dart';
+﻿import 'package:aqedu/core/models/sqlite/session.dart';
+import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
+import 'package:aqedu/core/services_root/api_daotao/notification/get_notification.dart';
+import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
+import 'package:aqedu/core/services_root/api_daotao/score/get_score_response.dart';
+import 'package:aqedu/core/services_root/api_daotao/tuition/get_tuition.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/course_register/models/model_course_register.dart';
 import 'package:aqedu/features/exam_schedule/models/model_exam_schedule.dart';
 import 'package:aqedu/features/notification/models/data_change_models.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
 import 'package:aqedu/features/notification/services/data_change_detector_service.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'package:aqedu/features/score_data/models/model_score_student.dart';
 import 'package:aqedu/features/tuition/models/models_tuition.dart';
 

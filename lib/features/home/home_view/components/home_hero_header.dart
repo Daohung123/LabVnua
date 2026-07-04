@@ -1,11 +1,11 @@
 import 'package:aqedu/core/widgets/appBar/name_user.dart';
-import 'package:aqedu/features/infor/controllers/ctrls_inforStudent.dart';
+import 'package:aqedu/features/infor/controllers/ctrls_infor_student.dart';
 import 'package:flutter/material.dart';
 import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/widgets/appBar/avt.dart';
 import 'package:aqedu/core/widgets/appBar/time_fomat.dart';
-import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
+import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 
 class HomeHeroHeader extends StatelessWidget {
   const HomeHeroHeader({super.key});
@@ -24,8 +24,7 @@ class HomeHeroHeader extends StatelessWidget {
         final student = snapshot.data;
 
         /// SỬA FIELD NÀY ĐÚNG VỚI MODEL CỦA BẠN
-        final String fullName =
-            student?.name?.toString().trim() ?? 'Sinh viên';
+        final String fullName = student?.name?.toString().trim() ?? 'Sinh viên';
 
         /// Tách tên
         final List<String> parts = fullName
@@ -34,10 +33,9 @@ class HomeHeroHeader extends StatelessWidget {
             .toList();
 
         final String firstName = parts.isNotEmpty ? parts.last : '';
-        final String middleName =
-            parts.length > 2
-                ? parts.sublist(1, parts.length - 1).join(' ')
-                : '';
+        final String middleName = parts.length > 2
+            ? parts.sublist(1, parts.length - 1).join(' ')
+            : '';
 
         final String lastName = parts.isNotEmpty ? parts.first : '';
 
@@ -65,9 +63,7 @@ class HomeHeroHeader extends StatelessWidget {
                         width: 1.3,
                       ),
                     ),
-                    child: const UserAvatar(
-                      imagePath: 'assets/avt.jpg',
-                    ),
+                    child: const UserAvatar(imagePath: 'assets/avt.jpg'),
                   ),
 
                   SizedBox(width: AppSpacing.lg),
@@ -139,9 +135,7 @@ class HomeHeroHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(AppOpacity.bg10),
         borderRadius: BorderRadius.circular(AppRadius.full),
-        border: Border.all(
-          color: Colors.white.withOpacity(AppOpacity.bg12),
-        ),
+        border: Border.all(color: Colors.white.withOpacity(AppOpacity.bg12)),
       ),
       child: Text(
         text,

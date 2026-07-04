@@ -1,4 +1,4 @@
-# Architecture Audit
+﻿# Architecture Audit
 
 ## ARCH-ISSUE-01 - Global TLS certificate validation override
 - `SEVERITY:` HIGH
@@ -9,7 +9,7 @@
 
 ## ARCH-ISSUE-02 - Sensitive session fields stored in SQLite
 - `SEVERITY:` HIGH
-- `EVIDENCE:` `lib/config/config_DB.dart` - `session` table includes `user`, `pass`, `cookie`, and `token` columns.
+- `EVIDENCE:` `lib/config/config_db.dart` - `session` table includes `user`, `pass`, `cookie`, and `token` columns.
 - `IMPACT:` Local database compromise may expose credentials or active session material.
 - `RECOMMENDATION:` Review whether password persistence is required; consider secure storage and token-only refresh behavior.
 - `STATUS:` OPEN
@@ -37,7 +37,7 @@
 
 ## ARCH-ISSUE-06 - Notification service uses copied filename and encoded-space import
 - `SEVERITY:` LOW
-- `EVIDENCE:` `lib/features/notification/services/service_sql_notification_student.dart` imports `service_api_notification_student%20copy.dart`.
+- `EVIDENCE:` `lib/features/notification/services/service_sql_notification_student.dart` imports `service_api_notification_student_copy.dart`.
 - `IMPACT:` Encoded filenames make imports brittle and obscure source ownership.
 - `RECOMMENDATION:` Rename and update imports in a dedicated cleanup task after verifying behavior.
 - `STATUS:` OPEN

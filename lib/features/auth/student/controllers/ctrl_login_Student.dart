@@ -1,4 +1,4 @@
-import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/models/sqlite/session.dart';
 import 'package:aqedu/core/services_root/api_daotao/root_daotao/daotao_post_get.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';

@@ -1,4 +1,4 @@
-import 'package:aqedu/core/services_root/api_daotao/prerequisite_Subjects/getPrerequisiteRespone.dart';
+import 'package:aqedu/core/services_root/api_daotao/prerequisite_Subjects/get_prerequisite_respone.dart';
 import '../models/model_prequisite_subjects.dart';
 
 class PrerequisiteService {
@@ -8,8 +8,7 @@ class PrerequisiteService {
     int loaiTienQuyet = 1,
   }) async {
     try {
-      final PrerequisiteResponse? response =
-          await getPrerequisiteResponse(
+      final PrerequisiteResponse? response = await getPrerequisiteResponse(
         cookie,
         token,
         loaiTienQuyet: loaiTienQuyet,
@@ -19,8 +18,7 @@ class PrerequisiteService {
         return [];
       }
 
-      final List<PrerequisiteSubject>? subjects =
-          response.data?.dsMonTienQuyet;
+      final List<PrerequisiteSubject>? subjects = response.data?.dsMonTienQuyet;
 
       if (subjects == null || subjects.isEmpty) {
         return [];

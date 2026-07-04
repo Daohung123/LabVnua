@@ -1,10 +1,10 @@
-# Project Map
+﻿# Project Map
 
 ## Components
 | Component | Root paths | Evidence |
 |---|---|---|
 | Flutter mobile/web app | `lib/`, `android/`, `ios/`, `web/` | `pubspec.yaml`, `android/app/src/main/AndroidManifest.xml`, `ios/Runner/Info.plist`, `web/manifest.json` |
-| Shared app core | `lib/core/`, `lib/config/` | `README.md`, `lib/core/theme/README.md`, `lib/config/config_DB.dart` |
+| Shared app core | `lib/core/`, `lib/config/` | `README.md`, `lib/core/theme/README.md`, `lib/config/config_db.dart` |
 | Feature modules | `lib/features/` | `README.md`, `lib/features/*` |
 | Documentation and DD sources | `docs/` | `docs/repository-audit.md`, `docs/base/*`, `docs/auth/*` |
 | Automated tests | `test/` | `test/chat_service_test.dart` |
@@ -15,7 +15,7 @@
 | App framework | Flutter / Dart SDK `^3.9.2` | `pubspec.yaml` |
 | State style | Flutter widgets, controllers, services, repositories; no dedicated external state-management package listed | `pubspec.yaml`, `README.md`, `lib/features/*` |
 | HTTP | `http` package for VNUA portal calls | `pubspec.yaml`, `lib/core/services_root/api_daotao/root_daotao/daotao_post_get.dart` |
-| Local database | `sqflite` with `path` | `pubspec.yaml`, `lib/config/config_DB.dart` |
+| Local database | `sqflite` with `path` | `pubspec.yaml`, `lib/config/config_db.dart` |
 | Realtime backend | `supabase_flutter` | `pubspec.yaml`, `lib/core/services_root/supabase/supabase_config.dart` |
 | AI integration | `google_generative_ai` with Gemini key via dart define | `pubspec.yaml`, `lib/core/constants/api/api_daotao.dart`, `lib/features/ai_assistant/controllers/controller_ai.dart` |
 | Notifications/background work | `flutter_local_notifications`, `workmanager` | `pubspec.yaml`, `lib/features/notification/services/background_sync_service.dart` |
@@ -42,16 +42,16 @@
 ## Module Map
 | Module | Root path | Responsibility | Evidence |
 |---|---|---|---|
-| Auth/student login | `lib/features/auth/`, `lib/core/services_root/api_daotao/auth/` | Student role selection, login, session restore. | `lib/features/auth/student/controllers/ctrl_login_Student.dart`, `lib/app.dart` |
+| Auth/student login | `lib/features/auth/`, `lib/core/services_root/api_daotao/auth/` | Student role selection, login, session restore. | `lib/features/auth/student/controllers/ctrl_login_student.dart`, `lib/app.dart` |
 | Home shell | `lib/features/home/` | Main navigation, dashboards, settings, study tab, AI entry. | `lib/features/home/home_screen/screens/student_home_screen_view.dart` |
 | Schedule | `lib/features/schedure/`, `lib/core/services_root/api_daotao/schedure/` | Schedule fetch, models, views, local schedule storage. | `lib/features/schedure/*`, `lib/core/services_root/sqlite/schedure/schedure_sqlite.dart` |
-| Scores | `lib/features/score_data/`, `lib/core/services_root/api_daotao/score/` | Score lookup and analysis. | `lib/features/score_data/*`, `lib/core/services_root/api_daotao/score/getScoreResponse.dart` |
-| Tuition | `lib/features/tuition/`, `lib/core/services_root/api_daotao/tuition/` | Tuition data fetch and display. | `lib/features/tuition/*`, `lib/core/services_root/api_daotao/tuition/getTuition.dart` |
+| Scores | `lib/features/score_data/`, `lib/core/services_root/api_daotao/score/` | Score lookup and analysis. | `lib/features/score_data/*`, `lib/core/services_root/api_daotao/score/get_score_response.dart` |
+| Tuition | `lib/features/tuition/`, `lib/core/services_root/api_daotao/tuition/` | Tuition data fetch and display. | `lib/features/tuition/*`, `lib/core/services_root/api_daotao/tuition/get_tuition.dart` |
 | Course registration | `lib/features/course_register/`, `lib/core/services_root/api_daotao/course_Register/` | Course registration filters, classes, action, results. | `lib/features/course_register/*`, `lib/core/constants/api/api_daotao.dart` |
 | Training program | `lib/features/program_training/` | Training program display. | `lib/features/program_training/*` |
 | Prerequisite subjects | `lib/features/prerequisite_subjects/` | Prerequisite subject lookup. | `lib/features/prerequisite_subjects/*` |
-| Student information | `lib/features/infor/`, `lib/core/services_root/sqlite/infomationStudent/` | Student profile fetch/cache/display. | `lib/features/infor/*`, `lib/config/config_DB.dart` |
-| Notifications/data changes | `lib/features/notification/`, `lib/core/services_root/notification/` | Portal notifications, local notifications, data-change detection, background sync. | `lib/features/notification/services/background_sync_service.dart`, `lib/config/config_DB.dart` |
+| Student information | `lib/features/infor/`, `lib/core/services_root/sqlite/infomationStudent/` | Student profile fetch/cache/display. | `lib/features/infor/*`, `lib/config/config_db.dart` |
+| Notifications/data changes | `lib/features/notification/`, `lib/core/services_root/notification/` | Portal notifications, local notifications, data-change detection, background sync. | `lib/features/notification/services/background_sync_service.dart`, `lib/config/config_db.dart` |
 | Chat | `lib/features/chat/`, `lib/core/services_root/supabase/` | Supabase users, conversations, messages, realtime subscriptions, chat notifications. | `lib/features/chat/services/chat_service.dart`, `test/chat_service_test.dart` |
 | AI assistant | `lib/features/ai_assistant/` | Gemini chat dialog and optional notification context. | `lib/features/ai_assistant/controllers/controller_ai.dart` |
 | QR code | `lib/features/qr_code/` | QR scanning screen. | `lib/features/qr_code/screens/view_qr_code.dart` |
@@ -85,7 +85,7 @@
 | Constraint | Evidence |
 |---|---|
 | Feature-first Flutter structure with shared core utilities; not strict Clean Architecture. | `README.md`, `docs/repository-audit.md`, `lib/features/*`, `lib/core/*` |
-| SQLite schema is created in code through `openDatabase`; no separate migration directory is present. | `lib/config/config_DB.dart`, `rg --files` discovery |
+| SQLite schema is created in code through `openDatabase`; no separate migration directory is present. | `lib/config/config_db.dart`, `rg --files` discovery |
 | Supabase schema is referenced from Dart table names, but no repo-owned SQL schema was found. | `lib/features/chat/services/chat_service.dart`, `rg --files docs lib` |
 | Several visible UI actions and teacher role path are placeholders or not wired to completed flows. | `lib/features/auth/student/screens/role_view.dart`, `lib/features/home/study_view/screens/study_view.dart`, `docs/repository-audit.md` |
 | Client app requires Supabase configuration at startup; missing keys throw before `runApp`. | `lib/main.dart`, `lib/core/services_root/supabase/supabase_config.dart` |

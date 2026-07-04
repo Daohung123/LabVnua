@@ -2,16 +2,16 @@ import 'package:aqedu/features/chat/models/chat_user.dart';
 import 'package:aqedu/features/chat/services/chat_service.dart';
 import 'package:aqedu/features/chat/services/chat_session_service.dart';
 import 'package:aqedu/features/chat/services/chat_student_info_service.dart';
-import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
 class ChatUserSyncService {
   ChatUserSyncService({
     ChatService? chatService,
     ChatSessionService? sessionService,
     ChatStudentInfoService? studentInfoService,
-  })  : _chatService = chatService ?? ChatService(),
-        _sessionService = sessionService ?? ChatSessionService(),
-        _studentInfoService = studentInfoService ?? ChatStudentInfoService();
+  }) : _chatService = chatService ?? ChatService(),
+       _sessionService = sessionService ?? ChatSessionService(),
+       _studentInfoService = studentInfoService ?? ChatStudentInfoService();
 
   final ChatService _chatService;
   final ChatSessionService _sessionService;

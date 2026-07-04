@@ -13,8 +13,8 @@
 - PLATFORM-API02: Workmanager
 - PLATFORM-API03: Connectivity
 - PLATFORM-API04: analytics backend
-- lib/config/config_DB.dart
-- lib/config/syncData.dart
+- lib/config/config_db.dart
+- lib/config/sync_data.dart
 - lib/features/notification/services/background_sync_service.dart
 - lib/features/notification/services/data_change_detector_service.dart
 - lib/core/services_root/sqlite/notification/data_change_sqlite.dart

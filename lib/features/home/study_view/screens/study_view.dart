@@ -1,19 +1,20 @@
-import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
-import 'package:aqedu/features/infor/screens/view_inforStudent.dart';
-import 'package:aqedu/features/platform/services/local_analytics_service.dart';
+﻿import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
+import 'package:aqedu/core/di/app_dependencies.dart';
+import 'package:aqedu/features/infor/screens/view_infor_student.dart';
+import 'package:aqedu/features/platform/domain/usecases/record_analytics_event.dart';
 import 'package:aqedu/features/prerequisite_subjects/screens/view_prequisite_subjects.dart';
 import 'package:aqedu/features/program_training/screens/program_training_view.dart';
 import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
 import 'package:aqedu/features/score_data/screens/view_score_student.dart';
 import 'package:aqedu/features/score_data/screens/view_study_analyst.dart';
-import 'package:aqedu/features/task/screens/local_task_screen.dart';
+import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart';
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 
 class HocTapView extends StatefulWidget {
   const HocTapView({super.key, this.analyticsService});
 
-  final LocalAnalyticsService? analyticsService;
+  final RecordAnalyticsEvent? analyticsService;
 
   @override
   State<HocTapView> createState() => _HocTapViewState();
@@ -21,17 +22,16 @@ class HocTapView extends StatefulWidget {
 
 class _HocTapViewState extends State<HocTapView> {
   final _searchController = TextEditingController();
-  late final LocalAnalyticsService _analyticsService;
+  late final RecordAnalyticsEvent _analyticsService;
   String _query = '';
 
   @override
   void initState() {
     super.initState();
-    _analyticsService = widget.analyticsService ?? LocalAnalyticsService();
-    _analyticsService.recordEvent(
-      eventName: 'open',
-      featureName: 'learning_portal',
-    );
+    _analyticsService =
+        widget.analyticsService ??
+        AppDependencies.instance.recordAnalyticsEvent;
+    _analyticsService(eventName: 'open', featureName: 'learning_portal');
     _searchController.addListener(() {
       setState(() => _query = _searchController.text.trim().toLowerCase());
     });
@@ -91,7 +91,7 @@ class _HocTapViewState extends State<HocTapView> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              onSubmitted: (_) => _analyticsService.recordEvent(
+              onSubmitted: (_) => _analyticsService(
                 eventName: 'search',
                 featureName: 'learning_portal',
                 metadata: const {'source': 'search_box'},
@@ -133,7 +133,7 @@ class _HocTapViewState extends State<HocTapView> {
   }
 
   void _openItem(BuildContext context, LearningPortalItem item) {
-    _analyticsService.recordEvent(
+    _analyticsService(
       eventName: 'open_item',
       featureName: 'learning_portal',
       metadata: {'item': item.key},

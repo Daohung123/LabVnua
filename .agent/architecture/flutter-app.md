@@ -1,4 +1,4 @@
-# Flutter App Architecture
+﻿# Flutter App Architecture
 
 ## Root and Responsibility
 - Root: `lib/`
@@ -11,7 +11,7 @@ Evidence: `README.md`, `pubspec.yaml`, `lib/main.dart`
 |---|---|---|
 | `lib/main.dart` | Startup bootstrap and `runApp`. | `lib/main.dart` |
 | `lib/app.dart` | Connectivity and login-state routing. | `lib/app.dart` |
-| `lib/config/` | Database config, HTTP override, sync helper. | `lib/config/config_DB.dart`, `lib/config/http_override.dart`, `lib/config/syncData.dart` |
+| `lib/config/` | Database config, HTTP override, sync helper. | `lib/config/config_db.dart`, `lib/config/http_override.dart`, `lib/config/sync_data.dart` |
 | `lib/core/constants/` | API constants, UI strings/assets/colors/sizes. | `lib/core/constants/api/api_daotao.dart`, `lib/core/constants/readme_constants.txt` |
 | `lib/core/services_root/` | Shared API, SQLite, notification, and Supabase services. | `lib/core/services_root/*` |
 | `lib/core/theme/` | Centralized design tokens and reusable theme components. | `lib/core/theme/README.md`, `lib/core/theme/app_theme.dart` |
@@ -41,7 +41,7 @@ Evidence: `pubspec.yaml`
 5. Background sync watches academic data changes and can emit local notifications.
 6. Chat uses Supabase database operations and realtime channels.
 
-Evidence: `lib/main.dart`, `lib/app.dart`, `lib/features/auth/student/controllers/ctrl_login_Student.dart`, `lib/features/home/home_screen/screens/student_home_screen_view.dart`, `lib/features/notification/services/background_sync_service.dart`, `lib/features/chat/services/chat_service.dart`
+Evidence: `lib/main.dart`, `lib/app.dart`, `lib/features/auth/student/controllers/ctrl_login_student.dart`, `lib/features/home/home_screen/screens/student_home_screen_view.dart`, `lib/features/notification/services/background_sync_service.dart`, `lib/features/chat/services/chat_service.dart`
 
 ## Dependency Direction
 - Feature UI should prefer feature-local controllers/services/models and shared core services.

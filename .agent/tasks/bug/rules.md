@@ -1,9 +1,9 @@
-# Bug Rules
+﻿# Bug Rules
 
 ## Verified Rules
 | Rule | Source |
 |---|---|
-| Authentication and session restore depend on VNUA login and local SQLite session storage. | `lib/features/auth/student/controllers/ctrl_login_Student.dart`, `lib/core/services_root/api_daotao/auth/checkLogin.dart`, `lib/config/config_DB.dart` |
+| Authentication and session restore depend on VNUA login and local SQLite session storage. | `lib/features/auth/student/controllers/ctrl_login_student.dart`, `lib/core/services_root/api_daotao/auth/check_login.dart`, `lib/config/config_db.dart` |
 | Background sync uses Workmanager and compares cached watched data. | `lib/features/notification/services/background_sync_service.dart`, `lib/features/notification/services/data_change_detector_service.dart` |
 | Chat realtime behavior depends on Supabase channels and table changes. | `lib/features/chat/services/chat_service.dart` |
 | Known architecture risks are recorded in `.agent/architecture/audit.md`. | `.agent/architecture/audit.md` |

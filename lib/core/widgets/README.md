@@ -20,8 +20,8 @@ The components in this folder are kept for backward compatibility only. New code
 
 ### Button Components
 
-- **`btnCommon()`** (btn_Common.dart) - ⚠️ Deprecated function, use `AppButton.primary()`
-- **`ButtonImage`** (btn_Icon.dart) - ⚠️ Deprecated, use `AppButton` with icon
+- **`btnCommon()`** (btn_common.dart) - ⚠️ Deprecated function, use `AppButton.primary()`
+- **`ButtonImage`** (btn_icon.dart) - ⚠️ Deprecated, use `AppButton` with icon
 
 ### Text Components
 
@@ -29,7 +29,7 @@ The components in this folder are kept for backward compatibility only. New code
 
 ### Container Components
 
-- **`ContainerMod1`** (Container_mod/Container_mod1.dart) - ⚠️ Deprecated, use `AppContainer.elevated()`
+- **`ContainerMod1`** (Container_mod/container_mod1.dart) - ⚠️ Deprecated, use `AppContainer.elevated()`
 - **`IconContainer`** (Container_mod/container_icon.dart) - Icon inside container
 
 ### Modern Components (Already Refactored)
@@ -44,7 +44,7 @@ The components in this folder are kept for backward compatibility only. New code
 
 ```dart
 import 'package:aqedu/core/widgets/Text/text_common.dart';
-import 'package:aqedu/core/widgets/Button/btn_Common.dart';
+import 'package:aqedu/core/widgets/Button/btn_common.dart';
 
 TextCommon(txt: 'Title')
 btnCommon(
@@ -73,9 +73,9 @@ AppButton.primary(
 | Component     | File                              | Replacement        | Status     |
 | ------------- | --------------------------------- | ------------------ | ---------- |
 | TextCommon    | Text/text_common.dart             | AppText.\*         | Deprecated |
-| btnCommon()   | Button/btn_Common.dart            | AppButton.\*       | Deprecated |
-| ButtonImage   | Button/btn_Icon.dart              | AppButton.small()  | Deprecated |
-| ContainerMod1 | Container_mod/Container_mod1.dart | AppContainer.\*    | Deprecated |
+| btnCommon()   | Button/btn_common.dart            | AppButton.\*       | Deprecated |
+| ButtonImage   | Button/btn_icon.dart              | AppButton.small()  | Deprecated |
+| ContainerMod1 | Container_mod/container_mod1.dart | AppContainer.\*    | Deprecated |
 | Avatar        | appBar/avt.dart                   | UserAvatar         | Legacy     |
 | NameUser      | appBar/name_user.dart             | UserGreeting       | Legacy     |
 | Scan          | appBar/scan.dart                  | QRScanButton       | Legacy     |

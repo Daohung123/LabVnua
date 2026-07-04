@@ -1,4 +1,4 @@
-import 'dart:developer';
+﻿import 'dart:developer';
 
 import 'package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart';
 import '../models/model_course_register_fillter.dart';
@@ -12,7 +12,7 @@ import '../services/service_courses_register_action.dart';
 import '../models/model_course_register_results.dart';
 import '../services/service_courses_register_results.dart';
 
-import 'package:aqedu/features/infor/models/models_inforStudent.dart';
+import 'package:aqedu/features/infor/models/models_infor_student.dart';
 import '../services/service_course_register_student.dart';
 
 class CtrlCourseRegister {

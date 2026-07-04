@@ -1,4 +1,4 @@
-import 'package:aqedu/core/models/sqlite/Session.dart';
+import 'package:aqedu/core/models/sqlite/session.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/notification/controllers/ctrl_noti_student.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +35,6 @@ class _NotificationViewState extends State<NotificationView> {
 
   Future<List<NotificationItem>> _loadNotifications() async {
     try {
-      
-
       final ctrl = CtrlNotiStudent();
       return await ctrl.getNotification();
     } catch (e) {
@@ -58,19 +56,13 @@ class _NotificationViewState extends State<NotificationView> {
           fontSize: FontSize(fontSize),
           color: _textMuted,
         ),
-        "p": Style(
-          margin: Margins.zero,
-          padding: HtmlPaddings.zero,
-        ),
+        "p": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
       },
     );
 
     if (height != null) {
       return ClipRect(
-        child: SizedBox(
-          height: height,
-          child: widget,
-        ),
+        child: SizedBox(height: height, child: widget),
       );
     }
 
@@ -111,20 +103,17 @@ class _NotificationViewState extends State<NotificationView> {
             future: _futureNotifications,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (snapshot.hasError) {
-                return const Center(
-                  child: Text('Có lỗi khi tải thông báo'),
-                );
+                return const Center(child: Text('Có lỗi khi tải thông báo'));
               }
 
               final List<NotificationItem> notifications = snapshot.data ?? [];
-              final int unreadCount =
-                  notifications.where((e) => !(e.isDaDoc ?? false)).length;
+              final int unreadCount = notifications
+                  .where((e) => !(e.isDaDoc ?? false))
+                  .length;
 
               return Column(
                 children: [
@@ -352,8 +341,9 @@ class _NotificationViewState extends State<NotificationView> {
                               const SizedBox(width: 8),
                               Text(
                                 item.ngayGui != null
-                                    ? DateFormat('dd/MM/yyyy')
-                                        .format(item.ngayGui!)
+                                    ? DateFormat(
+                                        'dd/MM/yyyy',
+                                      ).format(item.ngayGui!)
                                     : '--/--',
                                 style: const TextStyle(
                                   fontSize: 11.5,
@@ -512,17 +502,15 @@ class _NotificationViewState extends State<NotificationView> {
                                 _infoChip(
                                   icon: Icons.calendar_today_rounded,
                                   label: item.ngayGui != null
-                                      ? DateFormat('dd/MM/yyyy')
-                                          .format(item.ngayGui!)
+                                      ? DateFormat(
+                                          'dd/MM/yyyy',
+                                        ).format(item.ngayGui!)
                                       : '--/--',
                                 ),
                               ],
                             ),
                             const SizedBox(height: 14),
-                            _buildHtmlContent(
-                              item.noiDung,
-                              fontSize: 14,
-                            ),
+                            _buildHtmlContent(item.noiDung, fontSize: 14),
                             const SizedBox(height: 14),
                             if ((item.dsDoiTuong ?? []).isNotEmpty) ...[
                               const Text(

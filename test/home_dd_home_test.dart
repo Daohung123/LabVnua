@@ -1,14 +1,14 @@
-import 'dart:async';
+﻿import 'dart:async';
 
-import 'package:aqedu/config/syncData.dart' as sync_data;
+import 'package:aqedu/config/sync_data.dart' as sync_data;
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:aqedu/features/home/home_view/components/home_quick_actions.dart';
 import 'package:aqedu/features/home/home_view/components/home_shortcut_catalog.dart';
 import 'package:aqedu/features/home/home_view/controllers/home_dashboard_controller.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
-import 'package:aqedu/features/schedure/models/Schedure_Student.dart';
-import 'package:aqedu/features/task/models/task_models.dart';
+import 'package:aqedu/features/schedure/models/schedure_student.dart';
+import 'package:aqedu/features/task/domain/entities/local_task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

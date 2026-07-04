@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aqedu/config/config_DB.dart';
+import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/features/home/home_view/components/home_models.dart';
 import 'package:crypto/crypto.dart';

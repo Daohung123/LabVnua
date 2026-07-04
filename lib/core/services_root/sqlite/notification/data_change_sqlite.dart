@@ -1,4 +1,4 @@
-import 'package:aqedu/config/config_DB.dart';
+import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/notification/models/data_change_models.dart';
 import 'package:sqflite/sqflite.dart';
 

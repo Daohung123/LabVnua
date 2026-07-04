@@ -1,4 +1,4 @@
-# Internal API and Service Boundaries
+﻿# Internal API and Service Boundaries
 
 ## VNUA Portal API Helper
 | Field | Notes |
@@ -12,7 +12,7 @@
 ## Login and Session Flow
 | Field | Notes |
 |---|---|
-| Source | `lib/features/auth/student/controllers/ctrl_login_Student.dart`, `lib/core/services_root/api_daotao/auth/checkLogin.dart`, `lib/core/services_root/api_daotao/auth/reLogin.dart` |
+| Source | `lib/features/auth/student/controllers/ctrl_login_student.dart`, `lib/core/services_root/api_daotao/auth/check_login.dart`, `lib/core/services_root/api_daotao/auth/re_login.dart` |
 | Purpose | Authenticate student, store session locally, restore current session. |
 | Storage | SQLite `session` table. |
 | Risk | Session table includes sensitive fields; see `.agent/architecture/audit.md`. |

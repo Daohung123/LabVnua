@@ -1,14 +1,11 @@
-import 'package:aqedu/features/infor/models/model_inforStudentFill.dart';
+import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:flutter/material.dart';
 import 'row_info.dart';
 
 class StudentInfoCard extends StatelessWidget {
   final InforStudentFillData student;
 
-  const StudentInfoCard({
-    super.key,
-    required this.student,
-  });
+  const StudentInfoCard({super.key, required this.student});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +15,7 @@ class StudentInfoCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         boxShadow: const [
-          BoxShadow(
-            blurRadius: 8,
-            color: Colors.black12,
-            offset: Offset(0, 4),
-          ),
+          BoxShadow(blurRadius: 8, color: Colors.black12, offset: Offset(0, 4)),
         ],
       ),
       child: Column(

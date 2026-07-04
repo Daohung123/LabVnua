@@ -1,4 +1,4 @@
-import '../../../core/services_root/api_daotao/course_Register/getCourseRegisterRespone.dart';
+﻿import '../../../core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
 import '../models/model_course_register.dart';
 
 class CourseRegisterService {

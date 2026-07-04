@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:aqedu/config/config_DB.dart';
+import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/core/services_root/notification/in_app_notification_overlay.dart';
 import 'package:aqedu/core/services_root/notification/local_notification_service.dart';
 import 'package:aqedu/core/services_root/notification/notification_router.dart';
@@ -17,7 +17,8 @@ class NotificationManager with WidgetsBindingObserver {
 
   static final NotificationManager instance = NotificationManager._();
 
-  final LocalNotificationService _localNotificationService = LocalNotificationService.instance;
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService.instance;
   final _ChatNotificationCache _cache = _ChatNotificationCache();
 
   GlobalKey<NavigatorState>? _navigatorKey;
@@ -43,7 +44,9 @@ class NotificationManager with WidgetsBindingObserver {
   }
 
   void setActiveChatPeerStudentId(String? studentId) {
-    _activeChatPeerStudentId = studentId?.trim().isNotEmpty == true ? studentId : null;
+    _activeChatPeerStudentId = studentId?.trim().isNotEmpty == true
+        ? studentId
+        : null;
   }
 
   bool isActiveChatPeer(String studentId) {
@@ -67,7 +70,8 @@ class NotificationManager with WidgetsBindingObserver {
 
     final lastSent = _roomCooldown[conversationId];
     final now = DateTime.now();
-    if (lastSent != null && now.difference(lastSent) < const Duration(seconds: 8)) {
+    if (lastSent != null &&
+        now.difference(lastSent) < const Duration(seconds: 8)) {
       return;
     }
     _roomCooldown[conversationId] = now;
