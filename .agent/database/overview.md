@@ -28,6 +28,7 @@ Evidence: `lib/config/config_db.dart`, related service paths above
 ## Conventions
 - Owner isolation is enforced by an encrypted database per owner hash; new snapshot, AI-turn, and chat-cache tables also carry `owner_hash`.
 - Raw API snapshots are local-only and are never sent to Gemini. UI/AI uses projections/allowlists.
+- AI local context is read-only and has a fixed allowlist: schedule, notifications, `cached_scores`, `cached_tuition`, and `tasks`. The score/tuition readers select and map only approved fields; `api_read_snapshots`, `chat_*_cache`, `student_data`, `ai_session_turns`, session/secure-storage values, and raw cache payloads are excluded from Gemini context.
 - Some change/cache operations use SQLite transactions.
 - Data-change IDs and payload hashes use SHA-256 in the detector service.
 - Soft-delete and tenant conventions are not evidenced for local SQLite.

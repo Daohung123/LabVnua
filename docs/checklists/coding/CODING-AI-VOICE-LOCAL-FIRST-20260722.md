@@ -42,6 +42,15 @@
 - [x] Voice chỉ tự điều hướng sau TTS hoàn tất; TTS lỗi mới bật điều hướng thủ công an toàn.
 - [x] `flutter analyze` phạm vi thay đổi, `flutter test --dart-define-from-file=.env`, và Android release build cùng `.env` đều pass.
 
+## FOLLOW-UP: AI SQLite read allowlist
+
+- [x] Added read-only typed projections for `cached_scores`, `cached_tuition`, and `tasks`; all SQL table names and columns are fixed in code.
+- [x] Gemini receives only schedule, notifications, scores, tuition, and Todo when the typed SQLite intent requests the matching allowlist key.
+- [x] Score, tuition, and Todo projections exclude raw cache payloads, chat, identifiers, sync metadata, profile/contact data, credentials, audio, and AI-turn history.
+- [x] Cached context is bounded (schedule 20, notifications 10, scores 40, Todo 20; all cached tuition rows with each approved tuition field) and carries available source/cache timestamps.
+- [x] Every context section is marked as untrusted reference data, and cache text is normalized before it is sent to Gemini.
+- [x] Added projection/allowlist/malformed-cache tests; scoped analyzer and full `flutter test` pass.
+
 ## RESULT
 
 - `DONE:` SQLCipher/session secure storage, read-only cache registry/snapshots, typed AI, Vietnamese voice UI/FAB, navigation allowlist, Chat realtime-to-local-cache, Gemini `.env` compile-time config, docs và kiểm tra tự động.

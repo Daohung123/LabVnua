@@ -24,6 +24,13 @@
 | `ai_session_turns` | Per-login AI transcript/answer/action history; no audio. | `id`, `owner_hash`, `session_id`, `task_kind`, `created_at` | `lib/config/config_DB.dart` |
 | `chat_*_cache` | Owner-scoped local source for Chat repository reads after remote/realtime refresh. | `owner_hash`, business key, `updated_at` | `lib/config/config_DB.dart` |
 
+## AI read allowlist
+- The AI assistant has read-only access through `AiContextSqliteReader`, not through model-generated SQL.
+- Permitted projections are schedule, notifications, `cached_scores`, `cached_tuition`, and `tasks`; score/tuition JSON is parsed before only approved fields are formatted for Gemini.
+- The AI reader never queries `api_read_snapshots`, `chat_*_cache`, `student_data`, `ai_session_turns`, session data, or secure storage. The enclosing encrypted database remains owner-scoped.
+
+Evidence: `lib/features/ai_assistant/data/datasources/ai_context_local_data_source.dart`, `lib/features/ai_assistant/data/datasources/ai_context_sqlite_reader.dart`
+
 ## Indexes and Constraints
 | Object | Purpose | Evidence |
 |---|---|---|
