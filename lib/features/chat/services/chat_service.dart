@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
-
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/chat/models/chat_message.dart';
 import 'package:aqedu/features/chat/models/chat_thread.dart';
@@ -19,14 +17,52 @@ String generateConversationId(String a, String b) {
     );
   }
 
-  final participants = [first, second]..sort((left, right) => left.compareTo(right));
+  final participants = [first, second]
+    ..sort((left, right) => left.compareTo(right));
   return participants.join('_');
 }
 
-class ChatService {
-  ChatService({
-    SupabaseClient? client,
-  }) : _client = client ?? SupabaseConfig.client;
+abstract class ChatRemoteDataSource {
+  Future<ChatUser?> getUserByStudentId(String studentId);
+  Future<ChatUser> ensureUserByStudentId(String studentId);
+  Future<List<ChatUser>> searchUsers({
+    required String keyword,
+    String? excludeStudentId,
+    int limit = 20,
+  });
+  Stream<List<ChatThread>> streamChatThreads({
+    required String currentStudentId,
+    int limit = 200,
+  });
+  Future<List<ChatMessage>> loadConversation({
+    required String conversationId,
+    int limit = 80,
+  });
+  Stream<List<ChatMessage>> streamConversation({
+    required String conversationId,
+    int limit = 80,
+  });
+  Future<ChatMessage> sendMessage({
+    required String conversationId,
+    required String senderStudentId,
+    required String receiverStudentId,
+    required String message,
+  });
+  Future<String?> getConversationId({
+    required String currentStudentId,
+    required String otherStudentId,
+  });
+  Future<String> ensureConversation({
+    required String currentStudentId,
+    required String otherStudentId,
+    required String lastMessage,
+    required String lastSenderId,
+  });
+}
+
+class ChatService implements ChatRemoteDataSource {
+  ChatService({SupabaseClient? client})
+    : _client = client ?? SupabaseConfig.client;
 
   static const String usersTable = 'users';
   static const String conversationsTable = 'conversations';
@@ -34,6 +70,7 @@ class ChatService {
 
   final SupabaseClient _client;
 
+  @override
   Future<ChatUser?> getUserByStudentId(String studentId) async {
     final normalizedStudentId = _normalizeStudentId(studentId);
     if (normalizedStudentId.isEmpty) return null;
@@ -48,6 +85,7 @@ class ChatService {
     return ChatUser.fromJson(Map<String, dynamic>.from(response));
   }
 
+  @override
   Future<ChatUser> ensureUserByStudentId(String studentId) async {
     final normalizedStudentId = _normalizeStudentId(studentId);
     if (normalizedStudentId.isEmpty) {
@@ -85,6 +123,7 @@ class ChatService {
     return ChatUser.fromJson(Map<String, dynamic>.from(response));
   }
 
+  @override
   Future<List<ChatUser>> searchUsers({
     required String keyword,
     String? excludeStudentId,
@@ -97,7 +136,9 @@ class ChatService {
     final pattern = '%${normalizedKeyword.replaceAll('%', r'\\%')}%';
 
     final query = _client.from(usersTable).select();
-    final queryWithCondition = query.or('student_id.ilike.$pattern,full_name.ilike.$pattern');
+    final queryWithCondition = query.or(
+      'student_id.ilike.$pattern,full_name.ilike.$pattern',
+    );
     final finalQuery = normalizedExclude == null || normalizedExclude.isEmpty
         ? queryWithCondition
         : queryWithCondition.neq('student_id', normalizedExclude);
@@ -134,15 +175,20 @@ class ChatService {
     final usersByStudentId = await _loadUsersByStudentIds(studentIds);
 
     return rows.map((row) {
-      final peerStudentId = _peerStudentIdFromConversation(row, currentStudentId);
-      final peer = usersByStudentId[peerStudentId] ?? ChatUser(
-        id: peerStudentId,
-        studentId: peerStudentId,
-        fullName: peerStudentId,
-        avatarUrl: '',
-        faculty: '',
-        className: '',
+      final peerStudentId = _peerStudentIdFromConversation(
+        row,
+        currentStudentId,
       );
+      final peer =
+          usersByStudentId[peerStudentId] ??
+          ChatUser(
+            id: peerStudentId,
+            studentId: peerStudentId,
+            fullName: peerStudentId,
+            avatarUrl: '',
+            faculty: '',
+            className: '',
+          );
 
       return ChatThread(
         conversationId: row['id'].toString(),
@@ -154,6 +200,7 @@ class ChatService {
     }).toList();
   }
 
+  @override
   Stream<List<ChatThread>> streamChatThreads({
     required String currentStudentId,
     int limit = 200,
@@ -188,39 +235,40 @@ class ChatService {
     controller.onListen = () {
       if (channel != null) return;
 
-      channel = _client.channel(_realtimeTopic('conversations', currentStudentId))
-        ..onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: conversationsTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'user_1',
-            value: currentStudentId,
-          ),
-          callback: applyRealtimePayload,
-        )
-        ..onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: conversationsTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'user_2',
-            value: currentStudentId,
-          ),
-          callback: applyRealtimePayload,
-        )
-        ..subscribe((status, [error]) {
-          if (status == RealtimeSubscribeStatus.channelError ||
-              status == RealtimeSubscribeStatus.timedOut) {
-            _safeAddError(
-              controller,
-              StateError('Realtime subscribe failed: $status'),
-              StackTrace.current,
-            );
-          }
-        });
+      channel =
+          _client.channel(_realtimeTopic('conversations', currentStudentId))
+            ..onPostgresChanges(
+              event: PostgresChangeEvent.all,
+              schema: 'public',
+              table: conversationsTable,
+              filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'user_1',
+                value: currentStudentId,
+              ),
+              callback: applyRealtimePayload,
+            )
+            ..onPostgresChanges(
+              event: PostgresChangeEvent.all,
+              schema: 'public',
+              table: conversationsTable,
+              filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'user_2',
+                value: currentStudentId,
+              ),
+              callback: applyRealtimePayload,
+            )
+            ..subscribe((status, [error]) {
+              if (status == RealtimeSubscribeStatus.channelError ||
+                  status == RealtimeSubscribeStatus.timedOut) {
+                _safeAddError(
+                  controller,
+                  StateError('Realtime subscribe failed: $status'),
+                  StackTrace.current,
+                );
+              }
+            });
 
       unawaited(emitThreads());
     };
@@ -236,6 +284,7 @@ class ChatService {
     return controller.stream;
   }
 
+  @override
   Future<List<ChatMessage>> loadConversation({
     required String conversationId,
     int limit = 80,
@@ -250,6 +299,7 @@ class ChatService {
     return _asRows(response).map(ChatMessage.fromJson).toList();
   }
 
+  @override
   Stream<List<ChatMessage>> streamConversation({
     required String conversationId,
     int limit = 80,
@@ -334,13 +384,12 @@ class ChatService {
     required String currentStudentId,
   }) {
     final controller = StreamController<ChatMessage>.broadcast();
-    final recentMessageIds = LinkedHashSet<String>();
+    final recentMessageIds = <String>{};
     RealtimeChannel? channel;
 
     void applyRealtimePayload(PostgresChangePayload payload) {
       if (payload.eventType != PostgresChangeEvent.insert) return;
       final record = payload.newRecord;
-      if (record == null) return;
 
       final message = ChatMessage.fromJson(record);
       if (message.receiverStudentId != currentStudentId) return;
@@ -413,11 +462,15 @@ class ChatService {
     return controller.stream;
   }
 
+  @override
   Future<String?> getConversationId({
     required String currentStudentId,
     required String otherStudentId,
   }) async {
-    final conversationId = generateConversationId(currentStudentId, otherStudentId);
+    final conversationId = generateConversationId(
+      currentStudentId,
+      otherStudentId,
+    );
 
     final response = await _client
         .from(conversationsTable)
@@ -429,6 +482,7 @@ class ChatService {
     return response['id']?.toString();
   }
 
+  @override
   Future<String> ensureConversation({
     required String currentStudentId,
     required String otherStudentId,
@@ -444,21 +498,21 @@ class ChatService {
     }
 
     final participants = _sortParticipants(currentStudentId, otherStudentId);
-    final conversationId = generateConversationId(currentStudentId, otherStudentId);
+    final conversationId = generateConversationId(
+      currentStudentId,
+      otherStudentId,
+    );
 
     final response = await _client
         .from(conversationsTable)
-        .upsert(
-          {
-            'id': conversationId,
-            'user_1': participants.first,
-            'user_2': participants.last,
-            'last_message': lastMessage,
-            'last_sender_id': lastSenderId,
-            'updated_at': DateTime.now().toUtc().toIso8601String(),
-          },
-          onConflict: 'id',
-        )
+        .upsert({
+          'id': conversationId,
+          'user_1': participants.first,
+          'user_2': participants.last,
+          'last_message': lastMessage,
+          'last_sender_id': lastSenderId,
+          'updated_at': DateTime.now().toUtc().toIso8601String(),
+        }, onConflict: 'id')
         .select()
         .single();
 
@@ -466,6 +520,7 @@ class ChatService {
     return row['id'].toString();
   }
 
+  @override
   Future<ChatMessage> sendMessage({
     required String conversationId,
     required String senderStudentId,
@@ -511,7 +566,9 @@ class ChatService {
   }
 
   void _upsertMessage(List<ChatMessage> messages, ChatMessage message) {
-    final index = messages.indexWhere((item) => item.id.toString() == message.id.toString());
+    final index = messages.indexWhere(
+      (item) => item.id.toString() == message.id.toString(),
+    );
     if (index == -1) {
       messages.add(message);
     } else {
@@ -519,7 +576,9 @@ class ChatService {
     }
   }
 
-  Future<Map<String, ChatUser>> _loadUsersByStudentIds(List<String> studentIds) async {
+  Future<Map<String, ChatUser>> _loadUsersByStudentIds(
+    List<String> studentIds,
+  ) async {
     if (studentIds.isEmpty) return {};
 
     final response = await _client

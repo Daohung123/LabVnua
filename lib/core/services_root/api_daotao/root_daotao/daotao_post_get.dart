@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:aqedu/core/logging/app_log.dart';
+import 'package:aqedu/core/database/api_read_resource_registry.dart';
+import 'package:aqedu/core/database/api_read_snapshot_store.dart';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,6 +13,7 @@ class ApiHelper {
   String? cookie;
   String? token;
   final ApiResponseCacheService _cacheService = ApiResponseCacheService();
+  final ApiReadSnapshotStore _snapshotStore = ApiReadSnapshotStore();
 
   ApiHelper();
   ApiHelper.withSession(String cookieIn, String tokenIn) {
@@ -110,6 +113,8 @@ class ApiHelper {
   Future<dynamic> _request(String method, String path, {Map? body}) async {
     final uri = Uri.parse("$APIDAOTAO$path");
     final requestBody = body ?? const {};
+    final isReadRequest =
+        ApiReadResourceRegistry.semanticsFor(path) == ApiRequestSemantics.read;
     AppLog.api(
       'Bắt đầu gọi API đào tạo',
       khuVuc: 'API đào tạo',
@@ -139,7 +144,7 @@ class ApiHelper {
         },
       );
 
-      if (_shouldCache(response)) {
+      if (isReadRequest && _shouldCache(response)) {
         await _cacheService.saveResponse(
           method: method,
           path: path,
@@ -162,7 +167,13 @@ class ApiHelper {
           path: path,
           requestBody: requestBody,
         );
-        return _decode(cachedBody ?? response.body);
+        final bodyToUse = cachedBody ?? response.body;
+        await _snapshotStore.save(
+          resourceKey: ApiReadResourceRegistry.resourceKeyFor(path),
+          requestBody: requestBody,
+          payloadJson: bodyToUse,
+        );
+        return _decode(bodyToUse);
       }
 
       return _decode(response.body);
@@ -175,6 +186,7 @@ class ApiHelper {
         stackTrace: stackTrace,
         ketQua: 'Đang kiểm tra cache SQLite để fallback.',
       );
+      if (!isReadRequest) rethrow;
       final cachedBody = await _cacheService.getResponseBody(
         method: method,
         path: path,

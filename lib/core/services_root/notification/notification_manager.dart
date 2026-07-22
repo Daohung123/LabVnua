@@ -10,7 +10,7 @@ import 'package:aqedu/features/chat/models/chat_message.dart';
 import 'package:aqedu/features/chat/models/chat_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class NotificationManager with WidgetsBindingObserver {
   NotificationManager._();

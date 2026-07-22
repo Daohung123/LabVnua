@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ServiceSqlInformationStudentRoot {
   final DataBaseConfig _dbConfig = DataBaseConfig();

@@ -116,6 +116,27 @@ AI thay Chat trên navigation, truy vấn dữ liệu nội bộ, hỗ trợ Spe
 | 19 | AI_ASSISTANT-CASE-19 | AI_ASSISTANT-F02 | AI_ASSISTANT-FN02 | AI_ASSISTANT-V02 |
 | 20 | AI_ASSISTANT-CASE-20 | AI_ASSISTANT-F03 | AI_ASSISTANT-FN03 | AI_ASSISTANT-V03 |
 
+## Implemented architecture update (2026-07-22)
+
+- Gemini classification is restricted to `noSqlite`, `sqlite`, and `navigate`; it cannot produce SQL, routes, URLs, table names, or widgets.
+- Context uses a local academic allowlist. Credentials, raw payloads, chat, contact/financial data, and analytics are excluded.
+- Vietnamese STT/TTS supports short commands. Voice navigation runs only after TTS completes; a safe manual navigation action remains available on TTS failure.
+- Navigation is a typed local allowlist for existing screens. Entity-detail navigation remains disabled until a resolver exists.
+
+## Runtime configuration (2026-07-22)
+
+- Gemini receives `GEMINI_API_KEY` and `GEMINI_MODEL` through
+  `--dart-define-from-file=.env` and `String.fromEnvironment`.
+- `.env` is local and Git-ignored; `.env.example` has no credential values.
+- The default model is `gemini-3.5-flash`. A mobile client key is not a
+  server-side secret, so production requires appropriate key restriction or a
+  backend proxy.
+
+## Remaining verification
+
+- Android/iOS real-device and release-build validation is still required for STT/TTS and SQLCipher.
+- Supabase realtime-to-local-cache wiring remains subject to the repository's missing Supabase schema/RLS contract.
+
 ## Approval
 
 - Trạng thái: Draft DD v0.1.

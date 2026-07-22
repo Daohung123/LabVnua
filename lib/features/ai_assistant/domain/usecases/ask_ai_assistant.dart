@@ -1,3 +1,4 @@
+import 'package:aqedu/features/ai_assistant/domain/entities/ai_turn.dart';
 import 'package:aqedu/features/ai_assistant/domain/repositories/ai_assistant_repository.dart';
 
 class AskAiAssistant {
@@ -5,7 +6,7 @@ class AskAiAssistant {
 
   final AiAssistantRepository _repository;
 
-  Future<String> call(String prompt) {
-    return _repository.ask(prompt);
+  Future<AiTurnResult> call(String prompt, {required String sessionId}) {
+    return _repository.ask(prompt, sessionId: sessionId);
   }
 }

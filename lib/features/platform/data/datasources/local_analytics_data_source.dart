@@ -1,7 +1,7 @@
 import 'package:aqedu/core/database/app_database.dart';
 import 'package:aqedu/features/platform/data/models/local_analytics_event_model.dart';
 import 'package:aqedu/features/platform/domain/entities/local_analytics_event.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class LocalAnalyticsDataSource {
   LocalAnalyticsDataSource({AppDatabase? database})

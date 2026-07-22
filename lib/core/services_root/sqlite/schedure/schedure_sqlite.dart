@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/schedure/models/schedure_student.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ServiceSqlTkb {
   final DataBaseConfig _dbConfig = DataBaseConfig();

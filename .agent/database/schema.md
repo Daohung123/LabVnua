@@ -1,8 +1,8 @@
 # Database Schema
 
 ## SQLite Database
-- File name: `auth.db`
-- Version: `3`
+- File name: `aqedu_<owner_hash>.db` (legacy `auth.db` is isolated)
+- Version: `7`
 - Schema source: `lib/config/config_DB.dart`
 
 ## Tables
@@ -20,6 +20,9 @@
 | `cached_course_register` | Cached watched course registration data. | same cache shape | `lib/config/config_DB.dart` |
 | `cached_training_notifications` | Cached watched training notifications. | same cache shape | `lib/config/config_DB.dart` |
 | `thoi_khoa_bieu` | Local schedule table. | `id`, `thu_kieu_so`, `tiet_bat_dau`, `so_tiet`, `ten_mon`, `ten_giang_vien`, `ma_phong`, `ngay_hoc` | `lib/config/config_DB.dart` |
+| `api_read_snapshots` | Owner-scoped raw local snapshot for validated portal reads. | `owner_hash`, `resource_key`, `request_hash`, `payload_hash`, `fetched_at` | `lib/config/config_DB.dart` |
+| `ai_session_turns` | Per-login AI transcript/answer/action history; no audio. | `id`, `owner_hash`, `session_id`, `task_kind`, `created_at` | `lib/config/config_DB.dart` |
+| `chat_*_cache` | Owner-scoped local source for Chat repository reads after remote/realtime refresh. | `owner_hash`, business key, `updated_at` | `lib/config/config_DB.dart` |
 
 ## Indexes and Constraints
 | Object | Purpose | Evidence |

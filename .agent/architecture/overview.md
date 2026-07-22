@@ -31,6 +31,11 @@ Evidence: `README.md`, `lib/features/*`, `lib/core/*`, `docs/repository-audit.md
 
 Evidence: `pubspec.yaml`, `lib/config/config_DB.dart`, `lib/core/services_root/api_daotao/root_daotao/daotao_post_get.dart`, `lib/features/chat/services/chat_service.dart`, `lib/features/ai_assistant/controllers/controller_ai.dart`, `lib/features/notification/services/background_sync_service.dart`
 
+## Local-first Security Boundary
+- User data is stored in a SQLCipher database whose file name is scoped by a SHA-256 hash of the authenticated user identifier; the database key and session credentials are held by platform secure storage.
+- Portal reads are classified before caching. Valid reads can be snapshotted locally; mutations do not fall back to cache.
+- UI and AI consume local projections. The AI gateway receives only allowlisted academic context and may return only typed navigation targets.
+
 ## Verification Strategy
 - Current automated coverage is minimal and focused on a pure chat helper.
 - Use `flutter test` for regression checks and `flutter analyze` for analyzer/lint checks.

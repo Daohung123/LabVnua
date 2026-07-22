@@ -1,7 +1,7 @@
 import 'package:aqedu/core/database/app_database.dart';
 import 'package:aqedu/features/task/data/models/local_task_model.dart';
 import 'package:aqedu/features/task/domain/entities/local_task.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class LocalTaskLocalDataSource {
   LocalTaskLocalDataSource({AppDatabase? database})

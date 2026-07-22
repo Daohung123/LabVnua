@@ -41,8 +41,17 @@
 ## Config key names
 
 - GEMINI_API_KEY
+- GEMINI_MODEL (mặc định: `gemini-3.5-flash`)
 - SUPABASE_URL
 - SUPABASE_ANON_KEY
+
+## Runtime configuration safety
+
+- Runtime config được truyền bằng `--dart-define-from-file=.env` và đọc qua
+  `String.fromEnvironment`; `.env` là file local bị Git ignore.
+- Chỉ `.env.example` được commit và không chứa giá trị credential thật.
+- Gemini key đóng gói trong mobile client không phải server secret; production
+  cần key restriction phù hợp hoặc backend proxy khi cần bảo vệ secret.
 
 ## Flags
 

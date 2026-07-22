@@ -1,4 +1,5 @@
 import 'package:aqedu/features/ai_assistant/domain/services/ai_context_selector.dart';
+import 'package:aqedu/features/ai_assistant/domain/entities/ai_turn.dart';
 import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
 import 'package:aqedu/features/class_session/domain/entities/class_session_note.dart';
@@ -56,7 +57,13 @@ void main() {
     testWidgets('AI screen sends prompt and renders response', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: AIChatScreen(askHandler: (_) async => 'Câu trả lời test'),
+          home: AIChatScreen(
+            askHandler: (_, {required sessionId}) async => AiTurnResult(
+              intent: const AiIntent(taskKind: AiTaskKind.noSqlite),
+              answerText: 'Câu trả lời test',
+              spokenText: 'Câu trả lời test',
+            ),
+          ),
         ),
       );
 

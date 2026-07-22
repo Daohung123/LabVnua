@@ -2,9 +2,9 @@
 
 ## Current Workflow
 - SQLite schema is created in `openDatabase` callbacks inside `lib/config/config_DB.dart`.
-- Current database version is `3`.
-- `onCreate` creates base tables and calls `_createChangeNotificationTables`.
-- `onUpgrade` only handles `oldVersion < 3` by calling `_createChangeNotificationTables`.
+- Current encrypted database version is `7`.
+- `onCreate` creates base, feature, cache, local-first snapshot, AI-turn, and chat-cache tables.
+- `onUpgrade` adds the local-first tables at version 7. Legacy `auth.db` is isolated rather than copied or deleted automatically.
 
 Evidence: `lib/config/config_DB.dart`
 
@@ -19,6 +19,7 @@ Evidence: `lib/config/config_DB.dart`
 - Do not change SQLite schema without a `BUG` or `CODING` checklist that names the affected table and migration path.
 - If adding local tables or columns, update `.agent/database/schema.md`, `.agent/database/migrations.md`, and relevant tests/checklists.
 - Do not infer Supabase migrations from Dart table use; require a repo-owned SQL/schema source or record `OPEN_QUESTION`.
+- Validate SQLCipher release builds on Android and iOS before treating a persistence change as production-ready.
 
 ## OPEN_QUESTION
 - `OPEN_QUESTION-DB-04:` No approved migration policy for destructive local schema changes is documented.

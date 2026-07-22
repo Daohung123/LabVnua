@@ -5,7 +5,7 @@ import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.da
 import 'package:aqedu/features/class_session/data/models/class_session_note_model.dart';
 import 'package:aqedu/features/class_session/domain/entities/class_session_note.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ClassSessionNoteLocalDataSource {
   ClassSessionNoteLocalDataSource({

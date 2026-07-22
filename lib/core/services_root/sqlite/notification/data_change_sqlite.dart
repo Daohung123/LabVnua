@@ -1,6 +1,6 @@
 import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/notification/models/data_change_models.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class DataChangeSqliteService {
   final DataBaseConfig _dbConfig = DataBaseConfig();

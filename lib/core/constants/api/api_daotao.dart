@@ -1,4 +1,12 @@
 const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+const String geminiModel = String.fromEnvironment(
+  'GEMINI_MODEL',
+  defaultValue: 'gemini-3.5-flash',
+);
+const String geminiFallbackModel = String.fromEnvironment(
+  'GEMINI_FALLBACK_MODEL',
+  defaultValue: 'gemini-2.5-flash',
+);
 
 //File này cho phép tinh chỉnh dữ liệu của api daotap.vnua.edu.vn
 //Địa chỉ gốc

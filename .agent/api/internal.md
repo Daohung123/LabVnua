@@ -14,8 +14,8 @@
 |---|---|
 | Source | `lib/features/auth/student/controllers/ctrl_login_student.dart`, `lib/core/services_root/api_daotao/auth/check_login.dart`, `lib/core/services_root/api_daotao/auth/re_login.dart` |
 | Purpose | Authenticate student, store session locally, restore current session. |
-| Storage | SQLite `session` table. |
-| Risk | Session table includes sensitive fields; see `.agent/architecture/audit.md`. |
+| Storage | Platform secure storage; no credentials are stored in SQLite. |
+| Risk | Database encryption key and credential material must never be logged or included in AI context. |
 
 ## Supabase Chat Service
 | Field | Notes |
@@ -37,10 +37,14 @@
 ## AI Assistant Controller
 | Field | Notes |
 |---|---|
-| Source | `lib/features/ai_assistant/controllers/controller_ai.dart` |
-| Purpose | Builds Gemini prompt, optionally adds exported notification data when query is notification-related, returns AI text. |
+| Source | `lib/features/ai_assistant/data/repositories/gemini_ai_assistant_repository.dart` |
+| Purpose | Classifies typed AI work, loads only allowlisted local context, and returns typed text/speech/navigation results. |
 | Config | `GEMINI_API_KEY` via `String.fromEnvironment`. |
 | Constraint | Do not copy prompt-included user/private data into worklogs. |
+
+## Local-first API Rules
+- `ApiReadResourceRegistry` classifies endpoints by semantic read/mutation, including POST reads.
+- Only valid reads are cached/snapshotted; a mutation error is rethrown and is never satisfied from cache.
 
 ## UI/Design Component Boundary
 | Field | Notes |

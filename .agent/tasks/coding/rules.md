@@ -16,6 +16,8 @@
 - Add focused tests for pure helpers, model mapping, controller logic, or service behavior when the change has testable logic.
 - Avoid adding new global singletons unless the existing subsystem already uses that pattern.
 - For sensitive data paths, avoid adding `print` or `debugPrint`; use safe debug-only logging if needed.
+- Presentation layers must not access HTTP or SQLite directly. Keep AI context and navigation behind typed local allowlists.
+- Cache only semantic reads, including read-only POST endpoints. Do not provide offline mutation fallback without an explicit conflict contract.
 
 ## OPEN_QUESTION
 - `OPEN_QUESTION-CODING-01:` No formal naming convention for Dart files/classes beyond existing mixed naming is documented.

@@ -3,9 +3,9 @@
 ## Counters
 | TYPE | Completed Since Review | Last Review | Next Review |
 |---|---:|---|---|
-| CODING | 2 | 2026-07-03 | 10 completed worklogs |
+| CODING | 5 | 2026-07-03 | 10 completed worklogs |
 | TEST | 0 | - | 10 completed worklogs |
-| BUG | 2 | - | 10 completed worklogs |
+| BUG | 3 | - | 10 completed worklogs |
 | CREATE_DD | 2 | - | 10 completed worklogs |
 
 ## Skills

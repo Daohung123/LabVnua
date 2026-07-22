@@ -5,10 +5,20 @@ import 'dart:ui';
 import 'package:aqedu/config/sync_data.dart';
 import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
+import 'package:aqedu/features/ai_assistant/domain/entities/ai_turn.dart';
+import 'package:aqedu/features/course_register/screens/view_courses_register.dart';
 import 'package:aqedu/features/home/home_view/screens/student_home_view.dart';
 import 'package:aqedu/features/home/other_view/screens/student_other_view.dart';
 import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';
 import 'package:aqedu/features/home/study_view/screens/study_view.dart';
+import 'package:aqedu/features/notification/screens/view_noti_student.dart';
+import 'package:aqedu/features/prerequisite_subjects/screens/view_prequisite_subjects.dart';
+import 'package:aqedu/features/program_training/screens/program_training_view.dart';
+import 'package:aqedu/features/qr_code/screens/view_qr_code.dart';
+import 'package:aqedu/features/schedure/screens/study_view_day_month.dart';
+import 'package:aqedu/features/score_data/screens/view_score_student.dart';
+import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart';
+import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,6 +43,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  final ValueNotifier<int> _voiceStartRequests = ValueNotifier(0);
+  late final List<Widget> _pages = <Widget>[
+    const HomeStudent(),
+    const HocTapView(),
+    AIChatScreen(
+      voiceStartRequests: _voiceStartRequests,
+      onNavigate: _handleAiNavigation,
+    ),
+    const OtherFeaturesView(),
+    const SettingsView(),
+  ];
   @override
   void initState() {
     super.initState();
@@ -65,14 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _NavDest('Cài đặt', Icons.settings_outlined, Icons.settings_rounded),
   ];
 
-  static const _pages = <Widget>[
-    HomeStudent(),
-    HocTapView(),
-    AIChatScreen(),
-    OtherFeaturesView(),
-    SettingsView(),
-  ];
-
   void _setTab(int i) {
     if (_currentIndex == i) return;
     AppLog.thaoTacNguoiDung(
@@ -85,6 +98,53 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     HapticFeedback.selectionClick();
     setState(() => _currentIndex = i);
+  }
+
+  void _openVoiceAssistant() {
+    _setTab(2);
+    _voiceStartRequests.value++;
+  }
+
+  void _handleAiNavigation(AiNavigationAction action) {
+    switch (action.target) {
+      case AiNavigationTarget.home:
+        _setTab(0);
+        return;
+      case AiNavigationTarget.study:
+        _setTab(1);
+        return;
+      case AiNavigationTarget.settings:
+        _setTab(4);
+        return;
+      case AiNavigationTarget.schedule:
+        _push(const ScheduleScreen());
+      case AiNavigationTarget.scores:
+        _push(const ScoreStudentView());
+      case AiNavigationTarget.tuition:
+        _push(const HocPhiView());
+      case AiNavigationTarget.notifications:
+        _push(const NotificationView());
+      case AiNavigationTarget.tasks:
+        _push(const LocalTaskScreen());
+      case AiNavigationTarget.courseRegistration:
+        _push(const CourseRegisterView());
+      case AiNavigationTarget.programTraining:
+        _push(const ProgramTrainingView());
+      case AiNavigationTarget.prerequisites:
+        _push(const PrerequisiteView());
+      case AiNavigationTarget.qrScanner:
+        _push(const QRScannerView());
+    }
+  }
+
+  void _push(Widget page) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+  }
+
+  @override
+  void dispose() {
+    _voiceStartRequests.dispose();
+    super.dispose();
   }
 
   @override
@@ -113,20 +173,46 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   : Stack(
                       children: [
-                        IndexedStack(index: _currentIndex, children: _pages),
-                        Positioned(
-                          left: 12,
-                          right: 12,
-                          bottom: 12,
-                          child: SafeArea(
-                            top: false,
-                            child: _BottomNav(
-                              destinations: _destinations,
-                              selectedIndex: _currentIndex,
-                              onSelected: _setTab,
+                        Column(
+                          children: [
+                            Expanded(
+                              child: IndexedStack(
+                                index: _currentIndex,
+                                children: _pages,
+                              ),
+                            ),
+                            SafeArea(
+                              top: false,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  12,
+                                  0,
+                                  12,
+                                  12,
+                                ),
+                                child: _BottomNav(
+                                  destinations: _destinations,
+                                  selectedIndex: _currentIndex,
+                                  onSelected: _setTab,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (_currentIndex != 2)
+                          Positioned(
+                            right: 24,
+                            bottom: 98,
+                            child: SafeArea(
+                              top: false,
+                              child: FloatingActionButton.small(
+                                key: const Key('home-voice-ai-fab'),
+                                tooltip: 'Nói với trợ lý AI',
+                                onPressed: _openVoiceAssistant,
+                                child: const Icon(Icons.mic_none_rounded),
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
             ],

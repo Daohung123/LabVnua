@@ -26,6 +26,8 @@
 
 ## CHECK
 - [ ] Build/lint
+- [ ] Data path (if applicable): API/model -> encrypted owner-scoped SQLite -> repository -> UI/AI
+- [ ] Privacy (if applicable): no credential, raw payload, chat, contact, financial, or analytics data sent to AI
 - [ ] Unit/API test: `<command or flow>`
 - [ ] Manual flow: `<steps>`
 - [ ] Regression: `<related feature>`

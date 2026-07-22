@@ -1,5 +1,5 @@
 import 'package:aqedu/config/config_db.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class AppDatabase {
   AppDatabase({DataBaseConfig? config}) : _config = config ?? DataBaseConfig();
@@ -7,4 +7,6 @@ class AppDatabase {
   final DataBaseConfig _config;
 
   Future<Database> get instance => _config.database;
+
+  Future<String> get ownerHash => _config.ownerHash;
 }

@@ -6,6 +6,10 @@ class AppEnvironment {
 
   String get geminiApiKey => daotao_config.geminiApiKey;
 
+  String get geminiModel => daotao_config.geminiModel;
+
+  String get geminiFallbackModel => daotao_config.geminiFallbackModel;
+
   String get supabaseUrl => SupabaseKey.url;
 
   String get supabaseAnonKey => SupabaseKey.anonKey;

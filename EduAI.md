@@ -160,7 +160,8 @@ EduAI là một ứng dụng di động toàn diện giúp sinh viên Học vi�
 - **http (1.6.0)** - HTTP client
 - **RESTful API** - Communication với hệ thống đào tạo VNUA
 - **Google Generative AI (0.4.0)** - Gemini AI integration
-- **flutter_dotenv (6.0.1)** - Environment configuration
+- **Dart compile-time defines** - Local Gemini configuration via
+  `--dart-define-from-file=.env`; no runtime dotenv asset is bundled
 
 ### Notifications & Background
 - **flutter_local_notifications (19.5.0)** - Local push notifications

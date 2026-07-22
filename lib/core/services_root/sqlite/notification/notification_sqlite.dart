@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/features/notification/models/notification_student.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ServiceSqlNotificationStudentRoot {
   final DataBaseConfig _dbConfig = DataBaseConfig();

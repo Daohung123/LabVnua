@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:aqedu/config/config_db.dart';
 import 'package:aqedu/core/logging/app_log.dart';
 import 'package:crypto/crypto.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class ApiResponseCacheService {
   ApiResponseCacheService({DataBaseConfig? dbConfig})
@@ -22,6 +22,7 @@ class ApiResponseCacheService {
     required String sourceUrl,
   }) async {
     final db = await _dbConfig.database;
+    final ownerHash = await _dbConfig.ownerHash;
     final normalizedMethod = method.toUpperCase();
     final normalizedRequest = encodeRequestBody(requestBody);
     final requestHash = hashRequestBody(requestBody);
@@ -38,11 +39,7 @@ class ApiResponseCacheService {
     );
 
     await db.insert(tableName, {
-      'id': cacheId(
-        method: normalizedMethod,
-        path: path,
-        requestBody: requestBody,
-      ),
+      'owner_hash': ownerHash,
       'method': normalizedMethod,
       'path': path,
       'request_hash': requestHash,
@@ -68,8 +65,13 @@ class ApiResponseCacheService {
     final result = await db.query(
       tableName,
       columns: const ['response_body'],
-      where: 'method = ? AND path = ? AND request_hash = ?',
-      whereArgs: [method.toUpperCase(), path, hashRequestBody(requestBody)],
+      where: 'owner_hash = ? AND method = ? AND path = ? AND request_hash = ?',
+      whereArgs: [
+        await _dbConfig.ownerHash,
+        method.toUpperCase(),
+        path,
+        hashRequestBody(requestBody),
+      ],
       orderBy: 'cached_at DESC',
       limit: 1,
     );

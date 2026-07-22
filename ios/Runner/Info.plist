@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Ứng dụng cần microphone để nhận diện câu hỏi tiếng Việt cho trợ lý AI.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Ứng dụng cần nhận diện giọng nói tiếng Việt để chuyển câu hỏi thành văn bản.</string>
 </dict>
 </plist>

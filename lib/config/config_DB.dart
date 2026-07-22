@@ -1,50 +1,83 @@
+import 'package:aqedu/core/database/encrypted_database_recovery.dart';
+import 'package:aqedu/core/security/owner_scope.dart';
+import 'package:aqedu/core/security/secure_session_store.dart';
 import 'package:aqedu/core/logging/app_log.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite_sqlcipher/sqflite.dart';
 
 class DataBaseConfig {
   static Database? _database;
+  static String? _activeOwnerHash;
+  final SecureSessionStore _sessionStore;
+
+  DataBaseConfig({SecureSessionStore? sessionStore})
+    : _sessionStore = sessionStore ?? SecureSessionStore();
 
   /// mở database
   Future<Database> get database async {
-    if (_database != null) {
+    final ownerHash = await _resolveOwnerHash();
+    if (_database != null && _activeOwnerHash == ownerHash) {
       AppLog.coSoDuLieu('Dùng lại kết nối SQLite hiện có', khuVuc: 'SQLite');
       return _database!;
     }
 
-    _database = await _initDB();
+    await _database?.close();
+    _database = null;
+    _activeOwnerHash = ownerHash;
+
+    _database = await _initDB(ownerHash);
     return _database!;
   }
 
-  Future<Database> _initDB() async {
-    final path = join(await getDatabasesPath(), 'auth.db');
+  Future<String> get ownerHash => _resolveOwnerHash();
+
+  Future<String> _resolveOwnerHash() async {
+    final session = await _sessionStore.read();
+    if (session == null) {
+      throw StateError('Không có phiên bảo mật để mở dữ liệu cục bộ.');
+    }
+    return OwnerScope.fromUser(session.user);
+  }
+
+  Future<Database> _initDB(String ownerHash) async {
+    final path = join(await getDatabasesPath(), 'aqedu_$ownerHash.db');
+    final databaseKey = await _sessionStore.readOrCreateDatabaseKey(ownerHash);
     AppLog.coSoDuLieu(
-      'Mở cơ sở dữ liệu SQLite',
+      'Mở cơ sở dữ liệu SQLite mã hóa',
       khuVuc: 'SQLite',
-      duLieu: {'ten_file': 'auth.db'},
+      duLieu: {'owner_scope': ownerHash.substring(0, 8)},
     );
 
+    try {
+      return await _openEncryptedDatabase(path, databaseKey);
+    } on DatabaseException catch (error) {
+      final wasQuarantined = await EncryptedDatabaseRecovery()
+          .quarantineUnreadableDatabase(path);
+      if (!wasQuarantined) rethrow;
+
+      AppLog.coSoDuLieu(
+        'Cô lập cache SQLite mã hóa không thể mở và tạo cache mới',
+        khuVuc: 'SQLite',
+        duLieu: {
+          'owner_scope': ownerHash.substring(0, 8),
+          'loai_loi': error.runtimeType.toString(),
+        },
+      );
+      return _openEncryptedDatabase(path, databaseKey);
+    }
+  }
+
+  Future<Database> _openEncryptedDatabase(String path, String databaseKey) {
     return openDatabase(
       path,
-      version: 6,
+      password: databaseKey,
+      version: 7,
       onCreate: (db, version) async {
         AppLog.coSoDuLieu(
           'Tạo mới schema SQLite',
           khuVuc: 'SQLite',
           duLieu: {'version': version},
         );
-        // bảng session
-        await db.execute('''
-        CREATE TABLE session(
-          id INTEGER PRIMARY KEY,
-          user TEXT,
-          pass TEXT,
-          cookie TEXT,
-          token TEXT,
-          active INTEGER
-        )
-      ''');
-
         // bảng notifications
         await db.execute('''
         CREATE TABLE notifications(
@@ -183,6 +216,7 @@ class DataBaseConfig {
         await _createTaskPlatformTables(db);
         await _createClassSessionTables(db);
         await _createApiResponseCacheTable(db);
+        await _createLocalFirstTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         AppLog.coSoDuLieu(
@@ -203,8 +237,28 @@ class DataBaseConfig {
         if (oldVersion < 6) {
           await _createApiResponseCacheTable(db);
         }
+        if (oldVersion < 7) {
+          await _createLocalFirstTables(db);
+        }
       },
     );
+  }
+
+  static Future<void> clearCurrentUserData({
+    SecureSessionStore? sessionStore,
+  }) async {
+    final store = sessionStore ?? SecureSessionStore();
+    final session = await store.read();
+    if (session == null) return;
+    final ownerHash = OwnerScope.fromUser(session.user);
+    if (_activeOwnerHash == ownerHash) {
+      await _database?.close();
+      _database = null;
+      _activeOwnerHash = null;
+    }
+    final path = join(await getDatabasesPath(), 'aqedu_$ownerHash.db');
+    await deleteDatabase(path);
+    await store.deleteDatabaseKey(ownerHash);
   }
 
   Future<void> _createChangeNotificationTables(Database db) async {
@@ -374,7 +428,7 @@ class DataBaseConfig {
     );
     await db.execute('''
       CREATE TABLE IF NOT EXISTS api_response_cache(
-        id TEXT PRIMARY KEY,
+        owner_hash TEXT NOT NULL,
         method TEXT NOT NULL,
         path TEXT NOT NULL,
         request_hash TEXT NOT NULL,
@@ -383,13 +437,81 @@ class DataBaseConfig {
         response_status INTEGER NOT NULL,
         source_url TEXT NOT NULL,
         cached_at TEXT NOT NULL,
-        UNIQUE(method, path, request_hash)
+        PRIMARY KEY(owner_hash, method, path, request_hash)
       )
     ''');
     await db.execute('''
       CREATE INDEX IF NOT EXISTS idx_api_response_cache_path
       ON api_response_cache(path, cached_at DESC)
     ''');
+  }
+
+  Future<void> _createLocalFirstTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS api_read_snapshots(
+        owner_hash TEXT NOT NULL,
+        resource_key TEXT NOT NULL,
+        request_hash TEXT NOT NULL,
+        payload_json TEXT NOT NULL,
+        payload_hash TEXT NOT NULL,
+        fetched_at TEXT NOT NULL,
+        source_updated_at TEXT,
+        PRIMARY KEY(owner_hash, resource_key, request_hash)
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS ai_session_turns(
+        id TEXT PRIMARY KEY,
+        owner_hash TEXT NOT NULL,
+        session_id TEXT NOT NULL,
+        task_kind TEXT NOT NULL,
+        user_text TEXT NOT NULL,
+        answer_text TEXT NOT NULL,
+        spoken_text TEXT NOT NULL,
+        action_target TEXT,
+        created_at TEXT NOT NULL
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS chat_users_cache(
+        owner_hash TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        payload_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY(owner_hash, student_id)
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS chat_conversations_cache(
+        owner_hash TEXT NOT NULL,
+        conversation_id TEXT NOT NULL,
+        payload_json TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY(owner_hash, conversation_id)
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS chat_messages_cache(
+        owner_hash TEXT NOT NULL,
+        message_id TEXT NOT NULL,
+        conversation_id TEXT NOT NULL,
+        payload_json TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY(owner_hash, message_id)
+      )
+    ''');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_snapshot_owner_resource '
+      'ON api_read_snapshots(owner_hash, resource_key, fetched_at DESC)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_ai_turn_owner_session '
+      'ON ai_session_turns(owner_hash, session_id, created_at ASC)',
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS idx_chat_message_owner_conversation '
+      'ON chat_messages_cache(owner_hash, conversation_id, created_at ASC)',
+    );
   }
 
   Future<void> _createCachedDataTable(Database db, String tableName) async {

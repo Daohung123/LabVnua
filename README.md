@@ -91,17 +91,38 @@ flutter pub get
 
 ### Run the Application
 
-```bash
-flutter run \
-  --dart-define=GEMINI_API_KEY=... \
-  --dart-define=SUPABASE_URL=... \
-  --dart-define=SUPABASE_ANON_KEY=...
+Create a local compile-time configuration file before running the app:
+
+```powershell
+Copy-Item .env.example .env
 ```
+
+Set the required values in `.env` on your own machine. Keep
+`GEMINI_MODEL=gemini-3.5-flash` unless a tested Gemini model is deliberately
+selected for the environment.
+
+```bash
+flutter run --dart-define-from-file=.env
+```
+
+`.env` is a compile-time input, not a runtime asset. Stop the running app
+completely and launch it again with the command above after changing the file;
+hot reload and hot restart cannot replace a compiled Dart define. In VS Code,
+select the committed **AQEdu (.env)** launch configuration before pressing F5.
+For Android Studio, add `--dart-define-from-file=.env` under **Run > Edit
+Configurations > Flutter > Additional run args**, with the working directory
+set to the project root.
 
 On Windows PowerShell, use one line:
 
 ```powershell
-flutter run --dart-define=GEMINI_API_KEY=... --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
+flutter run --dart-define-from-file=.env
+```
+
+Build an Android release with the same local configuration:
+
+```powershell
+flutter build apk --release --dart-define-from-file=.env
 ```
 
 ### Run Tests
@@ -112,15 +133,24 @@ flutter test
 
 ## Configuration
 
-Runtime client configuration is provided with Dart compile-time defines:
+Runtime client configuration is provided with Dart compile-time defines from
+the ignored root `.env` file. Flutter passes them to
+`String.fromEnvironment` through `--dart-define-from-file=.env`.
 
 | Key | Purpose |
 | --- | --- |
 | `GEMINI_API_KEY` | Enables the AI assistant integration. |
+| `GEMINI_MODEL` | Gemini model identifier; default: `gemini-3.5-flash`. |
 | `SUPABASE_URL` | Supabase project URL for realtime chat. |
 | `SUPABASE_ANON_KEY` | Supabase anonymous client key for realtime chat. |
 
-Do not commit real keys to the repository. Use `.env.example` only as a blank reference for local setup. Existing keys that were previously committed should be rotated and reviewed in Git history before making the repository public.
+Do not commit real keys to the repository. `.env` is ignored and
+`.env.example` is only a blank reference for local setup. Values supplied to a
+mobile build are compiled into the client and must not be treated as a durable
+secret: restrict Gemini keys for the intended mobile apps where possible, and
+use a backend proxy for production workloads that require server-side secret
+protection. Existing keys that were previously committed should be rotated and
+reviewed in Git history before making the repository public.
 
 ## Current Status
 

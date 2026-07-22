@@ -47,6 +47,10 @@ If the task mixes types, choose the type that controls the main deliverable and 
 - For implementation tasks, make the smallest scoped change that satisfies the accepted requirement.
 - Prefer existing feature-first Flutter patterns under `lib/features/` and shared utilities under `lib/core/`.
 - Never write credentials, API keys, tokens, passwords, connection strings, production PII, or secret values into agent context, checklists, worklogs, or DDs.
+- For user data, keep the boundary `API read -> validated model/snapshot -> owner-scoped encrypted SQLite -> repository -> UI/AI`; presentation code must not call HTTP or SQLite directly.
+- Classify every portal request semantically as `read` or `mutation`. Only reads may use cache/fallback; mutations require a network result and invalidate affected local data.
+- AI context must be read through a local allowlist. Never send credentials, raw API payloads, chat content, contact/financial fields, or analytics to a model.
+- AI navigation must use a typed local allowlist; do not accept model-generated routes, URLs, SQL, table names, or widgets.
 
 ## Task Workflows
 - `CODING`: `.agent/tasks/coding/workflow.md`, `.agent/tasks/coding/rules.md`, `.agent/tasks/coding/design.md`

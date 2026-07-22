@@ -2,8 +2,12 @@ import 'package:aqedu/core/database/app_database.dart';
 import 'package:aqedu/core/config/app_environment.dart';
 import 'package:aqedu/features/ai_assistant/data/datasources/ai_context_local_data_source.dart';
 import 'package:aqedu/features/ai_assistant/data/datasources/gemini_ai_data_source.dart';
+import 'package:aqedu/features/ai_assistant/data/datasources/flutter_tts_gateway.dart';
+import 'package:aqedu/features/ai_assistant/data/datasources/speech_to_text_gateway.dart';
 import 'package:aqedu/features/ai_assistant/data/repositories/gemini_ai_assistant_repository.dart';
 import 'package:aqedu/features/ai_assistant/domain/repositories/ai_assistant_repository.dart';
+import 'package:aqedu/features/ai_assistant/domain/services/speech_input.dart';
+import 'package:aqedu/features/ai_assistant/domain/services/speech_output.dart';
 import 'package:aqedu/features/ai_assistant/domain/usecases/ask_ai_assistant.dart';
 import 'package:aqedu/features/ai_assistant/presentation/controllers/ai_controller.dart';
 import 'package:aqedu/features/class_session/data/datasources/class_session_note_local_data_source.dart';
@@ -29,6 +33,10 @@ class AppDependencies {
   final AppEnvironment environment = const AppEnvironment();
 
   final AppDatabase database = AppDatabase();
+
+  late final SpeechInput speechInput = SpeechToTextGateway();
+
+  late final SpeechOutput speechOutput = FlutterTtsGateway();
 
   late final AnalyticsRepository analyticsRepository = LocalAnalyticsRepository(
     localDataSource: LocalAnalyticsDataSource(database: database),
@@ -66,7 +74,11 @@ class AppDependencies {
 
   late final AiAssistantRepository aiAssistantRepository =
       GeminiAiAssistantRepository(
-        geminiDataSource: GeminiAiDataSource(apiKey: environment.geminiApiKey),
+        geminiDataSource: GeminiAiDataSource(
+          apiKey: environment.geminiApiKey,
+          modelName: environment.geminiModel,
+          fallbackModelName: environment.geminiFallbackModel,
+        ),
         contextDataSource: AiContextLocalDataSource(),
       );
 
