@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+
 import 'app_theme.dart';
 
-/// ========================================
-/// APP CONTAINERS - Reusable Container Components
-/// ========================================
-///
-/// Provides container styles for different use cases like info boxes,
-/// status indicators, action cards, and decorative containers.
-///
-/// Usage:
-/// ```
-/// AppContainer.infoBox(child: Text('Info message'))
-/// AppContainer.statusBadge(status: 'active')
-/// ```
-
 class AppContainer extends StatelessWidget {
+  const AppContainer({
+    super.key,
+    required this.child,
+    this.backgroundColor = AppColors.surface,
+    this.border,
+    this.borderRadius = AppRadius.md,
+    this.padding = const EdgeInsets.all(AppSpacing.md),
+    this.boxShadow,
+    this.decoration,
+    this.onTap,
+    this.gradient,
+    this.width,
+    this.height,
+  });
+
   final Widget child;
   final Color backgroundColor;
   final Border? border;
@@ -27,206 +30,198 @@ class AppContainer extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const AppContainer({
-    super.key,
-    required this.child,
-    this.backgroundColor = AppColors.surface,
-    this.border,
-    this.borderRadius = AppRadius.md,
-    this.padding = const EdgeInsets.all(12),
-    this.boxShadow,
-    this.decoration,
-    this.onTap,
-    this.gradient,
-    this.width,
-    this.height,
-  });
-
   @override
   Widget build(BuildContext context) {
-    final boxDecoration =
-        decoration ??
+    final effectiveDecoration = decoration ??
         BoxDecoration(
-          color: gradient != null ? null : backgroundColor,
+          color: gradient == null ? backgroundColor : null,
           gradient: gradient,
           borderRadius: BorderRadius.circular(borderRadius),
           border: border,
           boxShadow: boxShadow,
         );
 
-    Widget content = Container(
+    final content = Container(
       width: width,
       height: height,
-      decoration: boxDecoration,
+      decoration: effectiveDecoration,
       padding: padding,
       child: child,
     );
 
-    if (onTap != null) {
-      content = GestureDetector(onTap: onTap, child: content);
-    }
+    if (onTap == null) return content;
 
-    return content;
+    return Material(
+      color: AppColors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: content,
+      ),
+    );
   }
 
-  /// Info box - For informational content
   factory AppContainer.infoBox({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(14),
-  }) => AppContainer(
-    backgroundColor: AppColors.infoLight,
-    border: Border.all(color: AppColors.info, width: 0.8),
-    borderRadius: AppRadius.md,
-    padding: padding,
-    boxShadow: AppShadows.lightShadow,
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md14),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.infoLight,
+      border: Border.all(color: AppColors.primarySoft),
+      padding: padding,
+      child: child,
+    );
+  }
 
-  /// Success box - For success/positive messages
   factory AppContainer.successBox({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(14),
-  }) => AppContainer(
-    backgroundColor: AppColors.successLight,
-    border: Border.all(color: AppColors.success, width: 0.8),
-    borderRadius: AppRadius.md,
-    padding: padding,
-    boxShadow: AppShadows.lightShadow,
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md14),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.successLight,
+      border: Border.all(color: AppColors.successBorder),
+      padding: padding,
+      child: child,
+    );
+  }
 
-  /// Error box - For error/negative messages
   factory AppContainer.errorBox({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(14),
-  }) => AppContainer(
-    backgroundColor: AppColors.errorLight,
-    border: Border.all(color: AppColors.error, width: 0.8),
-    borderRadius: AppRadius.md,
-    padding: padding,
-    boxShadow: AppShadows.lightShadow,
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md14),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.errorLight,
+      border: Border.all(color: AppColors.errorBorder),
+      padding: padding,
+      child: child,
+    );
+  }
 
-  /// Warning box - For warnings/cautions
   factory AppContainer.warningBox({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(14),
-  }) => AppContainer(
-    backgroundColor: AppColors.warningLight,
-    border: Border.all(color: AppColors.warning, width: 0.8),
-    borderRadius: AppRadius.md,
-    padding: padding,
-    boxShadow: AppShadows.lightShadow,
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md14),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.warningLight,
+      border: Border.all(color: AppColors.warningBorder),
+      padding: padding,
+      child: child,
+    );
+  }
 
-  /// Action card - Clickable card with elevation
   factory AppContainer.actionCard({
     required Widget child,
     required VoidCallback onTap,
-    EdgeInsets padding = const EdgeInsets.all(14),
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.lg),
     double? width,
     double? height,
-  }) => AppContainer(
-    backgroundColor: AppColors.surface,
-    borderRadius: AppRadius.lg,
-    padding: padding,
-    boxShadow: AppShadows.lightShadow,
-    onTap: onTap,
-    width: width,
-    height: height,
-    child: child,
-  );
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.surface,
+      border: AppBorders.cardBorder,
+      borderRadius: AppRadius.lg,
+      padding: padding,
+      boxShadow: AppShadows.lightShadow,
+      onTap: onTap,
+      width: width,
+      height: height,
+      child: child,
+    );
+  }
 
-  /// Gradient container - With gradient background
   factory AppContainer.gradient({
     required Widget child,
     required Gradient gradient,
-    EdgeInsets padding = const EdgeInsets.all(14),
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.lg),
     double borderRadius = AppRadius.lg,
     List<BoxShadow>? boxShadow,
-  }) => AppContainer(
-    gradient: gradient,
-    borderRadius: borderRadius,
-    padding: padding,
-    boxShadow: boxShadow,
-    child: child,
-  );
+  }) {
+    return AppContainer(
+      gradient: gradient,
+      borderRadius: borderRadius,
+      padding: padding,
+      boxShadow: boxShadow,
+      child: child,
+    );
+  }
 
-  /// Subtle container - Minimal styling
   factory AppContainer.subtle({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(10),
-  }) => AppContainer(
-    backgroundColor: AppColors.background,
-    border: Border.all(color: AppColors.border, width: 0.5),
-    borderRadius: AppRadius.sm,
-    padding: padding,
-    boxShadow: [],
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.surfaceAlt,
+      border: AppBorders.lightBorder,
+      borderRadius: AppRadius.sm,
+      padding: padding,
+      boxShadow: const [],
+      child: child,
+    );
+  }
 
-  /// Elevated container - Strong shadow for prominence
   factory AppContainer.elevated({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(14),
-  }) => AppContainer(
-    backgroundColor: AppColors.surface,
-    borderRadius: AppRadius.xl,
-    padding: padding,
-    boxShadow: AppShadows.elevatedShadow,
-    child: child,
-  );
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.lg),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.surface,
+      border: AppBorders.cardBorder,
+      borderRadius: AppRadius.lg,
+      padding: padding,
+      boxShadow: AppShadows.mediumShadow,
+      child: child,
+    );
+  }
 
-  /// Outlined container - Bordered without fill
   factory AppContainer.outlined({
     required Widget child,
     Color borderColor = AppColors.border,
-    double borderWidth = 1.0,
-    EdgeInsets padding = const EdgeInsets.all(12),
-  }) => AppContainer(
-    backgroundColor: Colors.transparent,
-    border: Border.all(color: borderColor, width: borderWidth),
-    borderRadius: AppRadius.md,
-    padding: padding,
-    boxShadow: [],
-    child: child,
-  );
+    double borderWidth = 1,
+    EdgeInsets padding = const EdgeInsets.all(AppSpacing.md),
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.transparent,
+      border: Border.all(color: borderColor, width: borderWidth),
+      borderRadius: AppRadius.md,
+      padding: padding,
+      boxShadow: const [],
+      child: child,
+    );
+  }
 
-  /// Transparent container - No styling
   factory AppContainer.transparent({
     required Widget child,
-    EdgeInsets padding = const EdgeInsets.all(0),
-  }) => AppContainer(
-    backgroundColor: Colors.transparent,
-    padding: padding,
-    boxShadow: [],
-    child: child,
-  );
+    EdgeInsets padding = EdgeInsets.zero,
+  }) {
+    return AppContainer(
+      backgroundColor: AppColors.transparent,
+      padding: padding,
+      boxShadow: const [],
+      child: child,
+    );
+  }
 }
 
-/// ========================================
-/// STATUS BADGE - Colored status indicator
-/// ========================================
-
 class AppStatusBadge extends StatelessWidget {
-  final String label;
-  final Color backgroundColor;
-  final Color textColor;
-  final IconData? icon;
-  final EdgeInsets padding;
-  final double borderRadius;
-
   const AppStatusBadge({
     super.key,
     required this.label,
     required this.backgroundColor,
     required this.textColor,
     this.icon,
-    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-    this.borderRadius = AppRadius.full,
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: AppSpacing.sm10,
+      vertical: AppSpacing.xs,
+    ),
+    this.borderRadius = AppRadius.sm,
   });
+
+  final String label;
+  final Color backgroundColor;
+  final Color textColor;
+  final IconData? icon;
+  final EdgeInsets padding;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -241,14 +236,18 @@ class AppStatusBadge extends StatelessWidget {
         children: [
           if (icon != null) ...[
             Icon(icon, size: 14, color: textColor),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.xs),
           ],
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -256,60 +255,52 @@ class AppStatusBadge extends StatelessWidget {
     );
   }
 
-  /// Active status badge
   factory AppStatusBadge.active(String label) => AppStatusBadge(
-    label: label,
-    backgroundColor: AppColors.success.withOpacity(0.1),
-    textColor: AppColors.success,
-    icon: Icons.check_circle,
-  );
+        label: label,
+        backgroundColor: AppColors.successLight,
+        textColor: AppColors.success,
+        icon: Icons.check_circle_outline_rounded,
+      );
 
-  /// Inactive status badge
   factory AppStatusBadge.inactive(String label) => AppStatusBadge(
-    label: label,
-    backgroundColor: AppColors.textMuted.withOpacity(0.1),
-    textColor: AppColors.textMuted,
-    icon: Icons.cancel,
-  );
+        label: label,
+        backgroundColor: AppColors.surfaceAlt,
+        textColor: AppColors.textSecondary,
+        icon: Icons.remove_circle_outline_rounded,
+      );
 
-  /// Pending status badge
   factory AppStatusBadge.pending(String label) => AppStatusBadge(
-    label: label,
-    backgroundColor: AppColors.warning.withOpacity(0.1),
-    textColor: AppColors.warning,
-    icon: Icons.schedule,
-  );
+        label: label,
+        backgroundColor: AppColors.warningLight,
+        textColor: AppColors.warning,
+        icon: Icons.schedule_rounded,
+      );
 
-  /// Error status badge
   factory AppStatusBadge.error(String label) => AppStatusBadge(
-    label: label,
-    backgroundColor: AppColors.error.withOpacity(0.1),
-    textColor: AppColors.error,
-    icon: Icons.error,
-  );
+        label: label,
+        backgroundColor: AppColors.errorLight,
+        textColor: AppColors.error,
+        icon: Icons.error_outline_rounded,
+      );
 }
 
-/// ========================================
-/// DIVIDER - Custom divider component
-/// ========================================
-
 class AppDivider extends StatelessWidget {
+  const AppDivider({
+    super.key,
+    this.color = AppColors.divider,
+    this.height = 1,
+    this.thickness = 1,
+    this.indent,
+    this.endIndent,
+    this.direction = Axis.horizontal,
+  });
+
   final Color color;
   final double height;
   final double thickness;
   final double? indent;
   final double? endIndent;
   final Axis direction;
-
-  const AppDivider({
-    super.key,
-    this.color = AppColors.divider,
-    this.height = 1.0,
-    this.thickness = 1.0,
-    this.indent,
-    this.endIndent,
-    this.direction = Axis.horizontal,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -331,45 +322,33 @@ class AppDivider extends StatelessWidget {
     );
   }
 
-  /// Subtle divider
-  factory AppDivider.subtle() =>
-      const AppDivider(color: AppColors.border, height: 8, thickness: 0.5);
+  factory AppDivider.subtle() => const AppDivider(
+        color: AppColors.divider,
+        height: AppSpacing.sm,
+      );
 
-  /// With spacing
-  factory AppDivider.spaced({double spacing = 16}) =>
-      AppDivider(height: spacing, color: Colors.transparent);
+  factory AppDivider.spaced({double spacing = AppSpacing.lg}) => AppDivider(
+        height: spacing,
+        color: AppColors.transparent,
+      );
 }
 
-/// ========================================
-/// SPACER HELPER - For consistent spacing
-/// ========================================
-
 class AppSpacer extends StatelessWidget {
+  const AppSpacer.horizontal(this.width, {super.key}) : height = 0;
+  const AppSpacer.vertical(this.height, {super.key}) : width = 0;
+  const AppSpacer.all(double size, {super.key}) : width = size, height = size;
+  const AppSpacer({super.key, this.width = 0, this.height = 0});
+
   final double width;
   final double height;
 
-  const AppSpacer.horizontal(this.width, {super.key}) : height = 0;
-
-  const AppSpacer.vertical(this.height, {super.key}) : width = 0;
-
-  const AppSpacer.all(double size, {super.key}) : width = size, height = size;
-
-  const AppSpacer({super.key, this.width = 0, this.height = 0});
-
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(width: width, height: height);
-  }
+  Widget build(BuildContext context) => SizedBox(width: width, height: height);
 
-  factory AppSpacer.xs() => AppSpacer.all(AppSpacing.xs);
-
-  factory AppSpacer.sm() => AppSpacer.all(AppSpacing.sm);
-
-  factory AppSpacer.md() => AppSpacer.all(AppSpacing.md);
-
-  factory AppSpacer.lg() => AppSpacer.all(AppSpacing.lg);
-
-  factory AppSpacer.xl() => AppSpacer.all(AppSpacing.xl);
-
-  factory AppSpacer.xxl() => AppSpacer.all(AppSpacing.xxl);
+  factory AppSpacer.xs() => const AppSpacer.all(AppSpacing.xs);
+  factory AppSpacer.sm() => const AppSpacer.all(AppSpacing.sm);
+  factory AppSpacer.md() => const AppSpacer.all(AppSpacing.md);
+  factory AppSpacer.lg() => const AppSpacer.all(AppSpacing.lg);
+  factory AppSpacer.xl() => const AppSpacer.all(AppSpacing.xl);
+  factory AppSpacer.xxl() => const AppSpacer.all(AppSpacing.xxl);
 }

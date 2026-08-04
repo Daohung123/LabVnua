@@ -7,6 +7,7 @@ import 'subject_block.dart';
 import 'week_selector.dart';
 import '../../../models/schedure_student.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class WeekViewPage extends StatefulWidget {
   final List<ThoiKhoaBieu> allSchedule;
   final DateTime selectedDate;
@@ -114,7 +115,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       ),
       builder: (context) {
         return DraggableScrollableSheet(
@@ -138,8 +139,8 @@ class _WeekViewPageState extends State<WeekViewPage> {
                     height: 5,
                     margin: const EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.textTertiary,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                   ),
                   Text(
@@ -165,17 +166,17 @@ class _WeekViewPageState extends State<WeekViewPage> {
                           leading: Icon(
                             Icons.calendar_today,
                             color: isRealNow
-                                ? Colors.orange
+                                ? AppColors.warning
                                 : (isSelected
-                                      ? const Color(0xff104492)
-                                      : Colors.grey),
+                                      ? AppColors.primaryPressed
+                                      : AppColors.textSecondary),
                           ),
                           title: Text(
                             labelBuilder(item),
                             style: TextStyle(
                               color: isSelected
-                                  ? const Color(0xff104492)
-                                  : Colors.black87,
+                                  ? AppColors.primaryPressed
+                                  : AppColors.black87,
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -184,7 +185,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
                           trailing: isSelected
                               ? const Icon(
                                   Icons.check_circle,
-                                  color: Color(0xff104492),
+                                  color: AppColors.primaryPressed,
                                 )
                               : null,
                           onTap: () {
@@ -242,7 +243,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
         _parseStartDate(_selectedWeek?.thongTinTuan ?? "") ?? DateTime.now();
 
     return Container(
-      color: const Color(0xfff5f5f5),
+      color: AppColors.surfaceAlt,
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -304,8 +305,8 @@ class _WeekViewPageState extends State<WeekViewPage> {
       ),
       height: 45,
       decoration: BoxDecoration(
-        color: const Color(0xff104492),
-        border: Border(bottom: BorderSide(color: Colors.blue.shade100)),
+        color: AppColors.primaryPressed,
+        border: Border(bottom: BorderSide(color: AppColors.primarySoft)),
       ),
       child: Row(
         children: List.generate(7, (index) {
@@ -315,7 +316,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
               decoration: BoxDecoration(
                 border: Border(
                   right: BorderSide(
-                    color: Colors.white.withOpacity(0.2),
+                    color: AppColors.white.withOpacity(0.2),
                     width: 0.5,
                   ),
                 ),
@@ -327,7 +328,7 @@ class _WeekViewPageState extends State<WeekViewPage> {
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppColors.white,
                   ),
                 ),
               ),

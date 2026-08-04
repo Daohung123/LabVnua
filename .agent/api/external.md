@@ -16,7 +16,7 @@
 |---|---|
 | Direction | App <-> Supabase database/realtime |
 | Purpose | Realtime chat users, conversations, messages. |
-| Config keys | `SUPABASE_URL`, `SUPABASE_ANON_KEY` |
+| Config keys | `SUPABASE_URL`, `SUPABASE_ANON_KEY` through `AppEnvironment` runtime `.env` with Dart-define fallback |
 | Init source | `lib/core/services_root/supabase/supabase_config.dart` |
 | Table usage source | `lib/features/chat/services/chat_service.dart` |
 | Contract gap | `OPEN_QUESTION-API-02`: no repo-owned SQL schema, RLS, or migration file. |
@@ -26,7 +26,7 @@
 |---|---|
 | Direction | App -> Google Generative AI |
 | Purpose | AI assistant responses. |
-| Config key | `GEMINI_API_KEY` |
+| Config key | `GEMINI_API_KEY` through `AppEnvironment` runtime `.env` with Dart-define fallback |
 | Source | `lib/features/ai_assistant/controllers/controller_ai.dart`, `lib/core/constants/api/api_daotao.dart` |
 | Safety note | Do not log prompts or local notification exports into worklogs. |
 

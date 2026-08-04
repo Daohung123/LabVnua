@@ -1,18 +1,43 @@
-import 'package:aqedu/core/constants/api/api_daotao.dart' as daotao_config;
-import 'package:aqedu/core/constants/api/supabase_key.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppEnvironment {
   const AppEnvironment();
 
-  String get geminiApiKey => daotao_config.geminiApiKey;
+  static const _geminiApiKeyDefine = String.fromEnvironment('GEMINI_API_KEY');
+  static const _geminiModelDefine = String.fromEnvironment(
+    'GEMINI_MODEL',
+    defaultValue: 'gemini-3.5-flash',
+  );
+  static const _geminiFallbackModelDefine = String.fromEnvironment(
+    'GEMINI_FALLBACK_MODEL',
+    defaultValue: 'gemini-2.5-flash',
+  );
+  static const _supabaseUrlDefine = String.fromEnvironment('SUPABASE_URL');
+  static const _supabaseAnonKeyDefine = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+  );
 
-  String get geminiModel => daotao_config.geminiModel;
+  String get geminiApiKey => _value('GEMINI_API_KEY', _geminiApiKeyDefine);
 
-  String get geminiFallbackModel => daotao_config.geminiFallbackModel;
+  String get geminiModel => _value('GEMINI_MODEL', _geminiModelDefine);
 
-  String get supabaseUrl => SupabaseKey.url;
+  String get geminiFallbackModel =>
+      _value('GEMINI_FALLBACK_MODEL', _geminiFallbackModelDefine);
 
-  String get supabaseAnonKey => SupabaseKey.anonKey;
+  String get supabaseUrl => _value('SUPABASE_URL', _supabaseUrlDefine);
 
-  bool get isSupabaseConfigured => SupabaseKey.isConfigured;
+  String get supabaseAnonKey =>
+      _value('SUPABASE_ANON_KEY', _supabaseAnonKeyDefine);
+
+  bool get isSupabaseConfigured =>
+      supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty;
+
+  String _value(String key, String fallback) {
+    if (!dotenv.isInitialized) return fallback;
+    final runtimeValue = dotenv.maybeGet(key)?.trim();
+    if (runtimeValue != null && runtimeValue.isNotEmpty) {
+      return runtimeValue;
+    }
+    return fallback;
+  }
 }

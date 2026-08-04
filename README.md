@@ -91,7 +91,7 @@ flutter pub get
 
 ### Run the Application
 
-Create a local compile-time configuration file before running the app:
+Create a local runtime configuration file before running the app:
 
 ```powershell
 Copy-Item .env.example .env
@@ -102,27 +102,24 @@ Set the required values in `.env` on your own machine. Keep
 selected for the environment.
 
 ```bash
-flutter run --dart-define-from-file=.env
+flutter run
 ```
 
-`.env` is a compile-time input, not a runtime asset. Stop the running app
-completely and launch it again with the command above after changing the file;
-hot reload and hot restart cannot replace a compiled Dart define. In VS Code,
-select the committed **AQEdu (.env)** launch configuration before pressing F5.
-For Android Studio, add `--dart-define-from-file=.env` under **Run > Edit
-Configurations > Flutter > Additional run args**, with the working directory
-set to the project root.
+`.env` is loaded at startup through `flutter_dotenv`. Stop the running app
+completely and launch it again after changing the file so the new runtime
+config is loaded. Dart defines are still supported as a fallback for CI or
+explicit build pipelines.
 
 On Windows PowerShell, use one line:
 
 ```powershell
-flutter run --dart-define-from-file=.env
+flutter run
 ```
 
-Build an Android release with the same local configuration:
+Build an Android release with the same local configuration bundled as an asset:
 
 ```powershell
-flutter build apk --release --dart-define-from-file=.env
+flutter build apk --release
 ```
 
 ### Run Tests
@@ -133,9 +130,9 @@ flutter test
 
 ## Configuration
 
-Runtime client configuration is provided with Dart compile-time defines from
-the ignored root `.env` file. Flutter passes them to
-`String.fromEnvironment` through `--dart-define-from-file=.env`.
+Runtime client configuration is loaded from the ignored root `.env` file with
+`flutter_dotenv`. `String.fromEnvironment` values remain a fallback when a
+build pipeline supplies Dart defines explicitly.
 
 | Key | Purpose |
 | --- | --- |
@@ -145,10 +142,10 @@ the ignored root `.env` file. Flutter passes them to
 | `SUPABASE_ANON_KEY` | Supabase anonymous client key for realtime chat. |
 
 Do not commit real keys to the repository. `.env` is ignored and
-`.env.example` is only a blank reference for local setup. Values supplied to a
-mobile build are compiled into the client and must not be treated as a durable
-secret: restrict Gemini keys for the intended mobile apps where possible, and
-use a backend proxy for production workloads that require server-side secret
+`.env.example` is only a blank reference for local setup. Values bundled into a
+mobile build as assets or Dart defines must not be treated as durable secrets:
+restrict Gemini keys for the intended mobile apps where possible, and use a
+backend proxy for production workloads that require server-side secret
 protection. Existing keys that were previously committed should be rotated and
 reviewed in Git history before making the repository public.
 

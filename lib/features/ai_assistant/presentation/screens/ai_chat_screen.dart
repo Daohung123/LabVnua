@@ -8,6 +8,7 @@ import 'package:aqedu/features/ai_assistant/domain/services/speech_output.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 typedef AiAskHandler =
     Future<AiTurnResult> Function(String prompt, {required String sessionId});
 
@@ -386,7 +387,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
   Widget build(BuildContext context) {
     final isSpeaking = _voiceState == _AiVoiceState.speaking;
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FC),
+      backgroundColor: AppColors.surfaceAlt,
       appBar: AppBar(
         title: const Text('Trợ lý AI'),
         actions: const [
@@ -406,7 +407,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
                 child: Text(
                   _status!,
                   key: const Key('ai-voice-status'),
-                  style: const TextStyle(color: Color(0xFF33517E)),
+                  style: const TextStyle(color: AppColors.textSecondary),
                 ),
               ),
             ),
@@ -414,7 +415,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
             child: ListView.builder(
               key: const Key('ai-message-list'),
               controller: _scrollController,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               itemCount: _messages.length + (_isLoading ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _messages.length) return const _AiTypingBubble();
@@ -443,7 +444,7 @@ class _AIChatScreenState extends State<AIChatScreen> {
                           : Icons.mic_none_rounded,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: TextField(
                       key: const Key('ai-page-input'),
@@ -454,9 +455,9 @@ class _AIChatScreenState extends State<AIChatScreen> {
                       decoration: InputDecoration(
                         hintText: 'Nhắn tin cho AI hoặc dùng mic...',
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: AppColors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -520,8 +521,8 @@ class _AiMessageBubble extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 5),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
         decoration: BoxDecoration(
-          color: message.isUser ? const Color(0xFF0047A8) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: message.isUser ? AppColors.primary : AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +531,7 @@ class _AiMessageBubble extends StatelessWidget {
             Text(
               message.text,
               style: TextStyle(
-                color: message.isUser ? Colors.white : const Color(0xFF0D1B3E),
+                color: message.isUser ? AppColors.white : AppColors.textPrimary,
                 height: 1.45,
               ),
             ),
@@ -538,7 +539,7 @@ class _AiMessageBubble extends StatelessWidget {
                 message.action != null &&
                 message.allowManualNavigation &&
                 onNavigate != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               TextButton.icon(
                 key: const Key('ai-safe-navigation'),
                 onPressed: () => onNavigate!(message.action!),
@@ -561,7 +562,7 @@ class _AiTypingBubble extends StatelessWidget {
     return const Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(AppSpacing.md),
         child: Text('AI đang trả lời...'),
       ),
     );

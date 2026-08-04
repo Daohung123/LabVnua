@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 // ─────────────────────────────────────────────
 //  Palette & helpers
 // ─────────────────────────────────────────────
-const _navy = Color(0xff0A1F5C);
-const _navyLight = Color(0xff1740A6);
-const _accent = Color(0xff4F8EF7);
-const _accentGlow = Color(0xff7BB3FF);
-const _surface = Color(0xffF0F4FF);
-const _cardBg = Colors.white;
-const _gold = Color(0xffFFB020);
-const _green = Color(0xff22C97A);
-const _rose = Color(0xffFF6B8A);
+const _navy = AppColors.textPrimary;
+const _navyLight = AppColors.primaryPressed;
+const _accent = AppColors.primaryLight;
+const _accentGlow = AppColors.primaryLight;
+const _surface = AppColors.primarySoft;
+const _cardBg = AppColors.white;
+const _gold = AppColors.warning;
+const _green = AppColors.success;
+const _rose = AppColors.error;
 
 // Màu card theo tiết (sáng/chiều/tối)
 Color _sessionColor(int tietBatDau) {
@@ -217,7 +218,7 @@ class _SliverHeader extends StatelessWidget {
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_ios_new_rounded,
-          color: Colors.white,
+          color: AppColors.white,
           size: 20,
         ),
         onPressed: () => Navigator.pop(context),
@@ -225,7 +226,7 @@ class _SliverHeader extends StatelessWidget {
       title: const Text(
         "Lịch học hôm nay",
         style: TextStyle(
-          color: Colors.white,
+          color: AppColors.white,
           fontWeight: FontWeight.w800,
           fontSize: 18,
         ),
@@ -289,7 +290,7 @@ class _SliverHeader extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: _gold.withOpacity(0.20),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
                           border: Border.all(color: _gold.withOpacity(0.4)),
                         ),
                         child: const Row(
@@ -315,18 +316,18 @@ class _SliverHeader extends StatelessWidget {
                   Text(
                     _thuViet(today.weekday),
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.white,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       height: 1.1,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     DateFormat('dd MMMM, yyyy', 'vi').format(today),
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.65),
+                      color: AppColors.white.withOpacity(0.65),
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
@@ -423,13 +424,13 @@ class _ScheduleCardState extends State<_ScheduleCard>
                 margin: const EdgeInsets.only(top: 4, bottom: 18),
                 decoration: BoxDecoration(
                   color: _cardBg,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                   border: isNow ? Border.all(color: color, width: 1.5) : null,
                   boxShadow: [
                     BoxShadow(
                       color: isNow
                           ? color.withOpacity(0.18)
-                          : Colors.black.withOpacity(0.06),
+                          : AppColors.black.withOpacity(0.06),
                       blurRadius: isNow ? 20 : 12,
                       offset: const Offset(0, 4),
                     ),
@@ -444,10 +445,10 @@ class _ScheduleCardState extends State<_ScheduleCard>
                       child: Container(
                         width: 5,
                         decoration: BoxDecoration(
-                          color: isPast ? Colors.grey.shade300 : color,
+                          color: isPast ? AppColors.border : color,
                           borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            bottomLeft: Radius.circular(20),
+                            topLeft: Radius.circular(AppRadius.lg),
+                            bottomLeft: Radius.circular(AppRadius.lg),
                           ),
                         ),
                       ),
@@ -467,16 +468,16 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
                                     color: isPast
-                                        ? Colors.grey.shade400
+                                        ? AppColors.textTertiary
                                         : _navy,
                                     height: 1.3,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               _SessionBadge(
                                 label: session,
-                                color: isPast ? Colors.grey : color,
+                                color: isPast ? AppColors.textSecondary : color,
                               ),
                             ],
                           ),
@@ -488,23 +489,23 @@ class _ScheduleCardState extends State<_ScheduleCard>
                               _InfoChip(
                                 icon: Icons.schedule_rounded,
                                 label: '$startT – $endT',
-                                color: isPast ? Colors.grey : color,
+                                color: isPast ? AppColors.textSecondary : color,
                               ),
                               _InfoChip(
                                 icon: Icons.meeting_room_rounded,
                                 label: item.phong,
-                                color: isPast ? Colors.grey : _navyLight,
+                                color: isPast ? AppColors.textSecondary : _navyLight,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           Row(
                             children: [
                               Text(
                                 'Tiết ',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.grey.shade500,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                               Wrap(
@@ -514,33 +515,33 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                   (i) => _TietBadge(
                                     label: '${item.tietBatDau + i}',
                                     color: isPast
-                                        ? Colors.grey.shade300
+                                        ? AppColors.border
                                         : color,
                                     textColor: isPast
-                                        ? Colors.grey.shade400
-                                        : Colors.white,
+                                        ? AppColors.textTertiary
+                                        : AppColors.white,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
-                          Divider(height: 1, color: Colors.grey.shade100),
+                          Divider(height: 1, color: AppColors.surfaceAlt),
                           const SizedBox(height: 10),
                           Row(
                             children: [
                               CircleAvatar(
                                 radius: 13,
                                 backgroundColor: isPast
-                                    ? Colors.grey.shade200
+                                    ? AppColors.divider
                                     : color.withOpacity(0.12),
                                 child: Icon(
                                   Icons.person_rounded,
                                   size: 14,
-                                  color: isPast ? Colors.grey : color,
+                                  color: isPast ? AppColors.textSecondary : color,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,7 +550,7 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                       'Giảng viên',
                                       style: TextStyle(
                                         fontSize: 10,
-                                        color: Colors.grey.shade400,
+                                        color: AppColors.textTertiary,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -559,7 +560,7 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                         fontSize: 12.5,
                                         fontWeight: FontWeight.w700,
                                         color: isPast
-                                            ? Colors.grey.shade400
+                                            ? AppColors.textTertiary
                                             : _navy,
                                       ),
                                     ),
@@ -578,7 +579,7 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                       color: _green.withOpacity(
                                         0.1 + 0.1 * widget.pulseCtrl.value,
                                       ),
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.circular(AppRadius.lg),
                                       border: Border.all(
                                         color: _green,
                                         width: 1,
@@ -613,13 +614,13 @@ class _ScheduleCardState extends State<_ScheduleCard>
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
-                                    borderRadius: BorderRadius.circular(20),
+                                    color: AppColors.surfaceAlt,
+                                    borderRadius: BorderRadius.circular(AppRadius.lg),
                                   ),
                                   child: Text(
                                     'Đã xong',
                                     style: TextStyle(
-                                      color: Colors.grey.shade400,
+                                      color: AppColors.textTertiary,
                                       fontSize: 10,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -665,13 +666,13 @@ class _TimelineColumn extends StatelessWidget {
       width: 46,
       child: Column(
         children: [
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             startTime,
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w700,
-              color: isPast ? Colors.grey.shade400 : _navy,
+              color: isPast ? AppColors.textTertiary : _navy,
             ),
           ),
           const SizedBox(height: 6),
@@ -697,7 +698,7 @@ class _TimelineColumn extends StatelessWidget {
                     height: isPast ? 12 : 18,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isPast ? Colors.grey.shade300 : color,
+                      color: isPast ? AppColors.border : color,
                       boxShadow: isNow
                           ? [
                               BoxShadow(
@@ -711,14 +712,14 @@ class _TimelineColumn extends StatelessWidget {
                         ? const Icon(
                             Icons.play_arrow_rounded,
                             size: 12,
-                            color: Colors.white,
+                            color: AppColors.white,
                           )
                         : isPast
                         ? null
                         : Icon(
                             Icons.circle,
                             size: 8,
-                            color: Colors.white.withOpacity(0.8),
+                            color: AppColors.white.withOpacity(0.8),
                           ),
                   ),
                 ],
@@ -732,8 +733,8 @@ class _TimelineColumn extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    isPast ? Colors.grey.shade200 : color.withOpacity(0.4),
-                    Colors.transparent,
+                    isPast ? AppColors.divider : color.withOpacity(0.4),
+                    AppColors.transparent,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -760,7 +761,7 @@ class _SessionBadge extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
     decoration: BoxDecoration(
       color: color.withOpacity(0.12),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       border: Border.all(color: color.withOpacity(0.3)),
     ),
     child: Text(
@@ -791,7 +792,7 @@ class _InfoChip extends StatelessWidget {
     mainAxisSize: MainAxisSize.min,
     children: [
       Icon(icon, size: 12, color: color),
-      const SizedBox(width: 4),
+      const SizedBox(width: AppSpacing.xs),
       Text(
         label,
         style: TextStyle(
@@ -850,7 +851,7 @@ class _LoadingView extends StatelessWidget {
             backgroundColor: _accent.withOpacity(0.15),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         const Text(
           'Đang tải lịch học...',
           style: TextStyle(color: _navyLight, fontWeight: FontWeight.w600),
@@ -869,7 +870,7 @@ class _ErrorView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.lg20),
           decoration: BoxDecoration(
             color: _rose.withOpacity(0.1),
             shape: BoxShape.circle,
@@ -888,7 +889,7 @@ class _ErrorView extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           'Kiểm tra kết nối và thử lại',
-          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
       ],
     ),
@@ -907,7 +908,7 @@ class _EmptyView extends StatelessWidget {
           padding: const EdgeInsets.all(28),
           decoration: BoxDecoration(
             gradient: RadialGradient(
-              colors: [_accent.withOpacity(0.1), Colors.transparent],
+              colors: [_accent.withOpacity(0.1), AppColors.transparent],
             ),
             shape: BoxShape.circle,
           ),
@@ -917,7 +918,7 @@ class _EmptyView extends StatelessWidget {
             color: _accent.withOpacity(0.6),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         const Text(
           'Hôm nay không có lịch học',
           style: TextStyle(
@@ -926,10 +927,10 @@ class _EmptyView extends StatelessWidget {
             color: _navy,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           'Hãy tận hưởng ngày nghỉ nhé! 🎉',
-          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
         ),
       ],
     ),

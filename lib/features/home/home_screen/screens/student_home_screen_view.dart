@@ -2,7 +2,6 @@
 
 import 'dart:ui';
 
-import 'package:aqedu/config/sync_data.dart';
 import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/features/ai_assistant/presentation/screens/ai_chat_screen.dart';
 import 'package:aqedu/features/ai_assistant/domain/entities/ai_turn.dart';
@@ -22,14 +21,17 @@ import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 // ─────────────────────────────────────────────
 //  Design tokens
 // ─────────────────────────────────────────────
-const _kPrimary = Color(0xFF1A5FD4); // richer azure
-const _kPrimaryLt = Color(0xFF3B7EF6); // highlight
-const _kSurface = Color(0xFFFAFBFF); // warm-white base
-const _kBorder = Color(0xFFE4E9F2);
-const _kMuted = Color(0xFF8A97B0);
+const _kPrimary = AppColors.primary; // richer azure
+const _kPrimaryLt = AppColors.primary; // highlight
+const _kSurface = AppColors.surfaceAlt; // warm-white base
+const _kBorder = AppColors.border;
+const _kMuted = AppColors.textTertiary;
+const _kMobileNavShadowClearance = 16.0;
+const _kMobileFabClearance = 64.0;
 
 // ─────────────────────────────────────────────
 //  HomeScreen — root scaffold
@@ -58,24 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AppLog.vongDoi('Màn hình khung chính được mở', khuVuc: 'Khung chính');
-    _loadData();
-  }
-
-  Future<void> _loadData() async {
-    AppLog.dongBo(
-      'Tự động đồng bộ dữ liệu khi mở khung chính',
-      khuVuc: 'Khung chính',
-    );
-    final result = await syncData();
-    AppLog.dongBo(
-      'Tự động đồng bộ dữ liệu khi mở khung chính hoàn tất',
-      khuVuc: 'Khung chính',
-      duLieu: {
-        'tong_so_nhom': result.total,
-        'thanh_cong': result.success,
-        'that_bai': result.failed,
-      },
-    );
   }
 
   static const _destinations = <_NavDest>[
@@ -157,66 +141,52 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: _kSurface,
           body: Stack(
             children: [
-              // ── Subtle mesh background ──
               Positioned.fill(child: _MeshBackground()),
-
-              // ── Main content ──
-              wide
-                  ? _DesktopShell(
-                      destinations: _destinations,
-                      selectedIndex: _currentIndex,
-                      onSelected: _setTab,
-                      child: IndexedStack(
-                        index: _currentIndex,
-                        children: _pages,
-                      ),
-                    )
-                  : Stack(
-                      children: [
-                        Column(
-                          children: [
-                            Expanded(
-                              child: IndexedStack(
-                                index: _currentIndex,
-                                children: _pages,
-                              ),
-                            ),
-                            SafeArea(
-                              top: false,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  12,
-                                  0,
-                                  12,
-                                  12,
-                                ),
-                                child: _BottomNav(
-                                  destinations: _destinations,
-                                  selectedIndex: _currentIndex,
-                                  onSelected: _setTab,
-                                ),
-                              ),
-                            ),
-                          ],
+              Positioned.fill(
+                child: wide
+                    ? _DesktopShell(
+                        destinations: _destinations,
+                        selectedIndex: _currentIndex,
+                        onSelected: _setTab,
+                        child: IndexedStack(
+                          index: _currentIndex,
+                          children: _pages,
                         ),
-                        if (_currentIndex != 2)
-                          Positioned(
-                            right: 24,
-                            bottom: 98,
-                            child: SafeArea(
-                              top: false,
-                              child: FloatingActionButton.small(
-                                key: const Key('home-voice-ai-fab'),
-                                tooltip: 'Nói với trợ lý AI',
-                                onPressed: _openVoiceAssistant,
-                                child: const Icon(Icons.mic_none_rounded),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(
+                          bottom: _currentIndex == 2
+                              ? _kMobileNavShadowClearance
+                              : _kMobileFabClearance,
+                        ),
+                        child: IndexedStack(
+                          index: _currentIndex,
+                          children: _pages,
+                        ),
+                      ),
+              ),
             ],
           ),
+          bottomNavigationBar: wide
+              ? null
+              : SafeArea(
+                  top: false,
+                  minimum: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                  child: _BottomNav(
+                    destinations: _destinations,
+                    selectedIndex: _currentIndex,
+                    onSelected: _setTab,
+                  ),
+                ),
+          floatingActionButton: wide || _currentIndex == 2
+              ? null
+              : FloatingActionButton.small(
+                  key: const Key('home-voice-ai-fab'),
+                  tooltip: 'Nói với trợ lý AI',
+                  onPressed: _openVoiceAssistant,
+                  child: const Icon(Icons.mic_none_rounded),
+                ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
       },
     );
@@ -274,7 +244,7 @@ class _DesktopShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Row(
           children: [
             // ── Sidebar ──
@@ -284,33 +254,23 @@ class _DesktopShell extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg20),
                   // Logo mark
                   Container(
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [_kPrimary, _kPrimaryLt],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: _kPrimary.withOpacity(0.30),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+                      color: _kPrimary,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
+                      boxShadow: AppShadows.lightShadow,
                     ),
                     child: const Icon(
                       Icons.school_rounded,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 22,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     'AQEdu',
                     style: TextStyle(
@@ -320,9 +280,9 @@ class _DesktopShell extends StatelessWidget {
                       letterSpacing: 0.4,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg20),
                   const Divider(indent: 16, endIndent: 16, height: 1),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   Expanded(
                     child: ListView.builder(
                       itemCount: destinations.length,
@@ -344,13 +304,13 @@ class _DesktopShell extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: sel
                                     ? _kPrimary.withOpacity(0.08)
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(16),
+                                    : AppColors.transparent,
+                                borderRadius: BorderRadius.circular(AppRadius.lg),
                               ),
                               child: Material(
-                                color: Colors.transparent,
+                                color: AppColors.transparent,
                                 child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(AppRadius.lg),
                                   onTap: () => onSelected(i),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -395,11 +355,11 @@ class _DesktopShell extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.lg),
             // ── Page area ──
             Expanded(
               child: Center(
@@ -453,8 +413,8 @@ class _BottomNav extends StatelessWidget {
                   height: 54,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                       boxShadow: [
                         BoxShadow(
                           color: _kPrimary.withOpacity(0.14),
@@ -462,7 +422,7 @@ class _BottomNav extends StatelessWidget {
                           offset: const Offset(0, 6),
                         ),
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: AppColors.black.withOpacity(0.05),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -494,7 +454,7 @@ class _BottomNav extends StatelessWidget {
                                   color: sel ? _kPrimary : _kMuted,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: AppSpacing.xs),
                               AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 200),
                                 style: TextStyle(
@@ -551,12 +511,12 @@ class _GlassCard extends StatelessWidget {
           width: width,
           padding: padding,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.82),
+            color: AppColors.white.withOpacity(0.82),
             borderRadius: BorderRadius.circular(borderRadius),
             border: Border.all(color: _kBorder.withOpacity(0.70), width: 0.8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: AppColors.black.withOpacity(0.06),
                 blurRadius: 32,
                 offset: const Offset(0, 16),
               ),

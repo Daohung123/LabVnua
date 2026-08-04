@@ -169,7 +169,10 @@ class ApiHelper {
         );
         final bodyToUse = cachedBody ?? response.body;
         await _snapshotStore.save(
-          resourceKey: ApiReadResourceRegistry.resourceKeyFor(path),
+          resourceKey: ApiReadResourceRegistry.resourceKeyFor(
+            path,
+            requestBody: requestBody,
+          ),
           requestBody: requestBody,
           payloadJson: bodyToUse,
         );

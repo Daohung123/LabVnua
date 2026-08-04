@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'dart:ui';
-
+import 'package:aqedu/core/theme/app_colors.dart';
 import 'package:aqedu/features/notification/models/data_change_models.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -377,17 +376,17 @@ class NotificationService {
   Color _accentColorFor(WatchedDataType t) {
     switch (t) {
       case WatchedDataType.score:
-        return const Color(0xFF2563EB);
+        return AppColors.primary;
       case WatchedDataType.schedule:
-        return const Color(0xFF0891B2);
+        return AppColors.info;
       case WatchedDataType.examSchedule:
-        return const Color(0xFF7C3AED);
+        return AppColors.ai;
       case WatchedDataType.tuition:
-        return const Color(0xFF059669);
+        return AppColors.success;
       case WatchedDataType.trainingNotification:
-        return const Color(0xFF104492);
+        return AppColors.primaryPressed;
       case WatchedDataType.courseRegister:
-        return const Color(0xFFEA580C);
+        return AppColors.warning;
     }
   }
 

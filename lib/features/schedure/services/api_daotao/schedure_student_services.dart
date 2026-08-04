@@ -1,5 +1,5 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/features/schedure/models/schedure_student.dart';
 import 'date_time_helper.dart';
 import 'schedure_constants.dart';
@@ -10,7 +10,7 @@ class TkbService {
     String token,
   ) async {
     try {
-      final tkb = await core_services_get_TkbResponse(cookie, token);
+      final tkb = await const PortalLocalReadStore().schedule();
       if (tkb == null) return [];
 
       final schedules = <ThoiKhoaBieu>[];
@@ -46,7 +46,7 @@ class TkbService {
     String token,
   ) async {
     try {
-      final tkb = await core_services_get_TkbResponse(cookie, token);
+      final tkb = await const PortalLocalReadStore().schedule();
       if (tkb == null) {
         return _createEmptySchedule();
       }

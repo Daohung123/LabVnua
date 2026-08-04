@@ -4,23 +4,7 @@ import 'package:flutter/material.dart';
 import '../controllers/ctrls_prequisite_subjects.dart';
 import '../models/model_prequisite_subjects.dart';
 
-// ─── Brand Tokens ──────────────────────────────────────────────────────────────
-class _Colors {
-  static const primary = Color(0xff0047A8);
-  static const primaryLight = Color(0xff1A5DC4);
-  static const primarySurface = Color(0xffEEF4FF);
-  static const accent = Color(0xff3B82F6);
-  static const amber = Color(0xffF59E0B);
-  static const amberSurface = Color(0xffFFFBEB);
-  static const teal = Color(0xff0D9488);
-  static const tealSurface = Color(0xffF0FDFA);
-  static const bg = Color(0xffF4F7FD);
-  static const surface = Colors.white;
-  static const textPrimary = Color(0xff0F172A);
-  static const textSecondary = Color(0xff64748B);
-  static const divider = Color(0xffE2E8F0);
-}
-
+import 'package:aqedu/core/theme/app_components.dart';
 // ─── Filter Config ─────────────────────────────────────────────────────────────
 class _FilterOption {
   final int value;
@@ -46,24 +30,24 @@ const _filters = [
     label: 'Môn tiên quyết',
     shortLabel: 'Tiên quyết',
     icon: Icons.lock_outline_rounded,
-    color: _Colors.primary,
-    surface: _Colors.primarySurface,
+    color: AppColors.primary,
+    surface: AppColors.primarySoft,
   ),
   _FilterOption(
     value: 2,
     label: 'Môn học trước',
     shortLabel: 'Học trước',
     icon: Icons.arrow_back_rounded,
-    color: _Colors.teal,
-    surface: _Colors.tealSurface,
+    color: AppColors.success,
+    surface: AppColors.successLight,
   ),
   _FilterOption(
     value: 3,
     label: 'Môn song hành',
     shortLabel: 'Song hành',
     icon: Icons.compare_arrows_rounded,
-    color: _Colors.amber,
-    surface: _Colors.amberSurface,
+    color: AppColors.warning,
+    surface: AppColors.warningLight,
   ),
 ];
 
@@ -158,7 +142,7 @@ class _PrerequisiteViewState extends State<PrerequisiteView>
     final filter = _filterFor(selectedLoaiTienQuyet);
 
     return Scaffold(
-      backgroundColor: _Colors.bg,
+      backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
           _AppHeader(filter: filter, onRefresh: loadPrerequisite),
@@ -185,7 +169,7 @@ class _PrerequisiteViewState extends State<PrerequisiteView>
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
               sliver: SliverList.separated(
                 itemCount: subjects.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
                 itemBuilder: (ctx, i) => FadeTransition(
                   opacity: _fadeAnim,
                   child: _PrerequisiteCard(
@@ -215,8 +199,8 @@ class _AppHeader extends StatelessWidget {
       expandedHeight: 120,
       pinned: true,
       elevation: 0,
-      backgroundColor: _Colors.primary,
-      foregroundColor: Colors.white,
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.fromLTRB(16, 0, 56, 16),
         title: Column(
@@ -227,7 +211,7 @@ class _AppHeader extends StatelessWidget {
               'Môn học điều kiện',
               style: TextStyle(
                 fontSize: 11,
-                color: Colors.white.withOpacity(0.7),
+                color: AppColors.white.withOpacity(0.7),
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.5,
               ),
@@ -237,7 +221,7 @@ class _AppHeader extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.white,
               ),
             ),
           ],
@@ -249,7 +233,7 @@ class _AppHeader extends StatelessWidget {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xff003080), _Colors.primaryLight],
+                  colors: [AppColors.primaryPressed, AppColors.primaryPressed],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -264,7 +248,7 @@ class _AppHeader extends StatelessWidget {
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.06),
+                  color: AppColors.white.withOpacity(0.06),
                 ),
               ),
             ),
@@ -276,7 +260,7 @@ class _AppHeader extends StatelessWidget {
                 height: 70,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.08),
+                  color: AppColors.white.withOpacity(0.08),
                 ),
               ),
             ),
@@ -304,7 +288,7 @@ class _FilterChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: AppColors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: _filters
@@ -348,7 +332,7 @@ class _ChipItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         decoration: BoxDecoration(
           color: isSelected ? filter.color : filter.surface,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: isSelected ? filter.color : filter.color.withOpacity(0.2),
             width: 1.5,
@@ -359,16 +343,16 @@ class _ChipItem extends StatelessWidget {
             Icon(
               filter.icon,
               size: 18,
-              color: isSelected ? Colors.white : filter.color,
+              color: isSelected ? AppColors.white : filter.color,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               filter.shortLabel,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? Colors.white : filter.color,
+                color: isSelected ? AppColors.white : filter.color,
               ),
             ),
           ],
@@ -394,11 +378,11 @@ class _PrerequisiteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: _Colors.surface,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(
-            color: _Colors.primary.withOpacity(0.06),
+            color: AppColors.primary.withOpacity(0.06),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
@@ -410,9 +394,9 @@ class _PrerequisiteCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
             decoration: BoxDecoration(
-              color: _Colors.primarySurface,
+              color: AppColors.primarySoft,
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+                top: Radius.circular(AppRadius.lg),
               ),
             ),
             child: Row(
@@ -421,12 +405,12 @@ class _PrerequisiteCard extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: _Colors.primary,
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: const Icon(
                     Icons.menu_book_rounded,
-                    color: Colors.white,
+                    color: AppColors.white,
                     size: 18,
                   ),
                 ),
@@ -441,7 +425,7 @@ class _PrerequisiteCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: _Colors.primary,
+                            color: AppColors.primary,
                             letterSpacing: 0.4,
                           ),
                         ),
@@ -450,7 +434,7 @@ class _PrerequisiteCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: _Colors.textPrimary,
+                          color: AppColors.textPrimary,
                           height: 1.3,
                         ),
                       ),
@@ -462,8 +446,8 @@ class _PrerequisiteCard extends StatelessWidget {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: _Colors.primary.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.primary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
                   child: Center(
                     child: Text(
@@ -471,7 +455,7 @@ class _PrerequisiteCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: _Colors.primary,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -505,7 +489,7 @@ class _PrerequisiteCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(filter.icon, size: 13, color: filter.color),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             filter.label,
                             style: TextStyle(
@@ -517,10 +501,10 @@ class _PrerequisiteCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Divider(
-                        color: _Colors.divider,
+                        color: AppColors.border,
                         thickness: 1,
                         height: 1,
                       ),
@@ -533,10 +517,10 @@ class _PrerequisiteCard extends StatelessWidget {
                 // Required subject box
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: filter.surface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(
                       color: filter.color.withOpacity(0.2),
                       width: 1,
@@ -572,7 +556,7 @@ class _PrerequisiteCard extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: _Colors.textPrimary,
+                                color: AppColors.textPrimary,
                                 height: 1.35,
                               ),
                             ),
@@ -628,21 +612,21 @@ class _Tag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
-        color: _Colors.primarySurface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _Colors.primary.withOpacity(0.15), width: 1),
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: AppColors.primary.withOpacity(0.15), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 12, color: _Colors.primary),
-          const SizedBox(width: 4),
+          Icon(icon, size: 12, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             '$label: ',
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: _Colors.textSecondary,
+              color: AppColors.textSecondary,
             ),
           ),
           Text(
@@ -650,7 +634,7 @@ class _Tag extends StatelessWidget {
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: _Colors.primary,
+              color: AppColors.primary,
             ),
           ),
         ],
@@ -669,12 +653,12 @@ class _LoadingState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(color: _Colors.primary, strokeWidth: 2.5),
-          SizedBox(height: 16),
+          CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2.5),
+          SizedBox(height: AppSpacing.lg),
           Text(
             'Đang tải dữ liệu...',
             style: TextStyle(
-              color: _Colors.textSecondary,
+              color: AppColors.textSecondary,
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -694,7 +678,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -707,22 +691,22 @@ class _EmptyState extends StatelessWidget {
               ),
               child: Icon(filter.icon, size: 36, color: filter.color),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.lg20),
             Text(
               'Không có dữ liệu',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: _Colors.textPrimary,
+                color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               'Chưa có môn "${filter.label.toLowerCase()}" nào được ghi nhận.',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 13,
-                color: _Colors.textSecondary,
+                color: AppColors.textSecondary,
                 height: 1.5,
               ),
             ),

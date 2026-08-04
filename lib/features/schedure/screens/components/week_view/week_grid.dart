@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'week_constants.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class WeekGrid extends StatelessWidget {
   const WeekGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final borderColor = Colors.blue.shade100;
+    final borderColor = AppColors.primarySoft;
 
     // Long_sua :(Cố định chiều cao bằng tổng chiều cao các tiết học để tránh lỗi RenderBox no size trong Stack)
     return SizedBox(
@@ -45,10 +46,10 @@ class WeekGrid extends StatelessWidget {
     return Container(
       width: width,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         border: Border(
-          right: borderRight ? BorderSide(color: Colors.blue.shade100) : BorderSide.none,
-          left: borderLeft ? BorderSide(color: Colors.blue.shade100) : BorderSide.none,
+          right: borderRight ? BorderSide(color: AppColors.primarySoft) : BorderSide.none,
+          left: borderLeft ? BorderSide(color: AppColors.primarySoft) : BorderSide.none,
         ),
       ),
       child: Column(children: children),
@@ -60,14 +61,14 @@ class WeekGrid extends StatelessWidget {
       height: WeekConstants.rowHeight,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.blue.shade50)),
+        border: Border(bottom: BorderSide(color: AppColors.primarySoft)),
       ),
       child: Text(
         text,
         style: TextStyle(
           fontSize: 10,
           fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-          color: isBold ? const Color(0xff104492) : Colors.black54,
+          color: isBold ? AppColors.primaryPressed : AppColors.black54,
         ),
       ),
     );

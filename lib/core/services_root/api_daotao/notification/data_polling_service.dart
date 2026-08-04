@@ -1,10 +1,4 @@
-import 'package:aqedu/core/models/sqlite/session.dart';
-import 'package:aqedu/core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
-import 'package:aqedu/core/services_root/api_daotao/notification/get_notification.dart';
-import 'package:aqedu/core/services_root/api_daotao/schedure/get_tkb_response.dart';
-import 'package:aqedu/core/services_root/api_daotao/score/get_score_response.dart';
-import 'package:aqedu/core/services_root/api_daotao/tuition/get_tuition.dart';
-import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/features/course_register/models/model_course_register.dart';
 import 'package:aqedu/features/exam_schedule/models/model_exam_schedule.dart';
 import 'package:aqedu/features/notification/models/data_change_models.dart';
@@ -15,86 +9,47 @@ import 'package:aqedu/features/score_data/models/model_score_student.dart';
 import 'package:aqedu/features/tuition/models/models_tuition.dart';
 
 class DataPollingService {
-  final SqliteServices _sessionService;
   final DataChangeDetectorService _detector;
 
-  DataPollingService({
-    SqliteServices? sessionService,
-    DataChangeDetectorService? detector,
-  }) : _sessionService = sessionService ?? SqliteServices(),
-       _detector = detector ?? DataChangeDetectorService();
+  DataPollingService({DataChangeDetectorService? detector})
+    : _detector = detector ?? DataChangeDetectorService();
 
   Future<Map<WatchedDataType, List<WatchedDataItem>>> fetchAll() async {
-    final session = await _sessionService.getSession();
-    if (session == null || session.cookie.isEmpty || session.token.isEmpty) {
-      return {};
+    final result = <WatchedDataType, List<WatchedDataItem>>{};
+    const local = PortalLocalReadStore();
+
+    final scores = await local.scores();
+    if (scores != null) {
+      result[WatchedDataType.score] = mapScores(scores);
     }
 
-    final result = <WatchedDataType, List<WatchedDataItem>>{};
+    final schedule = await local.schedule();
+    if (schedule != null) {
+      result[WatchedDataType.schedule] = mapSchedule(schedule);
+    }
 
-    final scores = await fetchScores(session);
-    if (scores != null) result[WatchedDataType.score] = scores;
+    final tuition = await local.tuition();
+    if (tuition != null) {
+      result[WatchedDataType.tuition] = mapTuition(tuition);
+    }
 
-    final schedule = await fetchSchedule(session);
-    if (schedule != null) result[WatchedDataType.schedule] = schedule;
-
-    final tuition = await fetchTuition(session);
-    if (tuition != null) result[WatchedDataType.tuition] = tuition;
-
-    final notifications = await fetchTrainingNotifications(session);
+    final notificationResponse = await local.notifications();
+    final notifications = notificationResponse == null
+        ? null
+        : mapTrainingNotifications(notificationResponse);
     if (notifications != null) {
       result[WatchedDataType.trainingNotification] = notifications;
     }
 
-    final courseRegister = await fetchCourseRegister(session);
+    final courseRegisterResponse = await local.courseRegisterCatalog();
+    final courseRegister = courseRegisterResponse == null
+        ? null
+        : mapCourseRegister(courseRegisterResponse);
     if (courseRegister != null) {
       result[WatchedDataType.courseRegister] = courseRegister;
     }
 
     return result;
-  }
-
-  Future<List<WatchedDataItem>?> fetchScores(SessionModel session) async {
-    final response = await getScoreResponse(session.cookie, session.token);
-    if (response == null) return null;
-    return mapScores(response);
-  }
-
-  Future<List<WatchedDataItem>?> fetchSchedule(SessionModel session) async {
-    final response = await core_services_get_TkbResponse(
-      session.cookie,
-      session.token,
-    );
-    if (response == null) return null;
-    return mapSchedule(response);
-  }
-
-  Future<List<WatchedDataItem>?> fetchTuition(SessionModel session) async {
-    final response = await getHocPhiResponse(session.cookie, session.token);
-    if (response == null) return null;
-    return mapTuition(response);
-  }
-
-  Future<List<WatchedDataItem>?> fetchTrainingNotifications(
-    SessionModel session,
-  ) async {
-    final response = await getNotificationResponse(
-      session.cookie,
-      session.token,
-    );
-    if (response == null) return null;
-    return mapTrainingNotifications(response);
-  }
-
-  Future<List<WatchedDataItem>?> fetchCourseRegister(
-    SessionModel session,
-  ) async {
-    final response = await getCourseRegisterResponse(
-      session.cookie,
-      session.token,
-    );
-    if (response == null) return null;
-    return mapCourseRegister(response);
   }
 
   List<WatchedDataItem> mapScores(ScoreResponse response) {

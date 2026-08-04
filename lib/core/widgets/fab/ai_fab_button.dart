@@ -66,7 +66,7 @@ class AIFabButton extends StatefulWidget {
     this.icon,
     this.iconSize = 24,
     this.backgroundColor,
-    this.foregroundColor = Colors.white,
+    this.foregroundColor = AppColors.white,
     this.enabled = true,
   });
 
@@ -134,7 +134,7 @@ class _AIFabButtonState extends State<AIFabButton>
           onPressed: widget.enabled ? widget.onPressed : null,
           // Shape
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
           // Child content
           child: Tooltip(
@@ -246,7 +246,7 @@ class MiniFabButton extends StatelessWidget {
     required this.onPressed,
     required this.icon,
     this.backgroundColor,
-    this.foregroundColor = Colors.white,
+    this.foregroundColor = AppColors.white,
     this.label,
     this.tooltip = '',
   });
@@ -329,7 +329,7 @@ class _FABSpeedDialState extends State<FABSpeedDial>
           Positioned.fill(
             child: GestureDetector(
               onTap: _toggleMenu,
-              child: Container(color: Colors.transparent),
+              child: Container(color: AppColors.transparent),
             ),
           ),
         // Action buttons

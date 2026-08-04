@@ -1,15 +1,12 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import '../../../core/services_root/api_daotao/course_Register/get_course_register_result_response.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import '../models/model_course_register_results.dart';
 
 class CourseRegisterResultService {
-  static Future<CourseRegisterResultResponse?> getCourseRegisterResult(
-    String cookie,
-    String token,
-  ) async {
+  static Future<CourseRegisterResultResponse?> getCourseRegisterResult() async {
     try {
       final CourseRegisterResultResponse? response =
-          await getCourseRegisterResultResponse(cookie, token);
+          await const PortalLocalReadStore().courseRegisterResult();
 
       return response;
     } catch (e) {

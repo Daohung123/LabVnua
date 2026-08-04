@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:diacritic/diacritic.dart';
+
+import 'package:aqedu/core/logging/app_log.dart';
 
 import '../controllers/ctrl_courses_register.dart';
 import '../models/model_course_register.dart';
@@ -7,8 +10,51 @@ import '../models/model_course_register_action.dart';
 import '../models/model_course_register_fillter.dart';
 import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
+
+enum _CourseRegisterLoadState { loading, ready, empty, error }
+
+typedef CourseRegisterDataLoader = Future<CourseRegisterScreenData> Function({
+  required bool forceRefresh,
+});
+
+@visibleForTesting
+List<CourseRegisterFilter> buildVisibleCourseRegisterFilters(
+  Iterable<CourseRegisterFilter> filters,
+) {
+  final byValue = <int, CourseRegisterFilter>{};
+  for (final filter in filters) {
+    final value = filter.giaTri;
+    if (value == null || value == 3 || value == 4 || value == 10) continue;
+    byValue.putIfAbsent(value, () => filter);
+  }
+  return byValue.values.toList(growable: false);
+}
+
+@visibleForTesting
+int? resolveCourseRegisterFilterValue({
+  required Iterable<CourseRegisterFilter> filters,
+  int? currentValue,
+}) {
+  final visibleFilters = buildVisibleCourseRegisterFilters(filters);
+  final values = visibleFilters.map((filter) => filter.giaTri).toSet();
+
+  if (currentValue != null && values.contains(currentValue)) {
+    return currentValue;
+  }
+
+  for (final filter in visibleFilters) {
+    if (filter.isMacDinh == true) return filter.giaTri;
+  }
+
+  if (values.contains(2)) return 2;
+  return visibleFilters.isEmpty ? null : visibleFilters.first.giaTri;
+}
+
 class CourseRegisterView extends StatefulWidget {
-  const CourseRegisterView({super.key});
+  const CourseRegisterView({super.key, this.dataLoader});
+
+  final CourseRegisterDataLoader? dataLoader;
 
   @override
   State<CourseRegisterView> createState() => _CourseRegisterViewState();
@@ -19,13 +65,15 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   List<CourseRegisterClass> classes = [];
   List<CourseRegisterSubject> subjects = [];
 
-  bool isLoading = true;
+  _CourseRegisterLoadState _loadState = _CourseRegisterLoadState.loading;
+  bool isRefreshing = false;
   bool isActionLoading = false;
+  bool _loadInProgress = false;
 
   String keyword = '';
   String? message;
 
-  int selectedFilter = 2;
+  int? selectedFilter;
   String? selectedKhoa;
   String? selectedLop;
 
@@ -37,9 +85,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
 
   String currentIdRs = '';
 
-  static const Color primaryBlue = Color(0xff0D47A1);
-  static const Color buttonBlue = Color(0xff1565C0);
-  static const Color bgColor = Color(0xffF2F3F7);
+  static const Color primaryBlue = AppColors.primaryPressed;
+  static const Color buttonBlue = AppColors.primary;
+  static const Color bgColor = AppColors.background;
 
   @override
   void initState() {
@@ -47,48 +95,87 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     loadData();
   }
 
-  Future<void> loadData() async {
+  Future<void> loadData({bool forceRefresh = false}) async {
+    if (_loadInProgress) return;
+    _loadInProgress = true;
+
+    final hasExistingContent =
+        filters.isNotEmpty || classes.isNotEmpty || subjects.isNotEmpty;
+
+    if (mounted) {
+      setState(() {
+        message = null;
+        if (hasExistingContent) {
+          isRefreshing = true;
+        } else {
+          _loadState = _CourseRegisterLoadState.loading;
+        }
+      });
+    }
+
     try {
-      final controller = await CtrlCourseRegister.create();
-
-      final filterResult = await controller.getFilters();
-      final fullResponse = await controller.getCourseRegisterFull();
-      final student = await controller.getStudentData();
-
-      if (student != null) {
-        studentData = student;
-
-        svNganh = int.tryParse(student.idNganh) ?? 1;
-
-        studentClassCode = student.lop.toUpperCase();
+      final loader = widget.dataLoader;
+      final screenData = loader != null
+          ? await loader(forceRefresh: forceRefresh)
+          : await (await CtrlCourseRegister.create()).loadScreenData(
+              forceRefresh: forceRefresh,
+            );
+      final fullResponse = screenData.catalog;
+      if (fullResponse == null) {
+        throw StateError('Không có dữ liệu đăng ký học phần hợp lệ.');
       }
 
-      final classResult = fullResponse?.data?.dsNhomTo ?? [];
-      final subjectResult = fullResponse?.data?.dsMonHoc ?? [];
+      final student = screenData.student;
+      var nextSvNganh = svNganh;
+      var nextStudentClassCode = studentClassCode;
+      if (student != null) {
+        nextSvNganh = int.tryParse(student.idNganh) ?? svNganh;
+        nextStudentClassCode = student.lop.trim().toUpperCase();
+      }
 
-      currentIdRs = fullResponse?.idRs ?? '';
-
-      final defaultFilter = filterResult.firstWhere(
-        (e) => e.isMacDinh == true,
-        orElse: () => CourseRegisterFilter(giaTri: 2),
+      final filterResult = screenData.filters;
+      final classResult = fullResponse.data?.dsNhomTo ?? [];
+      final subjectResult = fullResponse.data?.dsMonHoc ?? [];
+      final nextSelectedFilter = resolveCourseRegisterFilterValue(
+        filters: filterResult,
+        currentValue: selectedFilter,
       );
 
       if (!mounted) return;
-
       setState(() {
         filters = filterResult;
         classes = classResult;
         subjects = subjectResult;
-        selectedFilter = defaultFilter.giaTri ?? selectedFilter;
-        isLoading = false;
+        studentData = student;
+        svNganh = nextSvNganh;
+        studentClassCode = nextStudentClassCode;
+        currentIdRs = fullResponse.idRs ?? '';
+        selectedFilter = nextSelectedFilter;
+        isRefreshing = false;
+        _loadState = classResult.isEmpty && subjectResult.isEmpty
+            ? _CourseRegisterLoadState.empty
+            : _CourseRegisterLoadState.ready;
       });
-    } catch (_) {
+    } catch (error, stackTrace) {
+      AppLog.loi(
+        'Không thể hiển thị màn hình đăng ký học phần',
+        khuVuc: 'Đăng ký học phần',
+        loi: error,
+        stackTrace: stackTrace,
+      );
       if (!mounted) return;
 
       setState(() {
-        message = 'Không thể tải dữ liệu.';
-        isLoading = false;
+        isRefreshing = false;
+        message = hasExistingContent
+            ? 'Không thể làm mới dữ liệu. Đang hiển thị dữ liệu đã lưu.'
+            : 'Không thể tải dữ liệu đăng ký học phần.';
+        _loadState = hasExistingContent
+            ? _CourseRegisterLoadState.ready
+            : _CourseRegisterLoadState.error;
       });
+    } finally {
+      _loadInProgress = false;
     }
   }
 
@@ -374,7 +461,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
           title: Text(
             title,
@@ -393,9 +480,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: buttonBlue,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                 ),
               ),
               child: const Text('Đóng'),
@@ -416,7 +503,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
           title: Text(
             title,
@@ -433,7 +520,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               child: const Text(
                 'Không',
                 style: TextStyle(
-                  color: Colors.pinkAccent,
+                  color: AppColors.error,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -442,9 +529,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               onPressed: () => Navigator.pop(context, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: buttonBlue,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                 ),
               ),
               child: Text(confirmText),
@@ -463,51 +550,117 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
         title: const Text('Đăng ký môn học'),
         centerTitle: true,
         backgroundColor: primaryBlue,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.white,
         actions: [
-          IconButton(onPressed: loadData, icon: const Icon(Icons.refresh)),
+          IconButton(
+            key: const Key('course-register-refresh'),
+            onPressed:
+                isRefreshing || _loadState == _CourseRegisterLoadState.loading
+                ? null
+                : () => loadData(forceRefresh: true),
+            icon: const Icon(Icons.refresh),
+          ),
         ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                RefreshIndicator(
-                  onRefresh: loadData,
-                  child: ListView(
-                    padding: const EdgeInsets.all(14),
-                    children: [
-                      _topSummaryCard(),
-                      const SizedBox(height: 12),
-                      _filterBox(),
-                      if (message != null) ...[
-                        const SizedBox(height: 10),
-                        _messageBox(),
-                      ],
-                      const SizedBox(height: 18),
-                      _sectionHeader(
-                        title: 'Danh sách lớp học phần mở cho đăng ký',
-                        subtitle:
-                            'Đánh dấu vào các lớp học phần mà bạn muốn đăng ký.',
-                      ),
-                      const SizedBox(height: 10),
-                      if (availableClasses.isEmpty)
-                        _emptyBox('Không có lớp học phần phù hợp')
-                      else
-                        ...availableClasses.map(_classCard),
-                      const SizedBox(height: 18),
-                      _registeredBox(),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                ),
-                if (isActionLoading)
-                  Container(
-                    color: Colors.black.withOpacity(0.18),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-              ],
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_loadState == _CourseRegisterLoadState.loading) {
+      return const Center(
+        key: Key('course-register-loading'),
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_loadState == _CourseRegisterLoadState.error) {
+      return RefreshIndicator(
+        onRefresh: () => loadData(forceRefresh: true),
+        child: ListView(
+          key: const Key('course-register-error'),
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(24, 64, 24, 32),
+          children: [
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 58,
+              color: AppColors.textTertiary,
             ),
+            const SizedBox(height: AppSpacing.lg),
+            const Text(
+              'Chưa thể hiển thị đăng ký môn học',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              message ?? 'Vui lòng kiểm tra kết nối và thử lại.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            FilledButton.icon(
+              key: const Key('course-register-retry'),
+              onPressed: () => loadData(forceRefresh: true),
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Thử lại'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () => loadData(forceRefresh: true),
+          child: ListView(
+            key: const Key('course-register-content'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 32),
+            children: [
+              _topSummaryCard(),
+              const SizedBox(height: AppSpacing.md),
+              _filterBox(),
+              if (message != null) ...[
+                const SizedBox(height: 10),
+                _messageBox(),
+              ],
+              const SizedBox(height: 18),
+              _sectionHeader(
+                title: 'Danh sách lớp học phần mở cho đăng ký',
+                subtitle:
+                    'Đánh dấu vào các lớp học phần mà bạn muốn đăng ký.',
+              ),
+              const SizedBox(height: 10),
+              if (availableClasses.isEmpty)
+                _emptyBox(
+                  _loadState == _CourseRegisterLoadState.empty
+                      ? 'Chưa có dữ liệu lớp học phần. Hãy kéo xuống để đồng bộ lại.'
+                      : 'Không có lớp học phần phù hợp',
+                )
+              else
+                ...availableClasses.map(_classCard),
+              const SizedBox(height: 18),
+              _registeredBox(),
+              const SizedBox(height: AppSpacing.xl),
+            ],
+          ),
+        ),
+        if (isRefreshing)
+          const Align(
+            alignment: Alignment.topCenter,
+            child: LinearProgressIndicator(minHeight: 2),
+          ),
+        if (isActionLoading)
+          Positioned.fill(
+            child: ColoredBox(
+              color: Color(0x2E000000),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ),
+      ],
     );
   }
 
@@ -515,25 +668,17 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xff0D47A1), Color(0xff1976D2)],
-        ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.lightShadow,
       ),
       child: Row(
         children: [
           const CircleAvatar(
-            backgroundColor: Colors.white24,
-            child: Icon(Icons.school, color: Colors.white),
+            backgroundColor: AppColors.white24,
+            child: Icon(Icons.school, color: AppColors.white),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -541,15 +686,15 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 const Text(
                   'Đăng ký học phần',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   '${registeredClasses.length} học phần đã đăng ký • $totalCredits tín chỉ',
-                  style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  style: const TextStyle(color: AppColors.white70, fontSize: 13),
                 ),
               ],
             ),
@@ -560,14 +705,20 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   }
 
   Widget _filterBox() {
+    final visibleFilters = buildVisibleCourseRegisterFilters(filters);
+    final safeSelectedFilter = resolveCourseRegisterFilterValue(
+      filters: visibleFilters,
+      currentValue: selectedFilter,
+    );
+
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppColors.black.withOpacity(0.05),
             blurRadius: 12,
             offset: const Offset(0, 5),
           ),
@@ -576,43 +727,39 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       child: Column(
         children: [
           DropdownButtonFormField<int>(
-            value: selectedFilter,
+            key: const Key('course-register-filter'),
+            value: safeSelectedFilter,
             isExpanded: true,
+            hint: const Text('Không có bộ lọc khả dụng'),
             decoration: InputDecoration(
               labelText: 'Bộ lọc',
               prefixIcon: const Icon(Icons.filter_alt_outlined),
               filled: true,
-              fillColor: const Color(0xffF7F8FC),
+              fillColor: AppColors.surfaceAlt,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 borderSide: BorderSide.none,
               ),
             ),
-            items: filters
-                .where(
-                  (filter) =>
-                      filter.giaTri != 10 &&
-                      filter.giaTri != 3 &&
-                      filter.giaTri != 4,
-                )
-                .map((filter) {
-                  return DropdownMenuItem<int>(
-                    value: filter.giaTri,
-                    child: Text(filter.mieuTa ?? 'Bộ lọc'),
-                  );
-                })
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
+            items: visibleFilters.map((filter) {
+              return DropdownMenuItem<int>(
+                value: filter.giaTri,
+                child: Text(filter.mieuTa ?? 'Bộ lọc'),
+              );
+            }).toList(),
+            onChanged: visibleFilters.isEmpty
+                ? null
+                : (value) {
+                    if (value == null) return;
 
-              setState(() {
-                selectedFilter = value;
-                selectedKhoa = null;
-                selectedLop = null;
-              });
-            },
+                    setState(() {
+                      selectedFilter = value;
+                      selectedKhoa = null;
+                      selectedLop = null;
+                    });
+                  },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           TextField(
             onChanged: (value) {
               setState(() {
@@ -623,9 +770,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               hintText: 'Tìm theo tên hoặc mã môn học',
               prefixIcon: const Icon(Icons.search),
               filled: true,
-              fillColor: const Color(0xffF7F8FC),
+              fillColor: AppColors.surfaceAlt,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 borderSide: BorderSide.none,
               ),
             ),
@@ -647,9 +794,9 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: const Color(0xffF7F8FC),
+        fillColor: AppColors.surfaceAlt,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           borderSide: BorderSide.none,
         ),
       ),
@@ -663,10 +810,10 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   Widget _messageBox() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(14),
+        color: AppColors.primarySoft,
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Text(message ?? ''),
     );
@@ -680,10 +827,10 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
           title,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           subtitle,
-          style: const TextStyle(color: Colors.black54, fontSize: 13),
+          style: const TextStyle(color: AppColors.black54, fontSize: 13),
         ),
       ],
     );
@@ -695,17 +842,17 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: canRegister ? Colors.white : Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(16),
+        color: canRegister ? AppColors.white : AppColors.surfaceAlt,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(
-          color: canRegister ? Colors.transparent : Colors.grey.shade300,
+          color: canRegister ? AppColors.transparent : AppColors.border,
         ),
         boxShadow: canRegister
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: AppColors.black.withOpacity(0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -729,7 +876,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                   '$tenMon - ${item.maMon ?? ''}',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: canRegister ? Colors.black87 : Colors.black38,
+                    color: canRegister ? AppColors.black87 : AppColors.black38,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -748,7 +895,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                   Text(
                     item.gcEnable!,
                     style: const TextStyle(
-                      color: Colors.redAccent,
+                      color: AppColors.error,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -760,7 +907,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
           IconButton(
             onPressed: () => _showCourseDetail(item),
             icon: const Icon(Icons.open_in_new),
-            color: Colors.deepOrange,
+            color: AppColors.warning,
           ),
         ],
       ),
@@ -792,13 +939,13 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: AppColors.black.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -818,7 +965,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -830,7 +977,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                 const SizedBox(height: 5),
                 Text(
                   'Nhóm: ${item.nhomTo ?? '-'} • Lớp: ${item.lop ?? '-'} • ${item.soTc ?? '0'} TC',
-                  style: const TextStyle(color: Colors.black54, fontSize: 13),
+                  style: const TextStyle(color: AppColors.black54, fontSize: 13),
                 ),
               ],
             ),
@@ -838,12 +985,12 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
           IconButton(
             onPressed: () => _showCourseDetail(item),
             icon: const Icon(Icons.open_in_new),
-            color: Colors.deepOrange,
+            color: AppColors.warning,
           ),
           IconButton(
             onPressed: isActionLoading ? null : () => cancelCourseByClass(item),
             icon: const Icon(Icons.delete_outline),
-            color: Colors.redAccent,
+            color: AppColors.error,
           ),
         ],
       ),
@@ -858,13 +1005,13 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
       builder: (context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
           child: Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(AppRadius.xl),
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -886,8 +1033,8 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                         onTap: () => Navigator.pop(context),
                         child: const CircleAvatar(
                           radius: 18,
-                          backgroundColor: Color(0xff75758B),
-                          child: Icon(Icons.close, color: Colors.white),
+                          backgroundColor: AppColors.textSecondary,
+                          child: Icon(Icons.close, color: AppColors.white),
                         ),
                       ),
                     ],
@@ -909,7 +1056,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -920,7 +1067,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg20),
                   SizedBox(
                     width: 120,
                     height: 46,
@@ -934,7 +1081,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
                       onPressed: () => Navigator.pop(context),
                       child: const Text(
                         'Đóng',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -951,7 +1098,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 9),
       decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Color(0xffEEEEEE))),
+        border: Border(bottom: BorderSide(color: AppColors.divider)),
       ),
       child: Row(
         children: [
@@ -965,7 +1112,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
             child: Text(
               value ?? '',
               style: const TextStyle(
-                color: Color(0xff3F51B5),
+                color: AppColors.primaryPressed,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -978,14 +1125,14 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
   Widget _emptyBox(String text) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Column(
         children: [
-          const Icon(Icons.event_note, color: Colors.blue, size: 42),
+          const Icon(Icons.event_note, color: AppColors.primary, size: 42),
           const SizedBox(height: 10),
           Text(text, textAlign: TextAlign.center),
         ],
@@ -997,7 +1144,7 @@ class _CourseRegisterViewState extends State<CourseRegisterView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xffEEF3FF),
+        color: AppColors.primarySoft,
         borderRadius: BorderRadius.circular(99),
       ),
       child: Text(

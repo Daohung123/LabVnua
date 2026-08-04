@@ -48,24 +48,25 @@ import 'package:intl/intl.dart';
 import '../models/schedure_student.dart';
 import '../controllers/ctrl_schedure.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 // ─────────────────────────────────────────────────────────────
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────
 
-const Color kPrimary = Color(0xFF0047A8);
-const Color kPrimaryLight = Color(0xFFE8F0FE);
-const Color kPrimaryDark = Color(0xFF003580);
-const Color kBg = Color(0xFFF4F7FD);
-const Color kCardBg = Colors.white;
-const Color kMorning = Color(0xFFEDF4FF); // sáng
-const Color kAfternoon = Color(0xFFE6F9F0); // chiều/tối
-const Color kBorderLight = Color(0xFFDDE6F5);
+const Color kPrimary = AppColors.primary;
+const Color kPrimaryLight = AppColors.primarySoft;
+const Color kPrimaryDark = AppColors.primaryPressed;
+const Color kBg = AppColors.background;
+const Color kCardBg = AppColors.white;
+const Color kMorning = AppColors.primarySoft; // sáng
+const Color kAfternoon = AppColors.successLight; // chiều/tối
+const Color kBorderLight = AppColors.border;
 
 // ── Màu cảnh báo trùng tiết ──────────────────────────────────
-const Color kConflict = Color(0xFFD32F2F);
-const Color kConflictBg = Color(0xFFFFF5F5);
-const Color kConflictBorder = Color(0xFFFFCDD2);
-const Color kConflictAccent = Color(0xFFFFEBEE);
+const Color kConflict = AppColors.error;
+const Color kConflictBg = AppColors.errorLight;
+const Color kConflictBorder = AppColors.errorLight;
+const Color kConflictAccent = AppColors.errorLight;
 
 const double kRadius = 14.0;
 const double kRadiusSm = 10.0;
@@ -354,7 +355,7 @@ class _Header extends StatelessWidget {
                   IconButton(
                     icon: const Icon(
                       Icons.arrow_back_ios_new,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 20,
                     ),
                     onPressed: () => Navigator.maybePop(context),
@@ -364,7 +365,7 @@ class _Header extends StatelessWidget {
                       "Thời Khóa Biểu",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.3,
@@ -379,20 +380,20 @@ class _Header extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.white.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: AppColors.white.withOpacity(0.3),
                         ),
                       ),
                       child: const Row(
                         children: [
-                          Icon(Icons.today, color: Colors.white, size: 14),
-                          SizedBox(width: 4),
+                          Icon(Icons.today, color: AppColors.white, size: 14),
+                          SizedBox(width: AppSpacing.xs),
                           Text(
                             "Hôm nay",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -411,22 +412,22 @@ class _Header extends StatelessWidget {
                 height: 36,
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(24),
+                  color: AppColors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                 ),
                 child: TabBar(
                   controller: tabCtrl,
                   indicator: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   labelColor: kPrimary,
-                  unselectedLabelColor: Colors.white,
+                  unselectedLabelColor: AppColors.white,
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                   ),
-                  dividerColor: Colors.transparent,
+                  dividerColor: AppColors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
                     Tab(text: "Ngày"),
@@ -675,8 +676,8 @@ class _WeekStrip extends StatelessWidget {
                       // [NEW] ngày có trùng + đang chọn → nền đỏ nhạt
                       color: isSel
                           ? (hasConf ? kConflict : kPrimary)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(12),
+                          : AppColors.transparent,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                       // [NEW] ngày có trùng nhưng chưa chọn → viền đỏ nhẹ
                       border: (!isSel && hasConf)
                           ? Border.all(
@@ -693,8 +694,8 @@ class _WeekStrip extends StatelessWidget {
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                             color: isSel
-                                ? Colors.white.withOpacity(0.85)
-                                : Colors.grey[500],
+                                ? AppColors.white.withOpacity(0.85)
+                                : AppColors.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 3),
@@ -704,15 +705,15 @@ class _WeekStrip extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
                             color: isSel
-                                ? Colors.white
+                                ? AppColors.white
                                 : isTod
                                 ? kPrimary
                                 : hasConf
                                 ? kConflict // [NEW] số ngày đỏ nếu có trùng
-                                : Colors.black87,
+                                : AppColors.black87,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         // [NEW] Dot indicator: đỏ nếu có trùng, xanh nếu có lịch bình thường
                         AnimatedOpacity(
                           opacity: (hasLes || hasConf) ? 1 : 0,
@@ -722,7 +723,7 @@ class _WeekStrip extends StatelessWidget {
                             height: 5,
                             decoration: BoxDecoration(
                               color: isSel
-                                  ? Colors.white
+                                  ? AppColors.white
                                   : hasConf
                                   ? kConflict
                                   : kPrimary,
@@ -757,7 +758,7 @@ class _NavBtn extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: kPrimaryLight,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
       child: Icon(icon, color: kPrimary, size: 18),
     ),
@@ -861,7 +862,7 @@ class _LessonCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: isMorn
                                 ? kPrimary.withOpacity(0.1)
-                                : Colors.teal.withOpacity(0.12),
+                                : AppColors.success.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -869,7 +870,7 @@ class _LessonCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w700,
-                              color: isMorn ? kPrimary : Colors.teal[700],
+                              color: isMorn ? kPrimary : AppColors.success,
                             ),
                           ),
                         ),
@@ -879,7 +880,7 @@ class _LessonCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
-                          color: isConflict ? kConflict : Colors.black87,
+                          color: isConflict ? kConflict : AppColors.black87,
                         ),
                       ),
                       Container(
@@ -888,7 +889,7 @@ class _LessonCard extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(vertical: 3),
                         color: isConflict
                             ? kConflict.withOpacity(0.3)
-                            : Colors.grey[300],
+                            : AppColors.textTertiary,
                       ),
                       Text(
                         gioEnd,
@@ -897,7 +898,7 @@ class _LessonCard extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: isConflict
                               ? kConflict.withOpacity(0.7)
-                              : Colors.grey[500],
+                              : AppColors.textSecondary,
                         ),
                       ),
                     ],
@@ -951,10 +952,10 @@ class _LessonCard extends StatelessWidget {
                         _InfoRow(
                           icon: Icons.person_outline,
                           text: item.giangVien,
-                          color: Colors.green[700]!,
+                          color: AppColors.success,
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpacing.sm),
                         // [NEW] Badge "Trùng lịch" khi bị conflict
                         if (isConflict)
                           Container(
@@ -964,7 +965,7 @@ class _LessonCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: kConflict.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                               border: Border.all(
                                 color: kConflict.withOpacity(0.25),
                               ),
@@ -977,7 +978,7 @@ class _LessonCard extends StatelessWidget {
                                   size: 10,
                                   color: kConflict,
                                 ),
-                                SizedBox(width: 4),
+                                SizedBox(width: AppSpacing.xs),
                                 Text(
                                   "Trùng lịch",
                                   style: TextStyle(
@@ -998,13 +999,13 @@ class _LessonCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: kPrimaryLight,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                             ),
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.circle, size: 6, color: kPrimary),
-                                SizedBox(width: 4),
+                                SizedBox(width: AppSpacing.xs),
                                 Text(
                                   "Hôm nay",
                                   style: TextStyle(
@@ -1037,7 +1038,7 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? Colors.black54;
+    final c = color ?? AppColors.black54;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1122,7 +1123,7 @@ class _WeekTabState extends State<_WeekTab> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (_) => _WeekPicker(
         tuanList: tuanList,
         selected: _selectedWeek,
@@ -1163,7 +1164,7 @@ class _WeekTabState extends State<_WeekTab> {
                             size: 13,
                             color: kPrimary,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpacing.xs),
                           Text(
                             "Tổng ${tkb.totalItems} buổi  •  ${tkb.totalPages} trang",
                             style: const TextStyle(
@@ -1177,7 +1178,7 @@ class _WeekTabState extends State<_WeekTab> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
               ],
               // Chọn tuần
               GestureDetector(
@@ -1208,7 +1209,7 @@ class _WeekTabState extends State<_WeekTab> {
                           style: const TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: AppColors.black87,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -1216,8 +1217,8 @@ class _WeekTabState extends State<_WeekTab> {
                       Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: tkb != null
-                            ? Colors.grey[600]
-                            : Colors.grey[300],
+                            ? AppColors.textSecondary
+                            : AppColors.textTertiary,
                         size: 20,
                       ),
                     ],
@@ -1288,16 +1289,16 @@ class _WeekPicker extends StatelessWidget {
       builder: (ctx, ctrl) => Container(
         decoration: const BoxDecoration(
           color: kCardBg,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
         ),
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Container(
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: AppColors.textTertiary,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -1311,7 +1312,7 @@ class _WeekPicker extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+                    color: AppColors.black87,
                   ),
                 ),
               ),
@@ -1333,7 +1334,7 @@ class _WeekPicker extends StatelessWidget {
                       backgroundColor: hasConf
                           ? kConflict.withOpacity(0.1)
                           : isCur
-                          ? Colors.orange.withOpacity(0.15)
+                          ? AppColors.warning.withOpacity(0.15)
                           : isSel
                           ? kPrimaryLight
                           : kBg,
@@ -1345,10 +1346,10 @@ class _WeekPicker extends StatelessWidget {
                           color: hasConf
                               ? kConflict
                               : isCur
-                              ? Colors.orange[700]
+                              ? AppColors.warning
                               : isSel
                               ? kPrimary
-                              : Colors.grey[600],
+                              : AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -1357,7 +1358,7 @@ class _WeekPicker extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                        color: isSel ? kPrimary : Colors.black87,
+                        color: isSel ? kPrimary : AppColors.black87,
                       ),
                     ),
                     subtitle: Row(
@@ -1366,7 +1367,7 @@ class _WeekPicker extends StatelessWidget {
                           "${t.dsThoiKhoaBieu.length} buổi học",
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey[500],
+                            color: AppColors.textSecondary,
                           ),
                         ),
                         // [NEW] badge trùng tiết trong picker
@@ -1417,14 +1418,14 @@ class _WeekPicker extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.12),
+                              color: AppColors.warning.withOpacity(0.12),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: const Text(
                               "Tuần hiện tại",
                               style: TextStyle(
                                 fontSize: 9,
-                                color: Colors.orange,
+                                color: AppColors.warning,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -1558,10 +1559,10 @@ class _WeekGrid extends StatelessWidget {
                     color: hasConf
                         ? kConflict.withOpacity(0.25)
                         : isToday
-                        ? Colors.white.withOpacity(0.15)
-                        : Colors.transparent,
+                        ? AppColors.white.withOpacity(0.15)
+                        : AppColors.transparent,
                     border: Border(
-                      right: BorderSide(color: Colors.white.withOpacity(0.12)),
+                      right: BorderSide(color: AppColors.white.withOpacity(0.12)),
                     ),
                   ),
                   child: Center(
@@ -1575,8 +1576,8 @@ class _WeekGrid extends StatelessWidget {
                             fontSize: 9,
                             fontWeight: FontWeight.w700,
                             color: isToday
-                                ? Colors.white
-                                : Colors.white.withOpacity(0.85),
+                                ? AppColors.white
+                                : AppColors.white.withOpacity(0.85),
                             height: 1.5,
                           ),
                         ),
@@ -1586,7 +1587,7 @@ class _WeekGrid extends StatelessWidget {
                             padding: EdgeInsets.only(top: 1),
                             child: Icon(
                               Icons.warning_amber_rounded,
-                              color: Colors.white,
+                              color: AppColors.white,
                               size: 9,
                             ),
                           ),
@@ -1602,9 +1603,9 @@ class _WeekGrid extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: hasConf
                       ? kConflict.withOpacity(0.25)
-                      : Colors.transparent,
+                      : AppColors.transparent,
                   border: Border(
-                    right: BorderSide(color: Colors.white.withOpacity(0.12)),
+                    right: BorderSide(color: AppColors.white.withOpacity(0.12)),
                   ),
                 ),
                 child: Center(
@@ -1612,7 +1613,7 @@ class _WeekGrid extends StatelessWidget {
                     label,
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.white.withOpacity(0.9),
+                      color: AppColors.white.withOpacity(0.9),
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -1643,8 +1644,8 @@ class _WeekGrid extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: kCardBg,
                   border: Border(
-                    right: BorderSide(color: Colors.blue.shade100),
-                    bottom: BorderSide(color: Colors.blue.shade50, width: 0.5),
+                    right: BorderSide(color: AppColors.primarySoft),
+                    bottom: BorderSide(color: AppColors.primarySoft, width: 0.5),
                   ),
                 ),
                 child: Column(
@@ -1661,7 +1662,7 @@ class _WeekGrid extends StatelessWidget {
                     if (gio.isNotEmpty)
                       Text(
                         gio,
-                        style: TextStyle(fontSize: 8, color: Colors.grey[400]),
+                        style: TextStyle(fontSize: 8, color: AppColors.textTertiary),
                       ),
                   ],
                 ),
@@ -1675,7 +1676,7 @@ class _WeekGrid extends StatelessWidget {
           (di) => Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border: Border(right: BorderSide(color: Colors.blue.shade50)),
+                border: Border(right: BorderSide(color: AppColors.primarySoft)),
               ),
               child: Column(
                 children: List.generate(
@@ -1684,7 +1685,7 @@ class _WeekGrid extends StatelessWidget {
                     height: kRowH,
                     color: pi % 2 == 0
                         ? kCardBg
-                        : Colors.blue.shade50.withOpacity(0.25),
+                        : AppColors.primarySoft.withOpacity(0.25),
                   ),
                 ),
               ),
@@ -1745,22 +1746,22 @@ class _GridBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     // [NEW] Màu riêng cho block bị trùng
     final bg = isConflict
-        ? const Color(0xFFFFEBEE)
+        ? AppColors.errorLight
         : isMorning
-        ? const Color(0xFFCCDFFF)
-        : const Color(0xFFC5EDD9);
+        ? AppColors.primarySoft
+        : AppColors.successLight;
 
     final border = isConflict
         ? kConflict.withOpacity(0.55)
         : isMorning
         ? kPrimary.withOpacity(0.35)
-        : Colors.teal.withOpacity(0.4);
+        : AppColors.success.withOpacity(0.4);
 
     final textColor = isConflict
         ? kConflict
         : isMorning
         ? kPrimary
-        : Colors.teal[800]!;
+        : AppColors.success;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 1.5, vertical: 2),
@@ -1831,10 +1832,10 @@ class _LoadingState extends StatelessWidget {
             height: 40,
             child: CircularProgressIndicator(color: kPrimary, strokeWidth: 2.5),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             "Đang tải lịch học...",
-            style: TextStyle(color: Colors.grey[500], fontSize: 13),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
         ],
       ),
@@ -1852,7 +1853,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1875,7 +1876,7 @@ class _EmptyState extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.black54,
+                color: AppColors.black54,
               ),
               textAlign: TextAlign.center,
             ),
@@ -1883,7 +1884,7 @@ class _EmptyState extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 subMessage!,
-                style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+                style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -1904,7 +1905,7 @@ class _ErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -1912,13 +1913,13 @@ class _ErrorState extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: Colors.red[50],
+                color: AppColors.errorLight,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.wifi_off_outlined,
                 size: 36,
-                color: Colors.red[400],
+                color: AppColors.error,
               ),
             ),
             const SizedBox(height: 18),
@@ -1927,17 +1928,17 @@ class _ErrorState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: Colors.black54,
+                color: AppColors.black54,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               message,
-              style: TextStyle(fontSize: 12, color: Colors.grey[400]),
+              style: TextStyle(fontSize: 12, color: AppColors.textTertiary),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg20),
               TextButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh, size: 16),
@@ -1950,7 +1951,7 @@ class _ErrorState extends StatelessWidget {
                     vertical: 10,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                 ),
               ),
@@ -2002,7 +2003,7 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2013,13 +2014,13 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
               const Row(
                 children: [
                   Icon(Icons.calendar_today, color: kPrimary, size: 16),
-                  SizedBox(width: 8),
+                  SizedBox(width: AppSpacing.sm),
                   Text(
                     "Thời Khóa Biểu",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black87,
+                      color: AppColors.black87,
                     ),
                   ),
                 ],
@@ -2047,12 +2048,12 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
             ],
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             DateFormat('EEEE, dd/MM/yyyy', 'vi').format(DateTime.now()),
-            style: TextStyle(fontSize: 11, color: Colors.grey[400]),
+            style: TextStyle(fontSize: 11, color: AppColors.textTertiary),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           // Content
           SizedBox(
@@ -2072,7 +2073,7 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
                   return Center(
                     child: Text(
                       "Không tải được lịch",
-                      style: TextStyle(color: Colors.grey[400], fontSize: 13),
+                      style: TextStyle(color: AppColors.textTertiary, fontSize: 13),
                     ),
                   );
                 }
@@ -2084,12 +2085,12 @@ class _ScheduleHomeCardState extends State<ScheduleHomeCard> {
                       Icon(
                         Icons.weekend_outlined,
                         size: 36,
-                        color: Colors.grey[300],
+                        color: AppColors.textTertiary,
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Text(
                         "Hôm nay không có lịch học",
-                        style: TextStyle(color: Colors.grey[400], fontSize: 12),
+                        style: TextStyle(color: AppColors.textTertiary, fontSize: 12),
                       ),
                     ],
                   );
@@ -2136,19 +2137,19 @@ class _HomeCard extends StatelessWidget {
         ? kConflict.withOpacity(0.4)
         : isMorn
         ? kPrimary.withOpacity(0.2)
-        : Colors.teal.withOpacity(0.2);
+        : AppColors.success.withOpacity(0.2);
 
     return Container(
       width: 165,
       margin: const EdgeInsets.only(right: 10, top: 2, bottom: 4),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(kRadiusSm),
         border: Border.all(color: borderColor, width: isConflict ? 1.5 : 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: AppColors.black.withOpacity(0.04),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -2201,44 +2202,44 @@ class _HomeCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             children: [
-              const Icon(Icons.schedule_outlined, size: 12, color: Colors.grey),
-              const SizedBox(width: 4),
+              const Icon(Icons.schedule_outlined, size: 12, color: AppColors.textSecondary),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 "Tiết ${item.tietBatDau}  (${item.soTiet} tiết)",
-                style: const TextStyle(fontSize: 11, color: Colors.black54),
+                style: const TextStyle(fontSize: 11, color: AppColors.black54),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Row(
             children: [
               const Icon(
                 Icons.meeting_room_outlined,
                 size: 12,
-                color: Colors.grey,
+                color: AppColors.textSecondary,
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   "Phòng ${item.phong}",
-                  style: const TextStyle(fontSize: 11, color: Colors.black54),
+                  style: const TextStyle(fontSize: 11, color: AppColors.black54),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Row(
             children: [
-              const Icon(Icons.person_outline, size: 12, color: Colors.grey),
-              const SizedBox(width: 4),
+              const Icon(Icons.person_outline, size: 12, color: AppColors.textSecondary),
+              const SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   item.giangVien,
-                  style: const TextStyle(fontSize: 10, color: Colors.blueGrey),
+                  style: const TextStyle(fontSize: 10, color: AppColors.textSecondary),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

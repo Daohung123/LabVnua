@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:aqedu/core/database/portal_read_sync_coordinator.dart';
 import 'package:aqedu/core/logging/app_log.dart';
 import 'package:aqedu/core/screens/screen_loading.dart';
 import 'package:aqedu/core/services_root/api_daotao/auth/check_login.dart';
 import 'package:aqedu/core/services_root/sqlite/sessions/core_service_session.dart';
 import 'package:aqedu/core/services_root/supabase/supabase_config.dart';
 import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
+import 'package:aqedu/features/auth/student/screens/portal_initial_sync_screen.dart';
 import 'package:aqedu/features/chat/services/chat_notification_service.dart';
 import 'package:aqedu/features/chat/services/chat_realtime_connection_service.dart';
 import 'package:aqedu/features/chat/services/chat_user_sync_service.dart';
 import 'package:aqedu/features/home/home_screen/screens/student_home_screen_view.dart';
+import 'package:aqedu/features/notification/services/background_sync_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +27,7 @@ class MyWidget extends StatefulWidget {
 class _MyWidgetState extends State<MyWidget> {
   bool? checkResult;
   bool? hasNetwork;
+  bool? hasInitialPortalSync;
 
   @override
   void initState() {
@@ -61,6 +65,9 @@ class _MyWidgetState extends State<MyWidget> {
       // Không có wifi -> dừng
       if (!networkConnected) {
         final localSession = await SqliteServices().getSession();
+        final hasCompletedSync = localSession != null
+            ? await PortalReadSyncCoordinator().hasCompletedInitialSync()
+            : false;
         AppLog.coSoDuLieu(
           'Đọc session local khi không có mạng',
           khuVuc: 'MyWidget',
@@ -72,12 +79,16 @@ class _MyWidgetState extends State<MyWidget> {
         if (!mounted) return;
         setState(() {
           checkResult = localSession != null;
+          hasInitialPortalSync = hasCompletedSync;
         });
         return;
       }
 
       // Có wifi -> check login
       final bool result = await checkLogin();
+      final hasCompletedSync = result
+          ? await PortalReadSyncCoordinator().hasCompletedInitialSync()
+          : false;
       AppLog.ungDung(
         'Đã kiểm tra phiên đăng nhập qua hệ thống đào tạo',
         khuVuc: 'MyWidget',
@@ -87,9 +98,13 @@ class _MyWidgetState extends State<MyWidget> {
       if (!mounted) return;
       setState(() {
         checkResult = result;
+        hasInitialPortalSync = hasCompletedSync;
       });
 
       if (result) {
+        if (hasCompletedSync) {
+          unawaited(BackgroundSyncService().syncIfDue());
+        }
         AppLog.chat(
           'Chuẩn bị khởi tạo chat cho phiên đăng nhập hiện tại',
           khuVuc: 'MyWidget',
@@ -113,6 +128,9 @@ class _MyWidgetState extends State<MyWidget> {
       });
 
       final localSession = await SqliteServices().getSession();
+      final hasCompletedSync = localSession != null
+          ? await PortalReadSyncCoordinator().hasCompletedInitialSync()
+          : false;
       AppLog.coSoDuLieu(
         'Đọc session local sau lỗi khởi động',
         khuVuc: 'MyWidget',
@@ -121,6 +139,7 @@ class _MyWidgetState extends State<MyWidget> {
       if (!mounted) return;
       setState(() {
         checkResult ??= localSession != null;
+        hasInitialPortalSync ??= hasCompletedSync;
       });
     }
   }
@@ -174,7 +193,13 @@ class _MyWidgetState extends State<MyWidget> {
 
     // Đã login
     if (checkResult == true) {
-      return HomeScreen();
+      if (hasInitialPortalSync == null) {
+        return const ScreenLoading();
+      }
+      if (hasInitialPortalSync == true) {
+        return const HomeScreen();
+      }
+      return const PortalInitialSyncScreen();
     }
 
     // Chưa login

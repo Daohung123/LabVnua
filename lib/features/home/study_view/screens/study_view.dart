@@ -11,6 +11,7 @@ import 'package:aqedu/features/task/presentation/screens/local_task_screen.dart'
 import 'package:aqedu/features/tuition/screens/view_tuition.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class HocTapView extends StatefulWidget {
   const HocTapView({super.key, this.analyticsService});
 
@@ -56,16 +57,16 @@ class _HocTapViewState extends State<HocTapView> {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xffF5F8FC),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
-        backgroundColor: const Color(0xff0047A8),
-        surfaceTintColor: const Color(0xff0047A8),
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
+        surfaceTintColor: AppColors.primary,
+        foregroundColor: AppColors.white,
         title: const Text(
           'Cổng học tập',
-          style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+          style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.white),
         ),
       ),
       body: SafeArea(
@@ -85,9 +86,9 @@ class _HocTapViewState extends State<HocTapView> {
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Tìm chức năng học tập',
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                   borderSide: BorderSide.none,
                 ),
               ),
@@ -306,12 +307,12 @@ class _LearningStats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xff0047A8),
-        borderRadius: BorderRadius.circular(22),
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
       ),
       child: Row(
         children: [
-          const Icon(Icons.school_rounded, color: Colors.white, size: 34),
+          const Icon(Icons.school_rounded, color: AppColors.white, size: 34),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -320,16 +321,16 @@ class _LearningStats extends StatelessWidget {
                 const Text(
                   'Cổng học tập',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   '$visibleItems/$totalItems chức năng · $groupCount nhóm',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.86),
+                    color: AppColors.white.withValues(alpha: 0.86),
                     fontSize: 13,
                   ),
                 ),
@@ -358,16 +359,16 @@ class _SectionHeader extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: Color(0xff111827),
+              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: const TextStyle(
-              color: Color(0xff6B7280),
+              color: AppColors.textSecondary,
               fontSize: 12.5,
               height: 1.4,
             ),
@@ -388,9 +389,9 @@ class _FeatureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xffE4EAF2)),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
@@ -406,15 +407,15 @@ class _FeatureCard extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: const Color(0xff0047A8).withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(14),
+                  color: AppColors.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: Icon(items[index].icon, color: const Color(0xff0047A8)),
+                child: Icon(items[index].icon, color: AppColors.primary),
               ),
               title: Text(
                 items[index].title,
                 style: const TextStyle(
-                  color: Color(0xff111827),
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w700,
                   fontSize: 14.5,
                 ),
@@ -422,7 +423,7 @@ class _FeatureCard extends StatelessWidget {
               subtitle: Text(
                 items[index].subtitle,
                 style: const TextStyle(
-                  color: Color(0xff6B7280),
+                  color: AppColors.textSecondary,
                   fontSize: 12.5,
                   height: 1.3,
                 ),
@@ -444,25 +445,25 @@ class _LearningEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xffE4EAF2)),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(color: AppColors.border),
       ),
       child: const Column(
         children: [
-          Icon(Icons.search_off_outlined, size: 42, color: Color(0xff6B7280)),
-          SizedBox(height: 12),
+          Icon(Icons.search_off_outlined, size: 42, color: AppColors.textSecondary),
+          SizedBox(height: AppSpacing.md),
           Text(
             'Không tìm thấy chức năng',
             style: TextStyle(fontWeight: FontWeight.w800),
           ),
-          SizedBox(height: 4),
+          SizedBox(height: AppSpacing.xs),
           Text(
             'Thử từ khóa khác hoặc xóa nội dung tìm kiếm.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xff6B7280)),
+            style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),

@@ -64,7 +64,7 @@ class IconContainer extends StatelessWidget {
   /// Rounded icon container with app theme colors
   factory IconContainer.themed({
     required IconData icon,
-    Color iconColor = Colors.white,
+    Color iconColor = AppColors.white,
     Color backgroundColor = AppColors.primary,
     double size = 48,
     VoidCallback? onTap,

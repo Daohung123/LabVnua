@@ -40,11 +40,11 @@ class GpaEngine {
   }
 
   static Color colorFromGpa4(double gpa4) {
-    if (gpa4 >= 3.60) return const Color(0xFF10B981);
-    if (gpa4 >= 3.20) return const Color(0xFF0047A8);
-    if (gpa4 >= 2.50) return const Color(0xFFF59E0B);
-    if (gpa4 >= 2.00) return const Color(0xFFEF7C22);
-    return const Color(0xFFEF4444);
+    if (gpa4 >= 3.60) return AppColors.success;
+    if (gpa4 >= 3.20) return AppColors.primary;
+    if (gpa4 >= 2.50) return AppColors.warning;
+    if (gpa4 >= 2.00) return AppColors.warning;
+    return AppColors.error;
   }
 
   static Color colorFromGpa4ForText(double gpa4) => colorFromGpa4(gpa4);
@@ -78,11 +78,11 @@ class GpaEngine {
 
   // ── Color from score10 ──────────────────────────────────────────────────────
   static Color colorFromScore10(double score10) {
-    if (score10 >= 8.5) return const Color(0xFF10B981);
-    if (score10 >= 7.0) return const Color(0xFF0047A8);
-    if (score10 >= 5.5) return const Color(0xFFF59E0B);
-    if (score10 >= 4.0) return const Color(0xFFEF7C22);
-    return const Color(0xFFEF4444);
+    if (score10 >= 8.5) return AppColors.success;
+    if (score10 >= 7.0) return AppColors.primary;
+    if (score10 >= 5.5) return AppColors.warning;
+    if (score10 >= 4.0) return AppColors.warning;
+    return AppColors.error;
   }
 
   // ── Scholarship probability based on GPA-4 ──────────────────────────────────
@@ -94,10 +94,10 @@ class GpaEngine {
   }
 
   static Color scholarshipColor(double gpa4) {
-    if (gpa4 >= 3.60) return const Color(0xFF10B981);
-    if (gpa4 >= 3.20) return const Color(0xFF0047A8);
-    if (gpa4 >= 2.80) return const Color(0xFFF59E0B);
-    return const Color(0xFFEF4444);
+    if (gpa4 >= 3.60) return AppColors.success;
+    if (gpa4 >= 3.20) return AppColors.primary;
+    if (gpa4 >= 2.80) return AppColors.warning;
+    return AppColors.error;
   }
 
   // ── Predicted GPA-4 improvement heuristic ──────────────────────────────────
@@ -125,9 +125,9 @@ class GpaEngine {
 
   static Color gpaTrendColor(double current, double previous) {
     final delta = current - previous;
-    if (delta > 0) return const Color(0xFF10B981);
-    if (delta == 0) return const Color(0xFFF59E0B);
-    return const Color(0xFFEF4444);
+    if (delta > 0) return AppColors.success;
+    if (delta == 0) return AppColors.warning;
+    return AppColors.error;
   }
 }
 
@@ -444,8 +444,8 @@ List<_AiInsight> _buildAiInsights(ScoreStatistics stats) => [
         ? Icons.check_circle_rounded
         : Icons.warning_rounded,
     color: stats.failedSubjects == 0
-        ? const Color(0xFF10B981)
-        : const Color(0xFFEF4444),
+        ? AppColors.success
+        : AppColors.error,
     tag: 'Cảnh báo',
   ),
   _AiInsight(
@@ -453,7 +453,7 @@ List<_AiInsight> _buildAiInsights(ScoreStatistics stats) => [
         'Tỷ lệ tín chỉ đạt: ${(stats.creditPassRate * 100).toStringAsFixed(0)}% (${stats.passedCredits}/${stats.totalCredits} TC)',
     detail: 'Tín chỉ tích lũy ảnh hưởng trực tiếp đến tiến độ tốt nghiệp.',
     icon: Icons.menu_book_rounded,
-    color: const Color(0xFF0047A8),
+    color: AppColors.primary,
     tag: 'Tín chỉ',
   ),
   _AiInsight(
@@ -471,7 +471,7 @@ const _kAchievements = <_Achievement>[
     title: 'Học sinh xuất sắc',
     description: 'GPA-4 ≥ 3.60 trong một kỳ',
     icon: Icons.emoji_events_rounded,
-    color: Color(0xFFF59E0B),
+    color: AppColors.warning,
     unlocked: true,
     xp: 500,
     condition: 'GPA-4 ≥ 3.60',
@@ -480,7 +480,7 @@ const _kAchievements = <_Achievement>[
     title: 'Chuyên cần',
     description: 'Không vắng mặt 30 ngày',
     icon: Icons.local_fire_department_rounded,
-    color: Color(0xFFEF4444),
+    color: AppColors.error,
     unlocked: true,
     xp: 300,
     condition: '30 ngày liên tục',
@@ -489,7 +489,7 @@ const _kAchievements = <_Achievement>[
     title: 'Streak Master',
     description: 'Học liên tục 14 ngày',
     icon: Icons.bolt_rounded,
-    color: Color(0xFF8B5CF6),
+    color: AppColors.ai,
     unlocked: true,
     xp: 200,
     condition: '14 ngày streak',
@@ -498,7 +498,7 @@ const _kAchievements = <_Achievement>[
     title: 'Top Performer',
     description: 'Top 10% lớp',
     icon: Icons.military_tech_rounded,
-    color: Color(0xFF0047A8),
+    color: AppColors.primary,
     unlocked: false,
     xp: 1000,
     condition: 'GPA-4 ≥ 3.80',
@@ -507,7 +507,7 @@ const _kAchievements = <_Achievement>[
     title: 'Perfect Score',
     description: 'Đạt 10/10 ít nhất 1 môn',
     icon: Icons.star_rounded,
-    color: Color(0xFF10B981),
+    color: AppColors.success,
     unlocked: false,
     xp: 400,
     condition: 'Điểm tuyệt đối',
@@ -516,7 +516,7 @@ const _kAchievements = <_Achievement>[
     title: 'No Fail Zone',
     description: 'Kỳ không có môn trượt',
     icon: Icons.shield_rounded,
-    color: Color(0xFF06B6D4),
+    color: AppColors.primary,
     unlocked: true,
     xp: 350,
     condition: '0 môn trượt',
@@ -528,7 +528,7 @@ const _kNotifications = <_SmartNotif>[
     title: 'Thi cuối kỳ: Toán cao cấp',
     subtitle: 'Còn 5 ngày nữa — hãy ôn tập!',
     icon: Icons.assignment_rounded,
-    color: Color(0xFFEF4444),
+    color: AppColors.error,
     time: '5 ngày',
     priority: NotifPriority.high,
   ),
@@ -536,7 +536,7 @@ const _kNotifications = <_SmartNotif>[
     title: 'Nộp bài tập lớn KTLT',
     subtitle: 'Deadline: 23/01/2025',
     icon: Icons.upload_file_rounded,
-    color: Color(0xFFF59E0B),
+    color: AppColors.warning,
     time: '2 ngày',
     priority: NotifPriority.medium,
   ),
@@ -544,7 +544,7 @@ const _kNotifications = <_SmartNotif>[
     title: 'Điểm CSDL đã cập nhật',
     subtitle: 'Kiểm tra kết quả mới nhất',
     icon: Icons.grade_rounded,
-    color: Color(0xFF10B981),
+    color: AppColors.success,
     time: '1 giờ',
     priority: NotifPriority.low,
   ),
@@ -552,7 +552,7 @@ const _kNotifications = <_SmartNotif>[
     title: 'Đăng ký học kỳ mới sắp đóng',
     subtitle: 'Hạn chót: 28/01/2025',
     icon: Icons.calendar_month_rounded,
-    color: Color(0xFF8B5CF6),
+    color: AppColors.ai,
     time: '3 ngày',
     priority: NotifPriority.medium,
   ),
@@ -788,22 +788,22 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
       _RadarData(
         label: 'GPA',
         value: gpa4Ratio,
-        color: const Color(0xFF0047A8),
+        color: AppColors.primary,
       ),
       _RadarData(
         label: 'Đạt môn',
         value: stats.passRate.clamp(0.0, 1.0),
-        color: const Color(0xFF10B981),
+        color: AppColors.success,
       ),
       _RadarData(
         label: 'Điểm cao',
         value: stats.highScoreRate.clamp(0.0, 1.0),
-        color: const Color(0xFFF59E0B),
+        color: AppColors.warning,
       ),
       _RadarData(
         label: 'Tín chỉ',
         value: stats.creditPassRate.clamp(0.0, 1.0),
-        color: const Color(0xFF8B5CF6),
+        color: AppColors.ai,
       ),
       _RadarData(
         label: 'Ổn định',
@@ -813,7 +813,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 0.0,
                 1.0,
               ),
-        color: const Color(0xFFEF4444),
+        color: AppColors.error,
       ),
     ];
   }
@@ -847,7 +847,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.lg20),
                       _buildQuickStatsRow(stats),
                       const SizedBox(height: 22),
                       _buildSemesterSelector(),
@@ -898,18 +898,18 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
       pinned: true,
       stretch: true,
       elevation: 0,
-      backgroundColor: const Color(0xFF003A7A),
+      backgroundColor: AppColors.primaryPressed,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.white),
         onPressed: () => Navigator.maybePop(context),
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+          icon: const Icon(Icons.refresh_rounded, color: AppColors.white),
           onPressed: _loadScores,
           tooltip: 'Làm mới',
         ),
-        const SizedBox(width: 4),
+        const SizedBox(width: AppSpacing.xs),
       ],
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [StretchMode.zoomBackground, StretchMode.fadeTitle],
@@ -921,7 +921,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
         title: const Text(
           'Phân tích học tập',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.white,
             fontWeight: FontWeight.w700,
             fontSize: 16,
           ),
@@ -944,21 +944,21 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
             icon: Icons.check_circle_rounded,
             color: AppColors.success,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _QuickStatPill(
             value: stats.failedSubjects.toString(),
             label: 'Chưa đạt',
             icon: Icons.cancel_rounded,
             color: AppColors.error,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _QuickStatPill(
             value: stats.highScoreSubjects.toString(),
             label: 'Điểm cao',
             icon: Icons.star_rounded,
             color: AppColors.warning,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           _QuickStatPill(
             value: '${stats.passedCredits}TC',
             label: 'TC đạt',
@@ -981,7 +981,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: _semesters.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
           itemBuilder: (context, index) {
             final item = _semesters[index];
             final selected = index == _selectedSemIdx;
@@ -1002,12 +1002,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  gradient: selected
-                      ? const LinearGradient(
-                          colors: [Color(0xFF003A7A), AppColors.primary],
-                        )
-                      : null,
-                  color: selected ? null : AppColors.background,
+                  color: selected ? AppColors.primary : AppColors.background,
                   borderRadius: BorderRadius.circular(AppRadius.full),
                   boxShadow: selected ? AppShadows.lightShadow : null,
                   border: selected ? null : Border.all(color: AppColors.border),
@@ -1017,7 +1012,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: selected ? Colors.white : AppColors.textSecondary,
+                    color: selected ? AppColors.white : AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -1040,7 +1035,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [const Color(0xFF003A7A), rankColor.withOpacity(0.85)],
+          colors: [AppColors.primaryPressed, rankColor.withOpacity(0.85)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -1054,7 +1049,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1066,23 +1061,23 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: AppColors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(AppRadius.full),
-                    border: Border.all(color: Colors.white.withOpacity(0.25)),
+                    border: Border.all(color: AppColors.white.withOpacity(0.25)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
                         Icons.auto_awesome_rounded,
-                        color: Colors.white,
+                        color: AppColors.white,
                         size: 11,
                       ),
                       const SizedBox(width: 5),
                       const Text(
                         'GPA Dashboard',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -1098,23 +1093,23 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.25),
+                      color: AppColors.error.withOpacity(0.25),
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.red.withOpacity(0.5)),
+                      border: Border.all(color: AppColors.error.withOpacity(0.5)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.warning_rounded,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 11,
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: AppSpacing.xs),
                         Text(
                           'Cảnh báo',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
@@ -1136,17 +1131,17 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                           ? '--'
                           : stats.semGpa4.toStringAsFixed(2),
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 52,
                         fontWeight: FontWeight.w900,
                         height: 1.0,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Text(
                       'GPA Hệ 4 • Học kỳ này',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: AppColors.white.withOpacity(0.7),
                         fontSize: 12,
                       ),
                     ),
@@ -1157,20 +1152,20 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _GlassChip(label: rank, color: rankColor),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     _GlassChip(
                       label:
                           'Tích lũy: ${stats.cumulativeGpa4 == 0 ? '--' : stats.cumulativeGpa4.toStringAsFixed(2)}',
                       color: cumColor,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     _GlassChip(label: cumRank, color: cumColor),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 18),
-            Container(height: 1, color: Colors.white.withOpacity(0.15)),
+            Container(height: 1, color: AppColors.white.withOpacity(0.15)),
             const SizedBox(height: 14),
             Row(
               children: [
@@ -1204,7 +1199,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
           icon: Icons.auto_awesome_rounded,
           color: AppColors.primary,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         ...List.generate(insights.length, (i) {
           final insight = insights[i];
           return _AnimatedEntrance(
@@ -1281,21 +1276,21 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
 
     final grades = ['A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F'];
     final colors = [
-      const Color(0xFF10B981),
-      const Color(0xFF34D399),
-      const Color(0xFF0047A8),
-      const Color(0xFF3B82F6),
-      const Color(0xFFF59E0B),
-      const Color(0xFFFBBF24),
-      const Color(0xFFEF7C22),
-      const Color(0xFFFB923C),
-      const Color(0xFFEF4444),
+      AppColors.success,
+      AppColors.success,
+      AppColors.primary,
+      AppColors.primary,
+      AppColors.warning,
+      AppColors.error,
+      AppColors.warning,
+      AppColors.warning,
+      AppColors.error,
     ];
 
     return _SectionCard(
       title: 'Phân phối điểm chữ',
       icon: Icons.bar_chart_rounded,
-      iconColor: const Color(0xFF8B5CF6),
+      iconColor: AppColors.ai,
       child: Column(
         children: [
           SizedBox(
@@ -1316,7 +1311,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               }),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Wrap(
             spacing: 8,
             runSpacing: 6,
@@ -1341,7 +1336,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
     return _SectionCard(
       title: 'Radar kỹ năng học tập',
       icon: Icons.radar_rounded,
-      iconColor: const Color(0xFF06B6D4),
+      iconColor: AppColors.primary,
       child: Row(
         children: [
           SizedBox(
@@ -1349,7 +1344,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
             height: 160,
             child: CustomPaint(painter: _RadarChartPainter(data: radarData)),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1381,7 +1376,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(AppRadius.full),
                             child: LinearProgressIndicator(
@@ -1424,7 +1419,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               size: const Size(double.infinity, 120),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -1442,7 +1437,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                               shape: BoxShape.circle,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             t.gpa4.toStringAsFixed(2),
                             style: TextStyle(
@@ -1518,12 +1513,12 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 value: '2450',
                 label: 'XP tổng',
                 icon: Icons.bolt_rounded,
-                color: const Color(0xFF8B5CF6),
+                color: AppColors.ai,
                 pulse: _pulse,
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1534,14 +1529,14 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 ),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+                    colors: [AppColors.ai, AppColors.ai],
                   ),
                   borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
                 child: const Text(
                   '⚡ Level 8 • Scholar',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
@@ -1557,7 +1552,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.full),
             child: TweenAnimationBuilder<double>(
@@ -1569,7 +1564,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 minHeight: 10,
                 backgroundColor: AppColors.border,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color(0xFF8B5CF6),
+                  AppColors.ai,
                 ),
               ),
             ),
@@ -1605,7 +1600,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 'Ít',
                 style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               ...[0, 1, 2, 3, 4].map(
                 (level) => Container(
                   width: 12,
@@ -1617,7 +1612,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   ),
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               const Text(
                 'Nhiều',
                 style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
@@ -1722,7 +1717,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
     return _SectionCard(
       title: 'Dự đoán AI & Phân tích',
       icon: Icons.psychology_rounded,
-      iconColor: const Color(0xFF8B5CF6),
+      iconColor: AppColors.ai,
       child: Column(
         children: [
           Row(
@@ -1844,7 +1839,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Text(
                   _targetGpa4.toStringAsFixed(2),
@@ -1857,7 +1852,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               activeTrackColor: AppColors.primary,
@@ -1875,7 +1870,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               onChanged: (v) => setState(() => _targetGpa4 = v),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1897,7 +1892,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
@@ -1912,7 +1907,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   color: msgColor,
                   size: 16,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     message,
@@ -1936,7 +1931,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   color: GpaEngine.colorFromGpa4(stats.semGpa4),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: _TargetRow(
                   label: 'Cần đạt thêm',
@@ -1964,7 +1959,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
           icon: Icons.library_books_rounded,
           color: AppColors.primary,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         // Search bar
         Container(
@@ -2019,27 +2014,27 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 onTap: () =>
                     setState(() => _sortMode = SubjectSortMode.byScore),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _FilterChip(
                 label: 'Theo tên',
                 selected: _sortMode == SubjectSortMode.byName,
                 onTap: () => setState(() => _sortMode = SubjectSortMode.byName),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _FilterChip(
                 label: 'Theo TC',
                 selected: _sortMode == SubjectSortMode.byCredits,
                 onTap: () =>
                     setState(() => _sortMode = SubjectSortMode.byCredits),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _FilterChip(
                 label: 'Trạng thái',
                 selected: _sortMode == SubjectSortMode.byStatus,
                 onTap: () =>
                     setState(() => _sortMode = SubjectSortMode.byStatus),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
               _FilterChip(
                 label: 'Chỉ trượt',
                 selected: _showOnlyFailed,
@@ -2049,7 +2044,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         if (subjects.isEmpty)
           _EmptySubjectState(
@@ -2093,7 +2088,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _kAchievements.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
               itemBuilder: (context, i) =>
                   _AchievementBadge(achievement: _kAchievements[i]),
             ),
@@ -2103,7 +2098,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: AppColors.background,
                     borderRadius: BorderRadius.circular(AppRadius.md),
@@ -2137,7 +2132,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF8B5CF6), Color(0xFF6D28D9)],
+                      colors: [AppColors.ai, AppColors.ai],
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
@@ -2151,14 +2146,14 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                             children: [
                               Icon(
                                 Icons.bolt_rounded,
-                                color: Colors.white,
+                                color: AppColors.white,
                                 size: 14,
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: AppSpacing.xs),
                               Text(
                                 'Scholar',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 12,
                                 ),
@@ -2169,7 +2164,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                           Text(
                             '$totalXP XP',
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: AppColors.white70,
                               fontSize: 10,
                             ),
                           ),
@@ -2177,7 +2172,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                       ),
                       const Icon(
                         Icons.chevron_right_rounded,
-                        color: Colors.white70,
+                        color: AppColors.white70,
                         size: 18,
                       ),
                     ],
@@ -2226,14 +2221,14 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: ListView.builder(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           itemCount: 6,
           itemBuilder: (_, i) => Container(
             margin: const EdgeInsets.only(bottom: 16),
             height: i == 0 ? 240 : 130,
             decoration: BoxDecoration(
               color: AppColors.border,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
             ),
             child: const _ShimmerOverlay(),
           ),
@@ -2247,12 +2242,12 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
       backgroundColor: AppColors.background,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
                   color: AppColors.error.withOpacity(0.08),
                   shape: BoxShape.circle,
@@ -2263,7 +2258,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   color: AppColors.error,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.lg20),
               const Text(
                 'Không thể tải dữ liệu',
                 style: TextStyle(
@@ -2272,7 +2267,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 _error ?? '',
                 textAlign: TextAlign.center,
@@ -2281,7 +2276,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
               GestureDetector(
                 onTap: _loadScores,
                 child: Container(
@@ -2291,7 +2286,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF003A7A), AppColors.primary],
+                      colors: [AppColors.primaryPressed, AppColors.primary],
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.full),
                     boxShadow: AppShadows.lightShadow,
@@ -2299,7 +2294,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                   child: const Text(
                     'Thử lại',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
@@ -2325,7 +2320,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
               size: 64,
               color: AppColors.textSecondary,
             ),
-            SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
             Text(
               'Chưa có dữ liệu điểm',
               style: TextStyle(
@@ -2334,7 +2329,7 @@ class _ScoreAnalysisViewState extends State<ScoreAnalysisView>
                 color: AppColors.textPrimary,
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               'Dữ liệu học tập sẽ xuất hiện ở đây',
               style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
@@ -2369,20 +2364,8 @@ class _AppBarBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rankColor = GpaEngine.colorFromGpa4(stats.semGpa4);
-
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            const Color(0xFF002A5E),
-            const Color(0xFF003A7A),
-            rankColor.withOpacity(0.8),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      decoration: const BoxDecoration(color: AppColors.primary),
       child: Stack(
         children: [
           Positioned(
@@ -2393,7 +2376,7 @@ class _AppBarBackground extends StatelessWidget {
               height: 180,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.04),
+                color: AppColors.white.withOpacity(0.04),
               ),
             ),
           ),
@@ -2405,7 +2388,7 @@ class _AppBarBackground extends StatelessWidget {
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.04),
+                color: AppColors.white.withOpacity(0.04),
               ),
             ),
           ),
@@ -2417,7 +2400,7 @@ class _AppBarBackground extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.03),
+                color: AppColors.white.withOpacity(0.03),
               ),
             ),
           ),
@@ -2439,12 +2422,12 @@ class _AppBarBackground extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.14),
+                              color: AppColors.white.withOpacity(0.14),
                               borderRadius: BorderRadius.circular(
                                 AppRadius.full,
                               ),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.25),
+                                color: AppColors.white.withOpacity(0.25),
                               ),
                             ),
                             child: Row(
@@ -2452,14 +2435,14 @@ class _AppBarBackground extends StatelessWidget {
                               children: [
                                 const Icon(
                                   Icons.auto_awesome_rounded,
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   size: 11,
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
                                   'AI Analytics • GPA-4 Engine',
                                   style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
+                                    color: AppColors.white.withOpacity(0.9),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -2483,7 +2466,7 @@ class _AppBarBackground extends StatelessWidget {
                             child: Text(
                               GpaEngine.rankFromGpa4(stats.semGpa4),
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.white,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -2495,17 +2478,17 @@ class _AppBarBackground extends StatelessWidget {
                       const Text(
                         'Phân tích học tập',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
                           height: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Theo dõi GPA-4 & tiến độ học tập',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.7),
+                          color: AppColors.white.withOpacity(0.7),
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
@@ -2569,19 +2552,19 @@ class _HeroMetric extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(11),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.11),
+          color: AppColors.white.withOpacity(0.11),
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: Colors.white.withOpacity(0.18)),
+          border: Border.all(color: AppColors.white.withOpacity(0.18)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: Colors.white.withOpacity(0.65), size: 15),
+            Icon(icon, color: AppColors.white.withOpacity(0.65), size: 15),
             const SizedBox(height: 6),
             Text(
               value,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
               ),
@@ -2589,7 +2572,7 @@ class _HeroMetric extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.6),
+                color: AppColors.white.withOpacity(0.6),
                 fontSize: 9,
                 fontWeight: FontWeight.w500,
               ),
@@ -2612,14 +2595,14 @@ class _GlassChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: AppColors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(AppRadius.full),
-        border: Border.all(color: Colors.white.withOpacity(0.25)),
+        border: Border.all(color: AppColors.white.withOpacity(0.25)),
       ),
       child: Text(
         label,
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.white,
           fontSize: 11,
           fontWeight: FontWeight.w600,
         ),
@@ -2642,7 +2625,7 @@ class _GpaMetricSmall extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.white,
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
@@ -2651,7 +2634,7 @@ class _GpaMetricSmall extends StatelessWidget {
           ),
           Text(
             label,
-            style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 9),
+            style: TextStyle(color: AppColors.white.withOpacity(0.5), fontSize: 9),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -2680,7 +2663,7 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = iconColor ?? AppColors.primary;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -2696,7 +2679,7 @@ class _SectionCard extends StatelessWidget {
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Icon(icon, color: color, size: 15),
               ),
@@ -2737,10 +2720,10 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           child: Icon(icon, color: color, size: 17),
         ),
@@ -2788,7 +2771,7 @@ class _QuickStatPill extends StatelessWidget {
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: Icon(icon, color: color, size: 14),
             ),
@@ -2832,15 +2815,15 @@ class _AiInsightCard extends StatelessWidget {
         border: Border.all(color: insight.color.withOpacity(0.2)),
       ),
       child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        data: Theme.of(context).copyWith(dividerColor: AppColors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
           childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
           leading: Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: insight.color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Icon(insight.icon, color: insight.color, size: 16),
           ),
@@ -2904,7 +2887,7 @@ class _StreakCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           color: color.withOpacity(0.07),
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -3080,7 +3063,7 @@ class _WarningBanner extends StatelessWidget {
       child: Row(
         children: [
           Icon(icon, color: color, size: 18),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               text,
@@ -3155,7 +3138,7 @@ class _PredictCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: TextStyle(
@@ -3266,7 +3249,7 @@ class _GradeBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           grade,
           style: TextStyle(
@@ -3339,7 +3322,7 @@ class _FilterChip extends StatelessWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: selected ? Colors.white : AppColors.textSecondary,
+            color: selected ? AppColors.white : AppColors.textSecondary,
           ),
         ),
       ),
@@ -3432,7 +3415,7 @@ class _TopSubjectRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               name,
@@ -3485,7 +3468,7 @@ class _EmptySubjectState extends StatelessWidget {
             size: 48,
             color: AppColors.textSecondary,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             showOnlyFailed
                 ? 'Không có môn trượt — xuất sắc!'
@@ -3590,7 +3573,7 @@ class _NotifCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: notif.color.withOpacity(0.05),
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -3599,14 +3582,14 @@ class _NotifCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
               color: notif.color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Icon(notif.icon, color: notif.color, size: 18),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -3644,7 +3627,7 @@ class _NotifCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -3696,7 +3679,7 @@ class _SubjectCard extends StatelessWidget {
         boxShadow: AppShadows.lightShadow,
       ),
       child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        data: Theme.of(context).copyWith(dividerColor: AppColors.transparent),
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
           childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
@@ -3778,7 +3761,7 @@ class _SubjectCard extends StatelessWidget {
           ),
           children: [
             Divider(color: AppColors.border, height: 1),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             _DetailRow(
               label: 'Điểm giữa kỳ',
               value: GpaEngine.safeText(subject.diemGiuaKy),
@@ -3820,7 +3803,7 @@ class _SubjectCard extends StatelessWidget {
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               ...subject.dsDiemThanhPhan!.map(
                 (c) => _ComponentChip(component: c),
               ),
@@ -3945,15 +3928,15 @@ class _HeatmapGrid extends StatelessWidget {
   static Color cellColor(int level) {
     switch (level) {
       case 0:
-        return const Color(0xFFE5E7EB);
+        return AppColors.border;
       case 1:
-        return const Color(0xFFBBF7D0);
+        return AppColors.successLight;
       case 2:
-        return const Color(0xFF4ADE80);
+        return AppColors.success;
       case 3:
-        return const Color(0xFF16A34A);
+        return AppColors.success;
       default:
-        return const Color(0xFF14532D);
+        return AppColors.success;
     }
   }
 
@@ -4288,7 +4271,7 @@ class _TrendLinePainter extends CustomPainter {
         p,
         5,
         Paint()
-          ..color = Colors.white
+          ..color = AppColors.white
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );
@@ -4337,14 +4320,14 @@ class _ShimmerOverlayState extends State<_ShimmerOverlay>
       animation: _anim,
       builder: (_, __) => DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           gradient: LinearGradient(
             begin: Alignment(-2 + 4 * _anim.value, 0),
             end: Alignment(2 + 4 * _anim.value, 0),
             colors: const [
-              Color(0xFFE5E7EB),
-              Color(0xFFF9FAFB),
-              Color(0xFFE5E7EB),
+              AppColors.border,
+              AppColors.surfaceAlt,
+              AppColors.border,
             ],
           ),
         ),

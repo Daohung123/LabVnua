@@ -322,7 +322,7 @@ class AppBadgeText extends StatelessWidget {
     super.key,
     required this.label,
     this.backgroundColor = AppColors.primary,
-    this.textColor = Colors.white,
+    this.textColor = AppColors.white,
     this.textStyle,
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     this.borderRadius = AppRadius.full,
@@ -351,27 +351,27 @@ class AppBadgeText extends StatelessWidget {
   factory AppBadgeText.success(String label) => AppBadgeText(
     label: label,
     backgroundColor: AppColors.success,
-    textColor: Colors.white,
+    textColor: AppColors.white,
   );
 
   /// Error badge
   factory AppBadgeText.error(String label) => AppBadgeText(
     label: label,
     backgroundColor: AppColors.error,
-    textColor: Colors.white,
+    textColor: AppColors.white,
   );
 
   /// Warning badge
   factory AppBadgeText.warning(String label) => AppBadgeText(
     label: label,
     backgroundColor: AppColors.warning,
-    textColor: Colors.white,
+    textColor: AppColors.white,
   );
 
   /// Info badge
   factory AppBadgeText.info(String label) => AppBadgeText(
     label: label,
     backgroundColor: AppColors.info,
-    textColor: Colors.white,
+    textColor: AppColors.white,
   );
 }

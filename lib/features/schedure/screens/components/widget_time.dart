@@ -3,6 +3,7 @@ import 'package:aqedu/core/constants/UI/styles/colors.dart';
 import 'package:aqedu/core/constants/features/schedure/schedure.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class WidgetTimeSchedure extends StatefulWidget {
   final String start_time;
   final String end_time;
@@ -34,14 +35,14 @@ class _WidgetTimeSchedureState extends State<WidgetTimeSchedure> {
             Text(
               widget.start_time,
               style: TextStyle(
-                color: Colors.black,
+                color: AppColors.black,
                 fontSize: font_time_schedure,
               ),
             ),
             Text(
               widget.end_time,
               style: TextStyle(
-                color: Colors.black,
+                color: AppColors.black,
                 fontSize: font_time_schedure,
               ),
             ),

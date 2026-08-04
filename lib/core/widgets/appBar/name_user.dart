@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_text_widgets.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 /// User Greeting - Personalized greeting message with emoji
 class UserGreeting extends StatelessWidget {
   final String firstName;
@@ -23,6 +24,6 @@ class UserGreeting extends StatelessWidget {
     final name = '$lastName $middleName $firstName'.trim();
     final greeting = showEmoji ? 'Hi, $name 👋' : 'Hi, $name';
 
-    return AppText.heroSubtitle(greeting, color: Colors.white);
+    return AppText.heroSubtitle(greeting, color: AppColors.white);
   }
 }

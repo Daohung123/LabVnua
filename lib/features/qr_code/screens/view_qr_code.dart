@@ -106,7 +106,7 @@ class _QRScannerViewState extends State<QRScannerView>
   void _showResultBottomSheet(String code) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       isScrollControlled: true,
       builder: (_) {
         return TweenAnimationBuilder(
@@ -137,7 +137,7 @@ class _QRScannerViewState extends State<QRScannerView>
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   Container(
                     width: 90,
@@ -150,11 +150,11 @@ class _QRScannerViewState extends State<QRScannerView>
                     child: const Icon(
                       Icons.qr_code_2_rounded,
                       size: 50,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   AppText.sectionTitle(
                     'Quét QR thành công',
@@ -169,11 +169,11 @@ class _QRScannerViewState extends State<QRScannerView>
                     color: AppColors.textSecondary,
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: AppSpacing.lg20),
 
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: AppColors.background,
                       borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -188,7 +188,7 @@ class _QRScannerViewState extends State<QRScannerView>
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   Row(
                     children: [
@@ -204,7 +204,7 @@ class _QRScannerViewState extends State<QRScannerView>
                         ),
                       ),
 
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpacing.md),
 
                       Expanded(
                         child: AppButton.primary(
@@ -239,7 +239,7 @@ class _QRScannerViewState extends State<QRScannerView>
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppRadius.xl),
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: AppColors.white, width: 2),
               ),
             ),
 
@@ -248,7 +248,7 @@ class _QRScannerViewState extends State<QRScannerView>
                 borderRadius: BorderRadius.circular(AppRadius.xl),
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                  child: Container(color: Colors.white.withOpacity(0.02)),
+                  child: Container(color: AppColors.white.withOpacity(0.02)),
                 ),
               ),
             ),
@@ -267,9 +267,9 @@ class _QRScannerViewState extends State<QRScannerView>
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.transparent,
+                      AppColors.transparent,
                       AppColors.success,
-                      Colors.transparent,
+                      AppColors.transparent,
                     ],
                   ),
                   borderRadius: BorderRadius.circular(999),
@@ -327,7 +327,7 @@ class _QRScannerViewState extends State<QRScannerView>
           children: [
             AppIconButton.filled(
               icon: Icons.arrow_back_ios_new_rounded,
-              backgroundColor: Colors.black.withOpacity(0.4),
+              backgroundColor: AppColors.black.withOpacity(0.4),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -338,20 +338,20 @@ class _QRScannerViewState extends State<QRScannerView>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
+                color: AppColors.black.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
               child: Row(
                 children: [
                   const Icon(
                     Icons.qr_code_scanner_rounded,
-                    color: Colors.white,
+                    color: AppColors.white,
                     size: 18,
                   ),
 
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpacing.sm),
 
-                  AppText.labelMedium('QR Scanner', color: Colors.white),
+                  AppText.labelMedium('QR Scanner', color: AppColors.white),
                 ],
               ),
             ),
@@ -376,16 +376,16 @@ class _QRScannerViewState extends State<QRScannerView>
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
+                  color: AppColors.white.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(AppRadius.xxl),
-                  border: Border.all(color: Colors.white.withOpacity(0.12)),
+                  border: Border.all(color: AppColors.white.withOpacity(0.12)),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppText.sectionTitle(
                       'Đưa mã QR vào khung',
-                      color: Colors.white,
+                      color: AppColors.white,
                       textAlign: TextAlign.center,
                     ),
 
@@ -393,11 +393,11 @@ class _QRScannerViewState extends State<QRScannerView>
 
                     AppText.bodySmall(
                       'Hệ thống sẽ tự động nhận diện mã QR',
-                      color: Colors.white.withOpacity(0.75),
+                      color: AppColors.white.withOpacity(0.75),
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: AppSpacing.lg20),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -449,19 +449,19 @@ class _QRScannerViewState extends State<QRScannerView>
         curve: AppAnimations.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
-          color: active ? AppColors.primary : Colors.white.withOpacity(0.08),
+          color: active ? AppColors.primary : AppColors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
-            color: active ? AppColors.primary : Colors.white.withOpacity(0.1),
+            color: active ? AppColors.primary : AppColors.white.withOpacity(0.1),
           ),
         ),
         child: Column(
           children: [
-            Icon(icon, color: Colors.white, size: 24),
+            Icon(icon, color: AppColors.white, size: 24),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
-            AppText.labelSmall(label, color: Colors.white),
+            AppText.labelSmall(label, color: AppColors.white),
           ],
         ),
       ),
@@ -471,7 +471,7 @@ class _QRScannerViewState extends State<QRScannerView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.black,
       body: Stack(
         children: [
           MobileScanner(controller: controller, onDetect: onDetect),
@@ -482,10 +482,10 @@ class _QRScannerViewState extends State<QRScannerView>
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.65),
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.8),
+                  AppColors.black.withOpacity(0.65),
+                  AppColors.transparent,
+                  AppColors.transparent,
+                  AppColors.black.withOpacity(0.8),
                 ],
               ),
             ),

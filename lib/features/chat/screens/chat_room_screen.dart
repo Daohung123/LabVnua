@@ -155,109 +155,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
 // BACKGROUND DECORATIONS
 // ============================================================
 
-class _BackgroundDecorations extends StatefulWidget {
+class _BackgroundDecorations extends StatelessWidget {
   const _BackgroundDecorations();
 
   @override
-  State<_BackgroundDecorations> createState() =>
-      _BackgroundDecorationsState();
-}
-
-class _BackgroundDecorationsState extends State<_BackgroundDecorations>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _pulse;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
-    )..repeat(reverse: true);
-    _pulse = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _pulse,
-      builder: (context, _) {
-        return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xffEEF4FF), Color(0xffF5F8FC), Color(0xffF0F7FF)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Stack(
-            children: [
-              // Top-right ambient glow
-              Positioned(
-                top: -80,
-                right: -60,
-                child: _GlowCircle(
-                  size: 280,
-                  color: AppColors.primary,
-                  opacity: 0.06 + (_pulse.value * 0.03),
-                ),
-              ),
-              // Mid-left glow
-              Positioned(
-                top: 300,
-                left: -100,
-                child: _GlowCircle(
-                  size: 220,
-                  color: AppColors.primaryLight,
-                  opacity: 0.04 + (_pulse.value * 0.02),
-                ),
-              ),
-              // Bottom-right glow
-              Positioned(
-                bottom: 100,
-                right: -60,
-                child: _GlowCircle(
-                  size: 200,
-                  color: AppColors.primary,
-                  opacity: 0.05 + (_pulse.value * 0.02),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _GlowCircle extends StatelessWidget {
-  const _GlowCircle({
-    required this.size,
-    required this.color,
-    required this.opacity,
-  });
-
-  final double size;
-  final Color color;
-  final double opacity;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color.withOpacity(opacity),
-      ),
-    );
+    return const ColoredBox(color: AppColors.background);
   }
 }
 
@@ -285,7 +188,7 @@ class _ModernChatAppBar extends StatelessWidget {
       duration: AppAnimations.durationShort,
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(24),
+          bottom: Radius.circular(AppRadius.xl),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -296,19 +199,9 @@ class _ModernChatAppBar extends StatelessWidget {
               right: 12,
               bottom: 14,
             ),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary, AppColors.primaryLight],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.30),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              boxShadow: AppShadows.mediumShadow,
             ),
             child: AnimatedBuilder(
               animation: controller,
@@ -321,7 +214,7 @@ class _ModernChatAppBar extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: const Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: Colors.white,
+                        color: AppColors.white,
                         size: 18,
                       ),
                     ),
@@ -337,7 +230,7 @@ class _ModernChatAppBar extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
 
                     // Name & status
                     Expanded(
@@ -350,7 +243,7 @@ class _ModernChatAppBar extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: AppColors.white,
                               letterSpacing: 0.1,
                             ),
                             maxLines: 1,
@@ -379,7 +272,7 @@ class _ModernChatAppBar extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white.withOpacity(0.85),
+                                  color: AppColors.white.withOpacity(0.85),
                                 ),
                               ),
                             ],
@@ -428,10 +321,10 @@ class _GlassButtonState extends State<_GlassButton> {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.18),
+            color: AppColors.white.withOpacity(0.18),
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.white.withOpacity(0.25),
+              color: AppColors.white.withOpacity(0.25),
               width: 0.5,
             ),
           ),
@@ -457,10 +350,10 @@ class _AvatarWithStatus extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white,
+            color: AppColors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withOpacity(0.4),
+                color: AppColors.white.withOpacity(0.4),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -487,7 +380,7 @@ class _AvatarWithStatus extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.success,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: AppColors.white, width: 2),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.success.withOpacity(0.5),
@@ -702,7 +595,7 @@ class _PremiumInputBarState extends State<_PremiumInputBar>
             bottom: bottom + 10,
           ),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.82),
+            color: AppColors.white.withOpacity(0.82),
             border: Border(
               top: BorderSide(
                 color: AppColors.border.withOpacity(0.5),
@@ -767,7 +660,7 @@ class _PremiumInputBarState extends State<_PremiumInputBar>
                 ),
               ),
 
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.sm),
 
               // Send button
               ScaleTransition(
@@ -818,18 +711,7 @@ class _SendButtonState extends State<_SendButton> {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            gradient: widget.hasText
-                ? const LinearGradient(
-                    colors: [AppColors.primaryLight, AppColors.primary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  )
-                : LinearGradient(
-                    colors: [
-                      AppColors.border,
-                      AppColors.border.withOpacity(0.8),
-                    ],
-                  ),
+            color: widget.hasText ? AppColors.primary : AppColors.disabled,
             shape: BoxShape.circle,
             boxShadow: widget.hasText
                 ? [
@@ -843,15 +725,15 @@ class _SendButtonState extends State<_SendButton> {
           ),
           child: widget.isSending
               ? const Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: EdgeInsets.all(AppSpacing.md),
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                    valueColor: AlwaysStoppedAnimation(AppColors.white),
                   ),
                 )
               : const Icon(
                   Icons.send_rounded,
-                  color: Colors.white,
+                  color: AppColors.white,
                   size: 20,
                 ),
         ),
@@ -894,7 +776,7 @@ class _ScrollToBottomFab extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: AppColors.white,
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primary.withOpacity(0.20),
@@ -942,11 +824,11 @@ class _EmptyState extends StatelessWidget {
             ),
             child: const Icon(
               Icons.chat_bubble_outline_rounded,
-              color: Colors.white,
+              color: AppColors.white,
               size: 36,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg20),
           const Text(
             'Chưa có tin nhắn',
             style: TextStyle(
@@ -1065,7 +947,7 @@ class _ShimmerBubble extends StatelessWidget {
         decoration: BoxDecoration(
           color: isMine
               ? AppColors.primary.withOpacity(opacity * 1.5)
-              : Colors.black.withOpacity(opacity),
+              : AppColors.black.withOpacity(opacity),
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(AppRadius.lg),
             topRight: const Radius.circular(AppRadius.lg),

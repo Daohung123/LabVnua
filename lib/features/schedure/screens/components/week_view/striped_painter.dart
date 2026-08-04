@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class StripedPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black26
+      ..color = AppColors.black26
       ..strokeWidth = 1.5;
 
     // Long_sua :(Thêm clipRect để giới hạn các đường gạch chéo chỉ nằm trong khung của ô môn học)

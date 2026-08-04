@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aqedu/core/services_root/notification/notification_router.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class InAppNotificationOverlay {
   InAppNotificationOverlay._();
 
@@ -115,20 +116,20 @@ class _ChatNotificationBannerState extends State<_ChatNotificationBanner>
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        color: Colors.white.withOpacity(0.88),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        color: AppColors.white.withOpacity(0.88),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.40),
+                          color: AppColors.white.withOpacity(0.40),
                           width: 1.0,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.14),
+                            color: AppColors.black.withOpacity(0.14),
                             blurRadius: 24,
                             offset: const Offset(0, 10),
                           ),
@@ -157,7 +158,7 @@ class _ChatNotificationBannerState extends State<_ChatNotificationBanner>
                                   widget.payload.messagePreview,
                                   style: const TextStyle(
                                     fontSize: 13,
-                                    color: Colors.black87,
+                                    color: AppColors.black87,
                                     height: 1.35,
                                   ),
                                   maxLines: 2,
@@ -168,13 +169,13 @@ class _ChatNotificationBannerState extends State<_ChatNotificationBanner>
                           ),
                           const SizedBox(width: 10),
                           Material(
-                            color: Colors.transparent,
+                            color: AppColors.transparent,
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
                               onTap: widget.onDismiss,
                               child: const Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Icon(Icons.close_rounded, size: 18, color: Colors.black54),
+                                padding: EdgeInsets.all(AppSpacing.sm),
+                                child: Icon(Icons.close_rounded, size: 18, color: AppColors.black54),
                               ),
                             ),
                           )
@@ -207,13 +208,13 @@ class _NotificationAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: const LinearGradient(
-          colors: [Color(0xFF3B82F6), Color(0xFF9333EA)],
+          colors: [AppColors.primary, AppColors.ai],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.12),
+            color: AppColors.black.withOpacity(0.12),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -226,12 +227,12 @@ class _NotificationAvatar extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, _, __) {
                   return const Center(
-                    child: Icon(Icons.person, color: Colors.white70, size: 26),
+                    child: Icon(Icons.person, color: AppColors.white70, size: 26),
                   );
                 },
               )
             : const Center(
-                child: Icon(Icons.person, color: Colors.white70, size: 26),
+                child: Icon(Icons.person, color: AppColors.white70, size: 26),
               ),
       ),
     );

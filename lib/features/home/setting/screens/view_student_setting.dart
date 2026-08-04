@@ -1,22 +1,27 @@
-import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
-import 'package:aqedu/features/home/setting/controllers/controller_settings.dart';
+import 'package:aqedu/features/home/setting/controllers/student_logout_flow.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
+
+typedef SettingsLogoutHandler = Future<bool> Function(BuildContext context);
+
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key});
+  const SettingsView({super.key, this.logoutHandler});
+
+  final SettingsLogoutHandler? logoutHandler;
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final Color primaryColor = const Color(0xff0047A8);
-  final Color textBlue = const Color(0xff355070);
+  final Color primaryColor = AppColors.primary;
+  final Color textBlue = AppColors.textSecondary;
 
-  final Color backgroundColor = const Color(0xffF5F8FC);
-  final Color cardColor = Colors.white;
-  final Color borderColor = const Color(0xffE4EAF2);
-  final Color mutedTextColor = const Color(0xff6B7280);
+  final Color backgroundColor = AppColors.background;
+  final Color cardColor = AppColors.white;
+  final Color borderColor = AppColors.border;
+  final Color mutedTextColor = AppColors.textSecondary;
 
   bool notifySchedule = true;
   bool notifyTuition = false;
@@ -26,9 +31,12 @@ class _SettingsViewState extends State<SettingsView> {
   bool darkMode = false;
   bool biometricLogin = true;
   bool autoSync = true;
+  bool _isLoggingOut = false;
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -36,22 +44,39 @@ class _SettingsViewState extends State<SettingsView> {
         centerTitle: false, // Căn trái
         backgroundColor: primaryColor, // Màu xanh đồng bộ dự án
         surfaceTintColor: primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.white,
         title: const Text(
           'Cài đặt',
           style: TextStyle(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
-            color: Colors.white, // Chữ trắng
+            color: AppColors.white, // Chữ trắng
           ),
         ),
+        actions: [
+          IconButton(
+            key: const Key('settings-appbar-logout'),
+            tooltip: 'Đăng xuất',
+            onPressed: _isLoggingOut ? null : _handleLogout,
+            icon: _isLoggingOut
+                ? const SizedBox.square(
+                    dimension: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.white,
+                    ),
+                  )
+                : const Icon(Icons.logout_rounded),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+        ],
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 32 + bottomInset),
           children: [
             _buildProfileHeader(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             const SizedBox(height: 22),
 
             _buildSectionHeader(
@@ -217,23 +242,9 @@ class _SettingsViewState extends State<SettingsView> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            primaryColor,
-            primaryColor.withValues(alpha: 0.92),
-            textBlue,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withValues(alpha: 0.18),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: primaryColor,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.mediumShadow,
       ),
       child: Row(
         children: [
@@ -242,19 +253,19 @@ class _SettingsViewState extends State<SettingsView> {
             height: 68,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.16),
+              color: AppColors.white.withValues(alpha: 0.16),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.22),
+                color: AppColors.white.withValues(alpha: 0.22),
                 width: 1.2,
               ),
             ),
             child: const Icon(
               Icons.school_rounded,
-              color: Colors.white,
+              color: AppColors.white,
               size: 36,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,16 +273,16 @@ class _SettingsViewState extends State<SettingsView> {
                 const Text(
                   'Sinh viên VNUA',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 19,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Cổng thông tin đào tạo',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.88),
+                    color: AppColors.white.withValues(alpha: 0.88),
                     fontSize: 13.5,
                     height: 1.4,
                   ),
@@ -280,7 +291,7 @@ class _SettingsViewState extends State<SettingsView> {
                 Row(
                   children: [
                     _buildHeaderChip('Đang hoạt động'),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     _buildHeaderChip('Đã đồng bộ'),
                   ],
                 ),
@@ -304,12 +315,12 @@ class _SettingsViewState extends State<SettingsView> {
           Text(
             title,
             style: const TextStyle(
-              color: Color(0xff111827),
+              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: TextStyle(
@@ -327,18 +338,18 @@ class _SettingsViewState extends State<SettingsView> {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: Column(children: children),
       ),
     );
@@ -366,14 +377,14 @@ class _SettingsViewState extends State<SettingsView> {
         height: 46,
         decoration: BoxDecoration(
           color: primaryColor.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Icon(icon, color: primaryColor, size: 23),
       ),
       title: Text(
         title,
         style: const TextStyle(
-          color: Color(0xff111827),
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
           fontSize: 14.5,
         ),
@@ -389,7 +400,7 @@ class _SettingsViewState extends State<SettingsView> {
           trailing ??
           Icon(
             Icons.chevron_right_rounded,
-            color: Colors.grey.shade400,
+            color: AppColors.textTertiary,
             size: 24,
           ),
     );
@@ -411,14 +422,14 @@ class _SettingsViewState extends State<SettingsView> {
         height: 46,
         decoration: BoxDecoration(
           color: primaryColor.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Icon(icon, color: primaryColor, size: 23),
       ),
       title: Text(
         title,
         style: const TextStyle(
-          color: Color(0xff111827),
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
           fontSize: 14.5,
         ),
@@ -431,10 +442,24 @@ class _SettingsViewState extends State<SettingsView> {
         ),
       ),
       activeThumbColor: primaryColor,
-      inactiveThumbColor: Colors.grey.shade500,
-      inactiveTrackColor: Colors.grey.shade300,
+      inactiveThumbColor: AppColors.textSecondary,
+      inactiveTrackColor: AppColors.border,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
+  }
+
+  Future<void> _handleLogout() async {
+    if (_isLoggingOut) return;
+
+    setState(() => _isLoggingOut = true);
+    final handler = widget.logoutHandler ?? StudentLogoutFlow.confirmAndLogout;
+    try {
+      await handler(context);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
+    }
   }
 
   Widget _buildLogoutButton() {
@@ -442,27 +467,27 @@ class _SettingsViewState extends State<SettingsView> {
       width: double.infinity,
       height: 54,
       child: ElevatedButton.icon(
-        onPressed: () async {
-          await ControllerSettings.logOut();
-          if (!mounted) return;
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-            (_) => false,
-          );
-        },
-        icon: const Icon(Icons.logout_rounded),
-        label: const Text(
-          'Đăng xuất',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        key: const Key('settings-logout-button'),
+        onPressed: _isLoggingOut ? null : _handleLogout,
+        icon: _isLoggingOut
+            ? const SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.logout_rounded),
+        label: Text(
+          _isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất',
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xffDC2626),
+          backgroundColor: AppColors.white,
+          foregroundColor: AppColors.error,
+          disabledBackgroundColor: AppColors.surfaceAlt,
+          disabledForegroundColor: AppColors.textTertiary,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: Color(0xffFECACA)),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            side: const BorderSide(color: AppColors.errorLight),
           ),
         ),
       ),
@@ -473,14 +498,14 @@ class _SettingsViewState extends State<SettingsView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
+        color: AppColors.white.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.18)),
       ),
       child: Text(
         text,
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.white,
           fontSize: 11.5,
           fontWeight: FontWeight.w600,
         ),
@@ -492,7 +517,7 @@ class _SettingsViewState extends State<SettingsView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xffEEF4FF),
+        color: AppColors.primarySoft,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(

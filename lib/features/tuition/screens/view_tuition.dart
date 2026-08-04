@@ -160,9 +160,9 @@ class _HpAppBar extends StatelessWidget {
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.primary,
-      foregroundColor: Colors.white,
+      foregroundColor: AppColors.white,
       elevation: 0,
-      shadowColor: Colors.transparent,
+      shadowColor: AppColors.transparent,
       actions: [],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.fromLTRB(
@@ -178,7 +178,7 @@ class _HpAppBar extends StatelessWidget {
             Text(
               'Học Phí',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 21,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
@@ -187,7 +187,7 @@ class _HpAppBar extends StatelessWidget {
             Text(
               'Thông tin học phí sinh viên',
               style: TextStyle(
-                color: Colors.white70,
+                color: AppColors.white70,
                 fontSize: 11,
                 fontWeight: FontWeight.w400,
               ),
@@ -195,13 +195,7 @@ class _HpAppBar extends StatelessWidget {
           ],
         ),
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF002F80), AppColors.primary, Color(0xFF1565C0)],
-            ),
-          ),
+          decoration: const BoxDecoration(color: AppColors.primary),
           child: Stack(
             children: [
               Positioned(
@@ -212,7 +206,7 @@ class _HpAppBar extends StatelessWidget {
                   height: 140,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(AppOpacity.bg10),
+                    color: AppColors.white.withOpacity(AppOpacity.bg10),
                   ),
                 ),
               ),
@@ -224,7 +218,7 @@ class _HpAppBar extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(AppOpacity.bg10 - 0.01),
+                    color: AppColors.white.withOpacity(AppOpacity.bg10 - 0.01),
                   ),
                 ),
               ),
@@ -303,8 +297,8 @@ class _HpSummarySection extends StatelessWidget {
         decoration: const BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+            topLeft: Radius.circular(AppRadius.xl),
+            topRight: Radius.circular(AppRadius.xl),
           ),
         ),
         padding: const EdgeInsets.fromLTRB(
@@ -391,8 +385,8 @@ class _DebtHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColors = isDebt
-        ? [const Color(0xFF991B1B), AppColors.error]
-        : [const Color(0xFF145C38), AppColors.success];
+        ? [AppColors.warning, AppColors.error]
+        : [AppColors.success, AppColors.success];
 
     final shadowColor = isDebt
         ? AppColors.error.withOpacity(0.30)
@@ -407,7 +401,7 @@ class _DebtHeroCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: cardColors,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: [
           BoxShadow(
             color: shadowColor,
@@ -427,7 +421,7 @@ class _DebtHeroCard extends StatelessWidget {
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(AppOpacity.bg10 - 0.03),
+                color: AppColors.white.withOpacity(AppOpacity.bg10 - 0.03),
               ),
             ),
           ),
@@ -439,7 +433,7 @@ class _DebtHeroCard extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(AppOpacity.bg10 - 0.05),
+                color: AppColors.white.withOpacity(AppOpacity.bg10 - 0.05),
               ),
             ),
           ),
@@ -454,14 +448,14 @@ class _DebtHeroCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(AppOpacity.bg18),
+                      color: AppColors.white.withOpacity(AppOpacity.bg18),
                       borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
                     child: Icon(
                       isDebt
                           ? Icons.warning_amber_rounded
                           : Icons.verified_rounded,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 16,
                     ),
                   ),
@@ -469,7 +463,7 @@ class _DebtHeroCard extends StatelessWidget {
                   Text(
                     'Công nợ kỳ gần nhất',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.88),
+                      color: AppColors.white.withOpacity(0.88),
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.1,
@@ -484,7 +478,7 @@ class _DebtHeroCard extends StatelessWidget {
               Text(
                 tenHocKy,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.65),
+                  color: AppColors.white.withOpacity(0.65),
                   fontSize: 12.5,
                   fontWeight: FontWeight.w400,
                 ),
@@ -496,7 +490,7 @@ class _DebtHeroCard extends StatelessWidget {
               Text(
                 isDebt ? formatCurrency(conNo) : 'Không có công nợ',
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontSize: 30,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.8,
@@ -513,10 +507,10 @@ class _DebtHeroCard extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(AppOpacity.bg18),
+                  color: AppColors.white.withOpacity(AppOpacity.bg18),
                   borderRadius: BorderRadius.circular(AppRadius.full),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.25),
+                    color: AppColors.white.withOpacity(0.25),
                     width: 1,
                   ),
                 ),
@@ -527,14 +521,14 @@ class _DebtHeroCard extends StatelessWidget {
                       isDebt
                           ? Icons.error_outline_rounded
                           : Icons.check_circle_outline_rounded,
-                      color: Colors.white,
+                      color: AppColors.white,
                       size: 13,
                     ),
                     const SizedBox(width: AppSpacing.xs + 1),
                     Text(
                       isDebt ? 'Cần thanh toán' : 'Đã thanh toán đầy đủ',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -563,7 +557,7 @@ class _NoDataCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: AppColors.divider),
       ),
       child: const Column(
@@ -685,7 +679,7 @@ class _ExtensionNotice extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.warningLight,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: const Color(0xFFFDE68A)),
+        border: Border.all(color: AppColors.warningLight),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +693,7 @@ class _ExtensionNotice extends StatelessWidget {
                 Text(
                   content,
                   style: const TextStyle(
-                    color: Color(0xFF4E3800),
+                    color: AppColors.warning,
                     fontSize: 12.5,
                     fontWeight: FontWeight.w500,
                     height: 1.4,
@@ -994,7 +988,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
             color: _isExpanded ? AppColors.primary.withOpacity(0.25) : AppColors.divider,
             width: 1.5,
@@ -1028,13 +1022,13 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [AppColors.primaryDark, Color(0xFF1565C0)],
+                            colors: [AppColors.primaryDark, AppColors.primary],
                           ),
                           borderRadius: BorderRadius.circular(AppRadius.md),
                         ),
                         child: const Icon(
                           Icons.school_rounded,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 22,
                         ),
                       ),
@@ -1193,7 +1187,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                               color: AppColors.warningLight,
                               borderRadius: BorderRadius.circular(AppRadius.md),
                               border: Border.all(
-                                color: const Color(0xFFFDE68A),
+                                color: AppColors.warningLight,
                               ),
                             ),
                             child: Row(
@@ -1210,7 +1204,7 @@ class _HpSemesterCardState extends State<_HpSemesterCard>
                                     item.ghiChu.toString(),
                                     style: const TextStyle(
                                       fontSize: 12.5,
-                                      color: Color(0xFF4E3800),
+                                      color: AppColors.warning,
                                       height: 1.5,
                                     ),
                                   ),
@@ -1358,7 +1352,7 @@ class _DetailGroup extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFF),
+        color: AppColors.surfaceAlt,
         borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: AppColors.divider),
       ),
@@ -1456,7 +1450,7 @@ class _HpLoadingState extends StatelessWidget {
           height: MediaQuery.of(context).padding.top + 70,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primaryDark, Color(0xFF1565C0)],
+              colors: [AppColors.primaryDark, AppColors.primary],
             ),
           ),
         ),
@@ -1520,7 +1514,7 @@ class _HpErrorState extends StatelessWidget {
                 width: 86,
                 height: 86,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFEEF2FF),
+                  color: AppColors.background,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -1557,7 +1551,7 @@ class _HpErrorState extends StatelessWidget {
                   label: const Text('Thử lại'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
+                    foregroundColor: AppColors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(

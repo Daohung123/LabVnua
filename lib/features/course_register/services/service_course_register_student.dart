@@ -1,17 +1,12 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import 'package:aqedu/core/services_root/api_daotao/information_Student/get_information.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/features/infor/models/models_infor_student.dart';
 
 class CourseRegisterStudentService {
-  static Future<StudentData?> getStudentData(
-    String cookie,
-    String token,
-  ) async {
+  static Future<StudentData?> getStudentData() async {
     try {
-      final StudentResponse? response = await getInformationResponse(
-        cookie,
-        token,
-      );
+      final StudentResponse? response = await const PortalLocalReadStore()
+          .studentProfile();
 
       if (response == null) {
         return null;

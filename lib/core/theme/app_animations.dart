@@ -18,7 +18,7 @@ class AppAnimations {
 
   /// Extra short duration - Quick feedback, micro-interactions (100ms)
   /// Used for: Button presses, state changes, quick dismissals
-  static const Duration durationExtraShort = Duration(milliseconds: 100);
+  static const Duration durationExtraShort = Duration(milliseconds: 120);
 
   /// Short duration - Subtle animations (200ms)
   /// Used for: Icon animations, color transitions, tooltip appears
@@ -26,15 +26,15 @@ class AppAnimations {
 
   /// Medium duration - Standard transitions (300ms)
   /// Used for: Page transitions, card entrance, FAB animations
-  static const Duration durationMedium = Duration(milliseconds: 300);
+  static const Duration durationMedium = Duration(milliseconds: 320);
 
   /// Long duration - Prominent animations (500ms)
   /// Used for: Hero animations, complex transitions, entrance effects
-  static const Duration durationLong = Duration(milliseconds: 500);
+  static const Duration durationLong = Duration(milliseconds: 320);
 
   /// Extra long duration - Slow animations (800ms)
   /// Used for: Loading animations, marquee scrolling, slow reveals
-  static const Duration durationExtraLong = Duration(milliseconds: 800);
+  static const Duration durationExtraLong = Duration(milliseconds: 320);
 
   // ========================================
   // ANIMATION CURVES
@@ -42,15 +42,15 @@ class AppAnimations {
 
   /// Ease out curve - Starts fast, ends slow (natural deceleration)
   /// Usage: Exit animations, page transitions, dismissals
-  static const Curve easeOut = Curves.easeOut;
+  static const Curve easeOut = Curves.easeOutCubic;
 
   /// Ease in curve - Starts slow, ends fast (natural acceleration)
   /// Usage: Entrance animations, fades, scales
-  static const Curve easeIn = Curves.easeIn;
+  static const Curve easeIn = Curves.easeInCubic;
 
   /// Ease in out curve - Smooth throughout
   /// Usage: Continuous animations, morphs
-  static const Curve easeInOut = Curves.easeInOut;
+  static const Curve easeInOut = Curves.easeInOutCubic;
 
   /// Linear curve - Constant speed (for rotations, progress)
   /// Usage: Loading spinners, progress indicators
@@ -58,11 +58,11 @@ class AppAnimations {
 
   /// Elastic curve - Bouncy, playful feel
   /// Usage: Special interactive elements, delightful micro-interactions
-  static const Curve elastic = Curves.elasticOut;
+  static const Curve elastic = Curves.easeOutCubic;
 
   /// Spring curve - Natural physics-based bounce
   /// Usage: FAB entrance, springy list items
-  static const Curve springy = Curves.elasticOut;
+  static const Curve springy = Curves.easeOutCubic;
 
   // ========================================
   // PRESET ANIMATION COMBINATIONS
@@ -89,7 +89,7 @@ class AppAnimations {
   /// FAB animation - Springy, playful FAB entrance
   static const AnimationPreset fabAnimation = AnimationPreset(
     duration: durationMedium,
-    curve: Curves.elasticOut,
+    curve: Curves.easeOutCubic,
   );
 
   /// Loading animation - Continuous rotation

@@ -35,7 +35,7 @@
 | Command | Purpose | Evidence |
 |---|---|---|
 | `flutter pub get` | Install Flutter dependencies. | `README.md`, `pubspec.yaml` |
-| `flutter run --dart-define-from-file=.env` | Run app with local client config defines. | `README.md`, `.env.example`, `lib/core/constants/api/*.dart` |
+| `flutter run` | Run app with local `.env` loaded at startup by `flutter_dotenv`; Dart defines remain a fallback. | `README.md`, `.env.example`, `lib/core/config/app_environment.dart` |
 | `flutter test` | Run automated tests. | `README.md`, `test/chat_service_test.dart` |
 | `flutter analyze` | Run analyzer using Flutter lints. | `analysis_options.yaml` |
 
@@ -77,9 +77,9 @@
 ## Configuration Key Names Only
 | Key | Mechanism | Purpose | Evidence |
 |---|---|---|---|
-| `GEMINI_API_KEY` | `String.fromEnvironment`, `--dart-define-from-file=.env` | Enables AI assistant. | `.env.example`, `README.md`, `lib/core/constants/api/api_daotao.dart` |
-| `SUPABASE_URL` | `String.fromEnvironment`, `--dart-define` | Supabase project URL. | `.env.example`, `README.md`, `lib/core/constants/api/supabase_key.dart` |
-| `SUPABASE_ANON_KEY` | `String.fromEnvironment`, `--dart-define` | Supabase anonymous client key. | `.env.example`, `README.md`, `lib/core/constants/api/supabase_key.dart` |
+| `GEMINI_API_KEY` | `flutter_dotenv` via `AppEnvironment`; `String.fromEnvironment` fallback. | Enables AI assistant. | `.env.example`, `README.md`, `lib/core/config/app_environment.dart` |
+| `SUPABASE_URL` | `flutter_dotenv` via `AppEnvironment`; `String.fromEnvironment` fallback. | Supabase project URL. | `.env.example`, `README.md`, `lib/core/config/app_environment.dart` |
+| `SUPABASE_ANON_KEY` | `flutter_dotenv` via `AppEnvironment`; `String.fromEnvironment` fallback. | Supabase publishable/anonymous client key. | `.env.example`, `README.md`, `lib/core/constants/api/supabase_key.dart` |
 
 ## Known Architecture Constraints
 | Constraint | Evidence |

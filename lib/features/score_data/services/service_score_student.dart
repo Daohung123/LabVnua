@@ -1,14 +1,12 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import 'package:aqedu/core/services_root/api_daotao/score/get_score_response.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/features/score_data/models/model_score_student.dart';
 
 class ScoreService {
-  static Future<List<SemesterScore>> getSemesterScores(
-    String cookie,
-    String token,
-  ) async {
+  static Future<List<SemesterScore>> getSemesterScores() async {
     try {
-      final ScoreResponse? response = await getScoreResponse(cookie, token);
+      final ScoreResponse? response = await const PortalLocalReadStore()
+          .scores();
 
       if (response == null) {
         return [];

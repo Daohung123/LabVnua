@@ -2,7 +2,7 @@
 
 ## SQLite Database
 - File name: `aqedu_<owner_hash>.db` (legacy `auth.db` is isolated)
-- Version: `7`
+- Version: `8`
 - Schema source: `lib/config/config_DB.dart`
 
 ## Tables
@@ -21,6 +21,8 @@
 | `cached_training_notifications` | Cached watched training notifications. | same cache shape | `lib/config/config_DB.dart` |
 | `thoi_khoa_bieu` | Local schedule table. | `id`, `thu_kieu_so`, `tiet_bat_dau`, `so_tiet`, `ten_mon`, `ten_giang_vien`, `ma_phong`, `ngay_hoc` | `lib/config/config_DB.dart` |
 | `api_read_snapshots` | Owner-scoped raw local snapshot for validated portal reads. | `owner_hash`, `resource_key`, `request_hash`, `payload_hash`, `fetched_at` | `lib/config/config_DB.dart` |
+| `portal_sync_state` | Completion and freshness marker for the required Daotao student read manifest. | `owner_hash`, `manifest_version`, `last_attempted_at`, `last_completed_at`, `last_failed_resource` | `lib/config/config_DB.dart` |
+| `portal_resource_sync_state` | Safe per-resource result for the latest Daotao sync attempt. | `owner_hash`, `resource_key`, `last_attempted_at`, `last_completed_at`, `last_status` | `lib/config/config_DB.dart` |
 | `ai_session_turns` | Per-login AI transcript/answer/action history; no audio. | `id`, `owner_hash`, `session_id`, `task_kind`, `created_at` | `lib/config/config_DB.dart` |
 | `chat_*_cache` | Owner-scoped local source for Chat repository reads after remote/realtime refresh. | `owner_hash`, business key, `updated_at` | `lib/config/config_DB.dart` |
 
@@ -42,6 +44,8 @@ Evidence: `lib/features/ai_assistant/data/datasources/ai_context_local_data_sour
 | `UNIQUE(data_type, entity_id)` on cached tables | One cache record per watched entity. | `lib/config/config_DB.dart` |
 | `idx_<cache_table>_hash` | Query cached payload hashes. | `lib/config/config_DB.dart` |
 | `idx_thoi_khoa_bieu_ngay_hoc` | Query schedule by date and start period. | `lib/config/config_DB.dart` |
+| `idx_snapshot_owner_resource` | Query latest owner-scoped portal snapshots by resource. | `lib/config/config_DB.dart` |
+| `idx_portal_resource_sync_state_status` | Query a user's latest resource sync states. | `lib/config/config_DB.dart` |
 
 ## Relationships
 - Local SQLite relationships are not declared as foreign keys in the schema source.

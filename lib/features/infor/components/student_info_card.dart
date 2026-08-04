@@ -2,6 +2,7 @@ import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:flutter/material.dart';
 import 'row_info.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class StudentInfoCard extends StatelessWidget {
   final InforStudentFillData student;
 
@@ -12,10 +13,10 @@ class StudentInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         boxShadow: const [
-          BoxShadow(blurRadius: 8, color: Colors.black12, offset: Offset(0, 4)),
+          BoxShadow(blurRadius: 8, color: AppColors.black12, offset: Offset(0, 4)),
         ],
       ),
       child: Column(

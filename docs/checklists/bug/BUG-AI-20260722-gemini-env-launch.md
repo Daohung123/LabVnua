@@ -35,15 +35,29 @@
 - [x] Verify the opt-in compile-time assertion with `--dart-define-from-file=.env`.
 - [x] Regression: scoped analyzer and full `flutter test --dart-define-from-file=.env` pass.
 - [x] Regression: Android release build with `.env` passes with build output redacted.
+- [x] Android device verification: install a newly built debug APK with `.env`, submit a harmless AI request, and confirm the request/response phases complete without the missing-configuration event.
 
 ## RESULT
 
-- `FIXED:` A supported VS Code F5 path now includes the `.env` define; terminal/Android Studio instructions and the UI message explain the required full rebuild.
+- `FIXED:` A supported VS Code F5 path now includes the `.env` define; terminal/Android Studio instructions and the UI message explain the required full rebuild. A newly installed Android debug build was also verified to reach Gemini successfully.
 - `BLOCKED:` -
-- `RISK:` Android Studio users must still set the documented Additional run args. Actual Gemini service access also depends on a valid, permitted key and network/device availability.
+- `RISK:` Android Studio users must still set the documented Additional run args. The configured primary model returned a temporary service error during device verification, but the configured fallback answered successfully; that is a model/service condition, not a missing-key condition.
 
 ## HANDOFF
 
-- `NEXT:` Stop any old app process, select `AQEdu (.env)` in VS Code or rerun from the project root, then install the rebuilt APK if testing release.
-- `READ:` `.vscode/launch.json`
+- `NEXT:` Stop any old app process and rerun from the project root so runtime `.env` is loaded; Dart defines remain an optional fallback.
+- `READ:` `lib/core/config/app_environment.dart`, `.vscode/launch.json`
 - `SKILL:` NO — one verified configuration-launch incident is not enough evidence for a reusable skill.
+
+## FOLLOW-UP 2026-07-23 — Runtime `.env` Load
+
+- `SYMPTOM:` A debug APK built without `--dart-define-from-file=.env` still showed the missing `GEMINI_API_KEY`/`GEMINI_MODEL` AI bubble on a real Android device.
+- `CAUSE:` The app only read Gemini config from compile-time defines, so a normal debug build had no runtime path to the local `.env`.
+- `FIXED:` Added `flutter_dotenv: ^6.0.1`, registered `.env` as a Flutter asset, loaded it before `runApp`, and centralized Gemini/Supabase config in `AppEnvironment` with Dart-define fallback.
+- [x] `flutter pub get`
+- [x] `flutter analyze` scoped to touched config/AI files
+- [x] `flutter test test/app_environment_test.dart test/gemini_ai_repository_test.dart test/gemini_live_smoke_test.dart`
+- [x] `flutter test test/gemini_live_smoke_test.dart --dart-define=RUN_LIVE_GEMINI_SMOKE=true`
+- [x] `flutter test`
+- [x] Android `220333QPG`: build debug APK without `.env` dart-define, install over existing app data, submit an AI prompt, and confirm Gemini request/response logs complete without the missing-config event.
+- `RISK:` `.env` is bundled as a mobile asset; values remain client-side config and must not be treated as durable secrets.

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../controllers/ctrl_schedure.dart';
 import 'week_view/week_view_page.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class DetailSubjectSchedure extends StatefulWidget {
   final int tuan;
 
@@ -41,19 +42,19 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff5f5f5),
+      backgroundColor: AppColors.surfaceAlt,
       appBar: AppBar(
-        backgroundColor: const Color(0xff104492),
+        backgroundColor: AppColors.primaryPressed,
         elevation: 0,
         toolbarHeight: 70,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Chi tiết thời khóa biểu",
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -68,22 +69,22 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
               height: 34,
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(20),
+                color: AppColors.black.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                  color: AppColors.white,
                 ),
-                labelColor: const Color(0xff104492),
-                unselectedLabelColor: Colors.white,
+                labelColor: AppColors.primaryPressed,
+                unselectedLabelColor: AppColors.white,
                 labelStyle: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
-                dividerColor: Colors.transparent,
+                dividerColor: AppColors.transparent,
                 indicatorSize: TabBarIndicatorSize.tab,
                 tabs: const [
                   Tab(text: "Ngày"),
@@ -123,11 +124,11 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.calendar_today, size: 60, color: Colors.grey[300]),
+                Icon(Icons.calendar_today, size: 60, color: AppColors.textTertiary),
                 const SizedBox(height: 10),
                 const Text(
                   "Không có lịch học hôm nay",
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -136,7 +137,7 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
 
         return ListView.builder(
           itemCount: list.length,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           itemBuilder: (context, index) => _buildSubjectCard(list[index]),
         );
       },
@@ -147,10 +148,10 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8),
+          BoxShadow(color: AppColors.black.withOpacity(0.04), blurRadius: 8),
         ],
       ),
       child: IntrinsicHeight(
@@ -160,7 +161,7 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
               width: 80,
               padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xff104492).withOpacity(0.04),
+                color: AppColors.primaryPressed.withOpacity(0.04),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15),
                   bottomLeft: Radius.circular(15),
@@ -171,9 +172,9 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
                 children: [
                   const Text(
                     "Thời gian",
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                    style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     item.tietBatDau < 6 ? "07:00" : "12:45",
                     style: const TextStyle(
@@ -193,8 +194,8 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
                     height: 3,
                     width: 25,
                     decoration: BoxDecoration(
-                      color: const Color(0xff104492),
-                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.primaryPressed,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                   ),
                 ],
@@ -202,7 +203,7 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -211,10 +212,10 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xff104492),
+                        color: AppColors.primaryPressed,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpacing.sm),
                     Row(
                       children: [
                         const Text("Tiết: ", style: TextStyle(fontSize: 12)),
@@ -232,14 +233,14 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
                       "Phòng: ${item.phong}",
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.black54,
+                        color: AppColors.black54,
                       ),
                     ),
                     Text(
                       "GV: ${item.giangVien}",
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.green,
+                        color: AppColors.success,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -255,15 +256,15 @@ class _DetailSubjectSchedureState extends State<DetailSubjectSchedure>
 
   Widget _buildTietBadge(String txt) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(AppSpacing.xs),
       decoration: const BoxDecoration(
-        color: Color(0xff104492),
+        color: AppColors.primaryPressed,
         shape: BoxShape.circle,
       ),
       child: Text(
         txt,
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.white,
           fontSize: 9,
           fontWeight: FontWeight.bold,
         ),

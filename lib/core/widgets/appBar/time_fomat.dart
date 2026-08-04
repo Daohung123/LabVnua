@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class TimeFormat extends StatefulWidget {
   const TimeFormat({
     super.key,
@@ -73,20 +74,20 @@ class _TimeFormatState extends State<TimeFormat> {
     final defaultStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.w700,
       letterSpacing: 0.2,
-      color: isDark ? Colors.white : Colors.black87,
+      color: isDark ? AppColors.white : AppColors.black87,
     );
 
     final bg =
         widget.backgroundColor ??
         (isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.white.withOpacity(0.72));
+            ? AppColors.white.withOpacity(0.08)
+            : AppColors.white.withOpacity(0.72));
 
     final borderColor =
         widget.borderColor ??
         (isDark
-            ? Colors.white.withOpacity(0.12)
-            : Colors.black.withOpacity(0.06));
+            ? AppColors.white.withOpacity(0.12)
+            : AppColors.black.withOpacity(0.06));
 
     final gradient =
         widget.gradient ??
@@ -94,10 +95,10 @@ class _TimeFormatState extends State<TimeFormat> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: isDark
-              ? [Colors.white.withOpacity(0.14), Colors.white.withOpacity(0.05)]
+              ? [AppColors.white.withOpacity(0.14), AppColors.white.withOpacity(0.05)]
               : [
-                  Colors.white.withOpacity(0.95),
-                  Colors.white.withOpacity(0.65),
+                  AppColors.white.withOpacity(0.95),
+                  AppColors.white.withOpacity(0.65),
                 ],
         );
 
@@ -122,14 +123,14 @@ class _TimeFormatState extends State<TimeFormat> {
                 boxShadow: widget.elevation > 0
                     ? [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.22 : 0.10),
+                          color: AppColors.black.withOpacity(isDark ? 0.22 : 0.10),
                           blurRadius: widget.elevation * 2.2,
                           offset: Offset(0, widget.elevation),
                         ),
                       ]
                     : [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.18 : 0.06),
+                          color: AppColors.black.withOpacity(isDark ? 0.18 : 0.06),
                           blurRadius: 18,
                           offset: const Offset(0, 8),
                         ),
@@ -170,12 +171,12 @@ class _TimeFormatState extends State<TimeFormat> {
                               gradient: LinearGradient(
                                 colors: isDark
                                     ? [
-                                        Colors.greenAccent.withOpacity(0.95),
-                                        Colors.cyanAccent.withOpacity(0.75),
+                                        AppColors.success.withOpacity(0.95),
+                                        AppColors.primaryLight.withOpacity(0.75),
                                       ]
                                     : [
-                                        Colors.blueAccent.withOpacity(0.95),
-                                        Colors.lightBlueAccent.withOpacity(
+                                        AppColors.primary.withOpacity(0.95),
+                                        AppColors.primaryLight.withOpacity(
                                           0.75,
                                         ),
                                       ],
@@ -184,8 +185,8 @@ class _TimeFormatState extends State<TimeFormat> {
                                 BoxShadow(
                                   color:
                                       (isDark
-                                              ? Colors.greenAccent
-                                              : Colors.blueAccent)
+                                              ? AppColors.success
+                                              : AppColors.primary)
                                           .withOpacity(0.35),
                                   blurRadius: 10,
                                   spreadRadius: 1,
@@ -223,7 +224,7 @@ class _TimeFormatState extends State<TimeFormat> {
                             style: (widget.textStyle ?? defaultStyle)?.copyWith(
                               shadows: [
                                 Shadow(
-                                  color: Colors.black.withOpacity(
+                                  color: AppColors.black.withOpacity(
                                     isDark ? 0.20 : 0.08,
                                   ),
                                   blurRadius: 10,

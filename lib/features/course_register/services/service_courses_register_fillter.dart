@@ -1,15 +1,12 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import '../../../core/services_root/api_daotao/course_Register/get_course_register_fillter.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import '../models/model_course_register_fillter.dart';
 
 class CourseRegisterFilterService {
-  static Future<List<CourseRegisterFilter>> getFilters(
-    String cookie,
-    String token,
-  ) async {
+  static Future<List<CourseRegisterFilter>> getFilters() async {
     try {
       final List<CourseRegisterFilter>? response =
-          await getCourseRegisterFilterResponse(cookie, token);
+          await const PortalLocalReadStore().courseRegisterFilters();
 
       if (response == null || response.isEmpty) {
         return [];

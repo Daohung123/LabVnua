@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:aqedu/core/constants/api/api_daotao.dart';
-import 'package:aqedu/core/services_root/api_daotao/daotao_read_payloads.dart';
-import 'package:aqedu/core/services_root/sqlite/api_cache/api_response_cache.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/core/services_root/sqlite/schedure/schedure_sqlite.dart';
 
 import '../models/schedure_student.dart';
@@ -14,7 +11,7 @@ class CtrlSchedure {
   CtrlSchedure._();
 
   final ServiceSqlTkb _scheduleStore = ServiceSqlTkb();
-  final ApiResponseCacheService _cacheService = ApiResponseCacheService();
+  final PortalLocalReadStore _localStore = PortalLocalReadStore();
 
   static Future<CtrlSchedure> create() async {
     return CtrlSchedure._();
@@ -22,16 +19,7 @@ class CtrlSchedure {
 
   Future<TkbResponse?> getFullTkbResponse({int? semesterId}) async {
     try {
-      final cachedBody = await _cacheService.getResponseBody(
-        method: 'POST',
-        path: APISCHEDURE,
-        requestBody: daotaoSchedulePayload(),
-      );
-      if (cachedBody == null) return null;
-
-      final decoded = jsonDecode(cachedBody);
-      if (decoded is! Map<String, dynamic>) return null;
-      return TkbResponse.fromJson(decoded);
+      return _localStore.schedule();
     } catch (e) {
       log("Lỗi lấy TkbResponse từ SQLite: $e");
       return null;

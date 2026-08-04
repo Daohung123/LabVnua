@@ -3,6 +3,7 @@ import 'package:aqedu/features/notification/models/data_change_models.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class DataChangeNotificationView extends StatefulWidget {
   const DataChangeNotificationView({super.key});
 
@@ -58,12 +59,12 @@ class _DataChangeNotificationViewState
                 children: const [
                   SizedBox(height: 160),
                   Icon(Icons.notifications_none_rounded, size: 56),
-                  SizedBox(height: 12),
+                  SizedBox(height: AppSpacing.md),
                   Center(child: Text('Chưa có thay đổi dữ liệu')),
                 ],
               )
             : ListView.separated(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 itemCount: _controller.history.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
@@ -88,13 +89,13 @@ class _DataChangeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = change.isRead
-        ? const Color(0xFF6B7280)
+        ? AppColors.textSecondary
         : Theme.of(context).colorScheme.primary;
 
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         side: BorderSide(color: color.withValues(alpha: 0.22)),
       ),
       child: ListTile(
@@ -111,7 +112,7 @@ class _DataChangeTile extends StatelessWidget {
         ),
         trailing: change.isRead
             ? null
-            : const Icon(Icons.circle, size: 10, color: Color(0xFFEB5757)),
+            : const Icon(Icons.circle, size: 10, color: AppColors.error),
       ),
     );
   }

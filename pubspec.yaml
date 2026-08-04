@@ -29,6 +29,7 @@ dependencies:
   workmanager: ^0.9.0+3
   supabase_flutter: ^2.12.4
   connectivity_plus: ^6.0.5
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   connectivity_plus: ^6.0.5
@@ -41,6 +42,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/
 
 flutter_icons:

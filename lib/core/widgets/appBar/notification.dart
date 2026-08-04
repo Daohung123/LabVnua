@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 /// Notification Button - Icon button with badge for notification count
 class NotificationButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -12,7 +13,7 @@ class NotificationButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.notificationCount = 0,
-    this.iconColor = Colors.white,
+    this.iconColor = AppColors.white,
     this.iconSize = 24,
     this.tooltip = 'Thông báo',
   });
@@ -23,11 +24,11 @@ class NotificationButton extends StatelessWidget {
       message: tooltip,
       child: InkWell(
         onTap: onPressed,
-        borderRadius: BorderRadius.circular(20),
-        splashColor: Colors.white.withOpacity(0.15),
-        highlightColor: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        splashColor: AppColors.white.withOpacity(0.15),
+        highlightColor: AppColors.white.withOpacity(0.08),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -48,15 +49,15 @@ class NotificationButton extends StatelessWidget {
                       vertical: 1,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.redAccent.shade400,
-                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.error,
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.9),
+                        color: AppColors.white.withOpacity(0.9),
                         width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.red.withOpacity(0.4),
+                          color: AppColors.error.withOpacity(0.4),
                           blurRadius: 4,
                           offset: const Offset(0, 1),
                         ),
@@ -69,7 +70,7 @@ class NotificationButton extends StatelessWidget {
                     child: Text(
                       notificationCount > 99 ? '99+' : '$notificationCount',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.white,
                         fontSize: 9,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.3,

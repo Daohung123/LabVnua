@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class WeekSelector extends StatelessWidget {
   final String semesterTitle;
   final String weekTitle;
@@ -17,7 +18,7 @@ class WeekSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,7 +26,7 @@ class WeekSelector extends StatelessWidget {
             "Thời khóa biểu tuần",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           // Bộ chọn học kỳ
           _buildDropdownBtn(
             context,
@@ -52,24 +53,24 @@ class WeekSelector extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(color: AppColors.divider),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)
+            BoxShadow(color: AppColors.black.withOpacity(0.03), blurRadius: 10)
           ],
         ),
         child: Row(
           children: [
-            Icon(icon, color: const Color(0xff104492), size: 24),
-            const SizedBox(width: 12),
+            Icon(icon, color: AppColors.primaryPressed, size: 24),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xff333333)),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
               ),
             ),
-            const Icon(Icons.arrow_drop_down, color: Colors.grey),
+            const Icon(Icons.arrow_drop_down, color: AppColors.textSecondary),
           ],
         ),
       ),

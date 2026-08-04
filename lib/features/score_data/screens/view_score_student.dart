@@ -2,17 +2,18 @@ import 'package:aqedu/features/score_data/controllers/ctrl_score_student.dart';
 import 'package:flutter/material.dart';
 import '../models/model_score_student.dart';
 
-const Color kPrimary = Color(0xFF0047A8);
-const Color kPrimaryLight = Color(0xFFE8EFFA);
-const Color kPrimaryDark = Color(0xFF00358A);
-const Color kBackground = Color(0xFFF5F7FC);
-const Color kSurface = Color(0xFFFFFFFF);
-const Color kTextPrimary = Color(0xFF0D1B3E);
-const Color kTextSecondary = Color(0xFF6B7A99);
-const Color kDivider = Color(0xFFE4EAF4);
-const Color kSuccess = Color(0xFF1A9E5C);
-const Color kWarning = Color(0xFFF59E0B);
-const Color kDanger = Color(0xFFE53E3E);
+import 'package:aqedu/core/theme/app_components.dart';
+const Color kPrimary = AppColors.primary;
+const Color kPrimaryLight = AppColors.divider;
+const Color kPrimaryDark = AppColors.primaryPressed;
+const Color kBackground = AppColors.background;
+const Color kSurface = AppColors.white;
+const Color kTextPrimary = AppColors.textPrimary;
+const Color kTextSecondary = AppColors.textSecondary;
+const Color kDivider = AppColors.border;
+const Color kSuccess = AppColors.success;
+const Color kWarning = AppColors.warning;
+const Color kDanger = AppColors.error;
 
 class ScoreStudentView extends StatefulWidget {
   const ScoreStudentView({super.key});
@@ -131,20 +132,14 @@ class _ScoreStudentViewState extends State<ScoreStudentView>
         onPressed: () => Navigator.of(context).maybePop(),
         icon: const Icon(
           Icons.arrow_back_ios_new_rounded,
-          color: Colors.white,
+          color: AppColors.white,
           size: 20,
         ),
       ),
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [kPrimary, kPrimaryDark],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          decoration: const BoxDecoration(color: kPrimary),
           child: Stack(
             children: [
               // Decorative circles
@@ -156,7 +151,7 @@ class _ScoreStudentViewState extends State<ScoreStudentView>
                   height: 140,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.06),
+                    color: AppColors.white.withOpacity(0.06),
                   ),
                 ),
               ),
@@ -168,7 +163,7 @@ class _ScoreStudentViewState extends State<ScoreStudentView>
                   height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withOpacity(0.04),
+                    color: AppColors.white.withOpacity(0.04),
                   ),
                 ),
               ),
@@ -185,25 +180,25 @@ class _ScoreStudentViewState extends State<ScoreStudentView>
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(AppSpacing.sm),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(10),
+                              color: AppColors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(AppRadius.md),
                             ),
                             child: const Icon(
                               Icons.school_rounded,
-                              color: Colors.white,
+                              color: AppColors.white,
                               size: 20,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpacing.md),
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'Kết quả học tập',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: -0.3,
@@ -212,7 +207,7 @@ class _ScoreStudentViewState extends State<ScoreStudentView>
                               Text(
                                 'Xem điểm theo từng học kỳ',
                                 style: TextStyle(
-                                  color: Colors.white70,
+                                  color: AppColors.white70,
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -263,11 +258,11 @@ class _SemesterDropdown extends StatelessWidget {
               letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Container(
             decoration: BoxDecoration(
               color: kBackground,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               border: Border.all(
                 color: selected != null ? kPrimary : kDivider,
                 width: selected != null ? 1.5 : 1,
@@ -287,7 +282,7 @@ class _SemesterDropdown extends StatelessWidget {
                   style: TextStyle(color: kTextSecondary, fontSize: 14),
                 ),
                 dropdownColor: kSurface,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 items: semesters.map((s) {
                   return DropdownMenuItem(
                     value: s,
@@ -337,9 +332,9 @@ class _ScoreContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         _SemesterSummaryCard(semester: semester),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         if (semester.dsDiemMonHoc != null &&
             semester.dsDiemMonHoc!.isNotEmpty) ...[
           _SectionHeader(
@@ -370,22 +365,12 @@ class _SemesterSummaryCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [kPrimary, kPrimaryDark],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: kPrimary.withOpacity(0.28),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: kPrimary,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.mediumShadow,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.lg20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -398,17 +383,17 @@ class _SemesterSummaryCard extends StatelessWidget {
                       const Text(
                         'Tổng kết học kỳ',
                         style: TextStyle(
-                          color: Colors.white70,
+                          color: AppColors.white70,
                           fontSize: 11.5,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.4,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         semester.tenHocKy ?? '',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -424,7 +409,7 @@ class _SemesterSummaryCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: gpaColor.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(color: gpaColor.withOpacity(0.5)),
                     ),
                     child: Text(
@@ -438,9 +423,9 @@ class _SemesterSummaryCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 20),
-            Container(height: 1, color: Colors.white.withOpacity(0.15)),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg20),
+            Container(height: 1, color: AppColors.white.withOpacity(0.15)),
+            const SizedBox(height: AppSpacing.lg),
             Row(
               children: [
                 _StatChip(
@@ -463,12 +448,12 @@ class _SemesterSummaryCard extends StatelessWidget {
   }
 
   Color _gpaColor(dynamic gpa) {
-    if (gpa == null) return Colors.white;
+    if (gpa == null) return AppColors.white;
     final val = double.tryParse(gpa.toString()) ?? 0;
-    if (val >= 8.5) return const Color(0xFF4ADE80);
-    if (val >= 7.0) return const Color(0xFFFBBF24);
-    if (val >= 5.0) return const Color(0xFFFB923C);
-    return const Color(0xFFF87171);
+    if (val >= 8.5) return AppColors.success;
+    if (val >= 7.0) return AppColors.error;
+    if (val >= 5.0) return AppColors.warning;
+    return AppColors.error;
   }
 }
 
@@ -489,13 +474,13 @@ class _StatChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10),
+          color: AppColors.white.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.white70, size: 15),
-            const SizedBox(width: 8),
+            Icon(icon, color: AppColors.white70, size: 15),
+            const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,7 +488,7 @@ class _StatChip extends StatelessWidget {
                   Text(
                     label,
                     style: const TextStyle(
-                      color: Colors.white60,
+                      color: AppColors.white60,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w400,
                     ),
@@ -511,7 +496,7 @@ class _StatChip extends StatelessWidget {
                   Text(
                     value,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.white,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                     ),
@@ -561,7 +546,7 @@ class _SectionHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
             color: kPrimaryLight,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
           ),
           child: Text(
             '$count môn',
@@ -590,7 +575,7 @@ class _SubjectCard extends StatelessWidget {
     final val = double.tryParse(grade.toString()) ?? 0;
     if (val >= 8.5) return kSuccess;
     if (val >= 7.0) return kWarning;
-    if (val >= 5.0) return const Color(0xFFF97316);
+    if (val >= 5.0) return AppColors.error;
     return kDanger;
   }
 
@@ -604,15 +589,15 @@ class _SubjectCard extends StatelessWidget {
     switch (l) {
       case 'A+':
       case 'A':
-        return const Color(0xFFDCFCE7);
+        return AppColors.divider;
       case 'B+':
       case 'B':
-        return const Color(0xFFFEF9C3);
+        return AppColors.warningLight;
       case 'C+':
       case 'C':
-        return const Color(0xFFFFEDD5);
+        return AppColors.warningLight;
       default:
-        return const Color(0xFFFFE4E4);
+        return AppColors.errorLight;
     }
   }
 
@@ -624,10 +609,10 @@ class _SubjectCard extends StatelessWidget {
         return kSuccess;
       case 'B+':
       case 'B':
-        return const Color(0xFFB45309);
+        return AppColors.warning;
       case 'C+':
       case 'C':
-        return const Color(0xFFC2410C);
+        return AppColors.error;
       default:
         return kDanger;
     }
@@ -642,11 +627,11 @@ class _SubjectCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: kSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: kDivider),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: AppColors.black.withOpacity(0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -664,7 +649,7 @@ class _SubjectCard extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: kPrimaryLight,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: Text(
                 '${index + 1}',
@@ -675,7 +660,7 @@ class _SubjectCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             // Subject name & numeric grade
             Expanded(
               child: Column(
@@ -698,7 +683,7 @@ class _SubjectCard extends StatelessWidget {
                         size: 13,
                         color: kTextSecondary,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         'Điểm TK: ',
                         style: const TextStyle(
@@ -727,7 +712,7 @@ class _SubjectCard extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: _letterBg(letterGrade),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Text(
                 _gradeLetter(letterGrade),
@@ -757,7 +742,7 @@ class _LoadingState extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircularProgressIndicator(color: kPrimary, strokeWidth: 2.5),
-          SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
           Text(
             'Đang tải dữ liệu...',
             style: TextStyle(color: kTextSecondary, fontSize: 14),
@@ -776,7 +761,7 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -784,7 +769,7 @@ class _ErrorState extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFE4E4),
+                color: AppColors.errorLight,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -793,7 +778,7 @@ class _ErrorState extends StatelessWidget {
                 size: 32,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             const Text(
               'Không thể tải dữ liệu',
               style: TextStyle(
@@ -821,20 +806,20 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg20),
               decoration: const BoxDecoration(
                 color: kPrimaryLight,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.inbox_rounded, color: kPrimary, size: 36),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             const Text(
               'Chưa có dữ liệu điểm',
               style: TextStyle(
@@ -897,7 +882,7 @@ class _DefaultPromptState extends StatelessWidget {
                 letterSpacing: -0.3,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             const Text(
               'Sử dụng menu phía trên để chọn\nhọc kỳ bạn muốn xem kết quả.',
               textAlign: TextAlign.center,

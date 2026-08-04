@@ -5,8 +5,7 @@ import 'package:aqedu/core/theme/app_theme.dart';
 import 'package:aqedu/core/theme/app_text_styles.dart';
 import 'package:aqedu/core/widgets/appBar/notification.dart';
 import 'package:aqedu/core/widgets/appBar/scan.dart';
-import 'package:aqedu/features/auth/student/screens/student_login_view.dart';
-import 'package:aqedu/features/home/setting/controllers/controller_settings.dart';
+import 'package:aqedu/features/home/setting/controllers/student_logout_flow.dart';
 import 'package:aqedu/features/home/setting/screens/view_student_setting.dart';
 import 'package:aqedu/features/notification/screens/view_noti_student.dart';
 
@@ -24,7 +23,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: false,
       backgroundColor: AppColors.primary,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: AppColors.transparent,
       titleSpacing: AppSpacing.lg,
       title: Text(
         'Trang chủ',
@@ -54,7 +53,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   );
                 },
               ),
-              SizedBox(width: 4),
+              SizedBox(width: AppSpacing.xs),
               QRScanButton(
                 onPressed: () {
                   AppLog.thaoTacNguoiDung(
@@ -67,12 +66,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   );
                 },
               ),
-              SizedBox(width: 4),
+              SizedBox(width: AppSpacing.xs),
               _AvatarMenuButton(
                 onSettingsPressed: onSettingsPressed,
                 onLogoutPressed: onLogoutPressed,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: AppSpacing.sm),
             ],
           ),
         ),
@@ -118,18 +117,7 @@ class _AvatarMenuButton extends StatelessWidget {
       return;
     }
 
-    await ControllerSettings.logOut();
-    AppLog.coSoDuLieu(
-      'Đã xóa session khi đăng xuất',
-      khuVuc: 'Menu tài khoản',
-      ketQua: 'Chuẩn bị chuyển về màn hình đăng nhập.',
-    );
-    if (!context.mounted) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-      (_) => false,
-    );
+    await StudentLogoutFlow.confirmAndLogout(context);
   }
 
   @override
@@ -138,7 +126,7 @@ class _AvatarMenuButton extends StatelessWidget {
       tooltip: 'Tài khoản',
       offset: const Offset(0, 48),
       elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
       onSelected: (action) {
         AppLog.thaoTacNguoiDung(
           'Người dùng chọn mục trong menu tài khoản',
@@ -189,13 +177,13 @@ class _AvatarMenuButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.14),
+          color: AppColors.white.withValues(alpha: 0.14),
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.24)),
+          border: Border.all(color: AppColors.white.withValues(alpha: 0.24)),
         ),
         child: const Icon(
           Icons.account_circle_rounded,
-          color: Colors.white,
+          color: AppColors.white,
           size: 28,
         ),
       ),
@@ -215,7 +203,7 @@ class _AvatarProfileSummary extends StatelessWidget {
           backgroundColor: AppColors.primary.withValues(alpha: 0.12),
           child: const Icon(Icons.school_rounded, color: AppColors.primary),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         const Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +247,7 @@ class _AvatarMenuItem extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, color: effectiveColor, size: 20),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

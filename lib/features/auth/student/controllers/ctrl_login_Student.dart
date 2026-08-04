@@ -26,7 +26,10 @@ Future<bool> ctrl_login(String username, String password) async {
     );
     return false;
   }
-  await sqlite.deleteSession();
+  final existingSession = await sqlite.getSession();
+  if (existingSession != null && existingSession.user != res.user) {
+    await sqlite.deleteSession();
+  }
   await sqlite.saveSession(res);
   final session = await sqlite.getSession();
 

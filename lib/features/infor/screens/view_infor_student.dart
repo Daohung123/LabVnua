@@ -104,7 +104,7 @@ class _InforStudentViewState extends State<InforStudentView> {
       elevation: 0,
       centerTitle: false,
       backgroundColor: AppColors.primary,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: AppColors.transparent,
       titleSpacing: AppSpacing.lg,
       title: Text(
         'Thông tin cá nhân',
@@ -139,9 +139,9 @@ class _InforStudentViewState extends State<InforStudentView> {
                 padding: EdgeInsets.all(AppSpacing.xs),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(AppOpacity.bg12),
+                  color: AppColors.white.withOpacity(AppOpacity.bg12),
                   border: Border.all(
-                    color: Colors.white.withOpacity(AppOpacity.bg14),
+                    color: AppColors.white.withOpacity(AppOpacity.bg14),
                     width: 1.3,
                   ),
                 ),
@@ -172,12 +172,12 @@ class _InforStudentViewState extends State<InforStudentView> {
                       leading: Icon(
                         Icons.access_time_rounded,
                         size: 18,
-                        color: Colors.black,
+                        color: AppColors.black,
                       ),
-                      backgroundColor: Colors.white,
+                      backgroundColor: AppColors.white,
                       textStyle: TextStyle(
                         fontSize: 11,
-                        color: Colors.black,
+                        color: AppColors.black,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -203,9 +203,9 @@ class _InforStudentViewState extends State<InforStudentView> {
         vertical: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(AppOpacity.bg10),
+        color: AppColors.white.withOpacity(AppOpacity.bg10),
         borderRadius: BorderRadius.circular(AppRadius.full),
-        border: Border.all(color: Colors.white.withOpacity(AppOpacity.bg12)),
+        border: Border.all(color: AppColors.white.withOpacity(AppOpacity.bg12)),
       ),
       child: Text(
         text,

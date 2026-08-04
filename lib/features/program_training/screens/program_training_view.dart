@@ -65,9 +65,9 @@ class _ProgramTrainingViewState extends State<ProgramTrainingView> {
         elevation: 0,
         title: AppText.labelLarge(
           "Chương trình đào tạo",
-          color: Colors.white,
+          color: AppColors.white,
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: AppColors.white),
       ),
       body: SafeArea(
         child: isLoading
@@ -92,7 +92,7 @@ class _ProgramTrainingViewState extends State<ProgramTrainingView> {
                           (p, e) => p + e.entries.length,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: AppSpacing.lg20),
                       ...sections.map(
                         (e) => _YearCard(section: e),
                       ),
@@ -152,19 +152,19 @@ class _HeaderCard extends StatelessWidget {
       gradient: AppGradients.heroGradient,
       borderRadius: AppRadius.xl,
       boxShadow: AppShadows.heroShadow,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppText.heroTitle("Lộ trình đào tạo"),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
 
           AppText.heroSubtitle(
             "Thông tin được thu gọn để dễ theo dõi hơn.",
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.lg20),
 
           Row(
             children: [
@@ -172,12 +172,12 @@ class _HeaderCard extends StatelessWidget {
                 value: totalYear.toString(),
                 label: "Năm học",
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               _StatBox(
                 value: totalSemester.toString(),
                 label: "Học kỳ",
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               _StatBox(
                 value: totalSubject.toString(),
                 label: "Môn học",
@@ -207,19 +207,19 @@ class _StatBox extends StatelessWidget {
           vertical: 14,
         ),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.12),
+          color: AppColors.white.withOpacity(.12),
           borderRadius: AppRadius.circular_lg,
         ),
         child: Column(
           children: [
             AppText.cardValue(
               value,
-              color: Colors.white,
+              color: AppColors.white,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             AppText.labelSmall(
               label,
-              color: Colors.white70,
+              color: AppColors.white70,
             ),
           ],
         ),
@@ -292,7 +292,7 @@ class _YearCardState extends State<_YearCard> {
                         AppText.sectionTitle(
                           widget.section.yearTitle,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
                         AppText.bodySmall(
                           "${widget.section.entries.length} môn học",
                         ),
@@ -389,7 +389,7 @@ class _SubjectCompactCardState
               });
             },
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
                   Container(
@@ -410,7 +410,7 @@ class _SubjectCompactCardState
                     ),
                   ),
 
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
 
                   Expanded(
                     child: Column(
@@ -422,7 +422,7 @@ class _SubjectCompactCardState
                               "Không rõ tên môn",
                         ),
 
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpacing.xs),
 
                         AppText.bodySmall(
                           "${subject.soTinChi ?? "0"} tín chỉ • ${widget.entry.semesterLabel}",
@@ -461,7 +461,7 @@ class _SubjectCompactCardState
                       children: [
                         const Divider(),
 
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
 
                         _InfoRow(
                           label: "Lý thuyết",
@@ -557,9 +557,9 @@ class _ErrorView extends StatelessWidget {
               size: 52,
               color: AppColors.error,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             AppText.sectionTitle(message),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             AppButton.primary(
               label: "Tải lại",
               onPressed: onRetry,

@@ -71,7 +71,7 @@ class DataBaseConfig {
     return openDatabase(
       path,
       password: databaseKey,
-      version: 7,
+      version: 8,
       onCreate: (db, version) async {
         AppLog.coSoDuLieu(
           'Tạo mới schema SQLite',
@@ -217,6 +217,7 @@ class DataBaseConfig {
         await _createClassSessionTables(db);
         await _createApiResponseCacheTable(db);
         await _createLocalFirstTables(db);
+        await _createPortalSyncStateTables(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         AppLog.coSoDuLieu(
@@ -239,6 +240,9 @@ class DataBaseConfig {
         }
         if (oldVersion < 7) {
           await _createLocalFirstTables(db);
+        }
+        if (oldVersion < 8) {
+          await _createPortalSyncStateTables(db);
         }
       },
     );
@@ -512,6 +516,32 @@ class DataBaseConfig {
       'CREATE INDEX IF NOT EXISTS idx_chat_message_owner_conversation '
       'ON chat_messages_cache(owner_hash, conversation_id, created_at ASC)',
     );
+  }
+
+  Future<void> _createPortalSyncStateTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS portal_sync_state(
+        owner_hash TEXT PRIMARY KEY,
+        manifest_version INTEGER NOT NULL DEFAULT 0,
+        last_attempted_at TEXT,
+        last_completed_at TEXT,
+        last_failed_resource TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS portal_resource_sync_state(
+        owner_hash TEXT NOT NULL,
+        resource_key TEXT NOT NULL,
+        last_attempted_at TEXT NOT NULL,
+        last_completed_at TEXT,
+        last_status TEXT NOT NULL,
+        PRIMARY KEY(owner_hash, resource_key)
+      )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_portal_resource_sync_state_status
+      ON portal_resource_sync_state(owner_hash, last_status)
+    ''');
   }
 
   Future<void> _createCachedDataTable(Database db, String tableName) async {

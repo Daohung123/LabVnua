@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/UI/styles/colors.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class RowInfo extends StatelessWidget {
   final String left;
   final String right;
@@ -23,7 +24,7 @@ class RowInfo extends StatelessWidget {
               left,
               style: const TextStyle(
                 fontSize: 16,
-                color: Colors.black87,
+                color: AppColors.black87,
               ),
             ),
           ),

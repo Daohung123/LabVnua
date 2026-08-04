@@ -101,7 +101,7 @@ class AppSectionHeader extends StatelessWidget {
             ),
           ),
           // Trailing widget (if provided)
-          if (trailing != null) ...[const SizedBox(width: 12), trailing!],
+          if (trailing != null) ...[const SizedBox(width: AppSpacing.md), trailing!],
         ],
       ),
     );

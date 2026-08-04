@@ -15,10 +15,10 @@ class ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubbleColor = isMine ? AppColors.primary : Colors.white;
-    final textColor = isMine ? Colors.white : AppColors.textPrimary;
+    final bubbleColor = isMine ? AppColors.primary : AppColors.white;
+    final textColor = isMine ? AppColors.white : AppColors.textPrimary;
     final timeColor = isMine
-        ? Colors.white.withValues(alpha: 0.72)
+        ? AppColors.white.withValues(alpha: 0.72)
         : AppColors.textSecondary.withValues(alpha: 0.88);
 
     return Align(
@@ -33,15 +33,15 @@ class ChatMessageBubble extends StatelessWidget {
           decoration: BoxDecoration(
             color: bubbleColor,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(18),
-              topRight: const Radius.circular(18),
+              topLeft: const Radius.circular(AppRadius.lg),
+              topRight: const Radius.circular(AppRadius.lg),
               bottomLeft: Radius.circular(isMine ? 18 : 4),
               bottomRight: Radius.circular(isMine ? 4 : 18),
             ),
             border: isMine ? null : Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -62,7 +62,7 @@ class ChatMessageBubble extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.xs),
               Text(
                 DateFormat('HH:mm').format(message.createdAt.toLocal()),
                 style: TextStyle(

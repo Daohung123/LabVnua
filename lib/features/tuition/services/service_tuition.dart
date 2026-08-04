@@ -1,13 +1,14 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import 'package:aqedu/core/services_root/api_daotao/tuition/get_tuition.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import 'package:aqedu/features/tuition/models/model_data.dart';
 import 'package:aqedu/features/tuition/models/model_item.dart';
 import 'package:aqedu/features/tuition/models/models_tuition.dart';
 
 class HocPhiService {
-  static Future<Data?> getHocPhiData(String cookie, String token) async {
+  static Future<Data?> getHocPhiData() async {
     try {
-      final HocPhiResponse? response = await getHocPhiResponse(cookie, token);
+      final HocPhiResponse? response = await const PortalLocalReadStore()
+          .tuition();
 
       if (response == null) {
         return null;
@@ -24,12 +25,9 @@ class HocPhiService {
     }
   }
 
-  static Future<List<HocPhiHocKy>> getHocPhiHocKyList(
-    String cookie,
-    String token,
-  ) async {
+  static Future<List<HocPhiHocKy>> getHocPhiHocKyList() async {
     try {
-      final Data? data = await getHocPhiData(cookie, token);
+      final Data? data = await getHocPhiData();
 
       if (data == null) {
         return [];

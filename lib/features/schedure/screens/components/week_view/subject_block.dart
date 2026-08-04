@@ -3,6 +3,7 @@ import 'week_constants.dart';
 import 'striped_painter.dart';
 import '../../../models/schedure_student.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class SubjectBlock extends StatelessWidget {
   final ThoiKhoaBieu subject;
   final bool isOverlap;
@@ -26,7 +27,7 @@ class SubjectBlock extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.blue.shade200, width: 0.5),
+        border: Border.all(color: AppColors.primaryLight, width: 0.5),
       ),
       child: Stack(
         children: [
@@ -43,7 +44,7 @@ class SubjectBlock extends StatelessWidget {
                   const Icon(
                     Icons.edit_calendar,
                     size: 12,
-                    color: Colors.blueGrey,
+                    color: AppColors.textSecondary,
                   ),
                 Expanded(
                   child: Text(
@@ -51,7 +52,7 @@ class SubjectBlock extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: AppColors.black87,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 4,

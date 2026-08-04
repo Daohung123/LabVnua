@@ -1,0 +1,11 @@
+PASS pubspec.yaml parses and package name is aqedu
+PASS all local Dart import/export/part references resolve
+PASS no raw Flutter named colors or hex colors outside theme sources
+PASS local palette classes and MaterialColor-style token indexing removed
+PASS all shared design-token references resolve to declared members
+PASS structural delimiter scan across 249 Dart files
+PASS source-level DD_AUTH widget-test contract retained
+PASS audited 72 UI candidates: 51 changed, 21 already compliant/support-only
+
+RESULT: STATIC VERIFICATION PASS
+PASS: scanned 249 Dart files

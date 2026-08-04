@@ -23,7 +23,7 @@ class AiGatewayException implements Exception {
 
   String get userMessage => switch (kind) {
     AiGatewayFailureKind.configuration =>
-      'Bản chạy hiện tại chưa nhận GEMINI_API_KEY hoặc GEMINI_MODEL. Dừng ứng dụng hoàn toàn rồi chạy lại với --dart-define-from-file=.env.',
+      'Bản chạy hiện tại chưa nhận GEMINI_API_KEY hoặc GEMINI_MODEL. Hãy kiểm tra file .env ở thư mục gốc dự án rồi chạy lại ứng dụng.',
     AiGatewayFailureKind.timeout =>
       'Trợ lý AI phản hồi quá lâu. Vui lòng thử lại.',
     AiGatewayFailureKind.invalidApiKey =>

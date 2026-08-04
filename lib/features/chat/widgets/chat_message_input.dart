@@ -57,7 +57,7 @@ class _ChatMessageInputState extends State<ChatMessageInput> {
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           border: Border(top: BorderSide(color: AppColors.border)),
         ),
         child: Row(
@@ -79,7 +79,7 @@ class _ChatMessageInputState extends State<ChatMessageInput> {
                     vertical: 12,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -98,7 +98,7 @@ class _ChatMessageInputState extends State<ChatMessageInput> {
                   ),
                   padding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                 ),
                 child: widget.isSending
@@ -107,7 +107,7 @@ class _ChatMessageInputState extends State<ChatMessageInput> {
                         height: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Colors.white,
+                          color: AppColors.white,
                         ),
                       )
                     : const Icon(Icons.send_rounded, size: 20),

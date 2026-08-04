@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class OtherFeaturesView extends StatelessWidget {
   const OtherFeaturesView({super.key});
 
-  final Color primaryColor = const Color(0xff0047A8);
-  final Color backgroundColor = const Color(0xffF5F8FC);
-  final Color cardColor = Colors.white;
-  final Color borderColor = const Color(0xffE5EAF0);
-  final Color titleColor = const Color(0xff111827);
-  final Color subtitleColor = const Color(0xff6B7280);
+  final Color primaryColor = AppColors.primary;
+  final Color backgroundColor = AppColors.background;
+  final Color cardColor = AppColors.white;
+  final Color borderColor = AppColors.border;
+  final Color titleColor = AppColors.textPrimary;
+  final Color subtitleColor = AppColors.textSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,13 @@ class OtherFeaturesView extends StatelessWidget {
         centerTitle: false,
         backgroundColor: primaryColor,
         surfaceTintColor: primaryColor,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.white,
         title: const Text(
           'Tính năng khác',
           style: TextStyle(
             fontWeight: FontWeight.w800,
             letterSpacing: 0.2,
-            color: Colors.white,
+            color: AppColors.white,
           ),
         ),
       ),
@@ -34,8 +35,8 @@ class OtherFeaturesView extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            _buildHeroHeader(primaryColor, const Color(0xff355070)),
-            const SizedBox(height: 16),
+            _buildHeroHeader(primaryColor, AppColors.textSecondary),
+            const SizedBox(height: AppSpacing.lg),
             const SizedBox(height: 22),
 
             // Section: TIỆN ÍCH SINH VIÊN (rendered as card + ListTiles to match study_view)
@@ -52,63 +53,63 @@ class OtherFeaturesView extends StatelessWidget {
                   title: 'Bản đồ trường',
                   subtitle: 'Xem khuôn viên, tòa nhà',
                   icon: Icons.map_outlined,
-                  color: const Color(0xff2563EB),
+                  color: AppColors.primary,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Sơ đồ phòng học',
                   subtitle: 'Tra cứu vị trí phòng học',
                   icon: Icons.apartment_outlined,
-                  color: const Color(0xff4F46E5),
+                  color: AppColors.ai,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Tìm phòng học',
                   subtitle: 'Tìm nhanh theo mã phòng',
                   icon: Icons.search_rounded,
-                  color: const Color(0xff06B6D4),
+                  color: AppColors.primary,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Tra cứu giảng viên',
                   subtitle: 'Thông tin giảng viên',
                   icon: Icons.person_search_outlined,
-                  color: const Color(0xff8B5CF6),
+                  color: AppColors.ai,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Danh bạ sinh viên',
                   subtitle: 'Tra cứu liên hệ',
                   icon: Icons.contacts_outlined,
-                  color: const Color(0xff14B8A6),
+                  color: AppColors.success,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Xe bus trường',
                   subtitle: 'Tuyến xe và lịch chạy',
                   icon: Icons.directions_bus_outlined,
-                  color: const Color(0xffF59E0B),
+                  color: AppColors.warning,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Ký túc xá',
                   subtitle: 'Thông tin khu ở',
                   icon: Icons.home_work_outlined,
-                  color: const Color(0xff10B981),
+                  color: AppColors.success,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Căn tin / dịch vụ',
                   subtitle: 'Ăn uống, tiện ích',
                   icon: Icons.restaurant_menu_outlined,
-                  color: const Color(0xffEF4444),
+                  color: AppColors.error,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Wifi campus',
                   subtitle: 'Thông tin kết nối mạng',
                   icon: Icons.wifi_rounded,
-                  color: const Color(0xff0EA5E9),
+                  color: AppColors.primary,
                   onTap: () {},
                 ),
               ]),
@@ -130,42 +131,42 @@ class OtherFeaturesView extends StatelessWidget {
                   title: 'Chat phòng đào tạo',
                   subtitle: 'Hỏi đáp thủ tục',
                   icon: Icons.support_agent_rounded,
-                  color: const Color(0xff2563EB),
+                  color: AppColors.primary,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Chat giảng viên',
                   subtitle: 'Trao đổi học tập',
                   icon: Icons.chat_bubble_outline_rounded,
-                  color: const Color(0xff4F46E5),
+                  color: AppColors.ai,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Chatbot hỗ trợ (AI)',
                   subtitle: 'Hỗ trợ tự động 24/7',
                   icon: Icons.smart_toy_outlined,
-                  color: const Color(0xff8B5CF6),
+                  color: AppColors.ai,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'FAQ',
                   subtitle: 'Câu hỏi thường gặp',
                   icon: Icons.help_outline_rounded,
-                  color: const Color(0xffF59E0B),
+                  color: AppColors.warning,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Gửi phản hồi',
                   subtitle: 'Đóng góp ý kiến',
                   icon: Icons.feedback_outlined,
-                  color: const Color(0xff10B981),
+                  color: AppColors.success,
                   onTap: () {},
                 ),
                 _FeatureItem(
                   title: 'Báo lỗi hệ thống',
                   subtitle: 'Gửi lỗi nhanh',
                   icon: Icons.bug_report_outlined,
-                  color: const Color(0xffEF4444),
+                  color: AppColors.error,
                   onTap: () {},
                 ),
               ]),
@@ -181,19 +182,9 @@ class OtherFeaturesView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor, primaryColor.withOpacity(0.92), textBlue],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: primaryColor.withOpacity(0.18),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: primaryColor,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.mediumShadow,
       ),
       child: Row(
         children: [
@@ -202,19 +193,19 @@ class OtherFeaturesView extends StatelessWidget {
             height: 68,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.16),
+              color: AppColors.white.withOpacity(0.16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.22),
+                color: AppColors.white.withOpacity(0.22),
                 width: 1.2,
               ),
             ),
             child: const Icon(
               Icons.apps_rounded,
-              color: Colors.white,
+              color: AppColors.white,
               size: 36,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,16 +213,16 @@ class OtherFeaturesView extends StatelessWidget {
                 const Text(
                   'Tổng hợp tiện ích',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 19,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Truy cập nhanh các chức năng hỗ trợ học tập, sinh hoạt và tương tác trong ứng dụng.',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.88),
+                    color: AppColors.white.withOpacity(0.88),
                     fontSize: 13.5,
                     height: 1.4,
                   ),
@@ -259,11 +250,11 @@ class OtherFeaturesView extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: AppColors.black.withOpacity(0.04),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -277,20 +268,20 @@ class OtherFeaturesView extends StatelessWidget {
             height: 42,
             decoration: BoxDecoration(
               color: accentColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Icon(icon, color: accentColor, size: 22),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             value,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w800,
-              color: Color(0xff111827),
+              color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             title,
             style: TextStyle(
@@ -317,12 +308,12 @@ class OtherFeaturesView extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              color: Color(0xff111827),
+              color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             subtitle,
             style: TextStyle(
@@ -344,18 +335,18 @@ class OtherFeaturesView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: AppColors.black.withOpacity(0.04),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: Column(children: children),
       ),
     );
@@ -400,14 +391,14 @@ class OtherFeaturesView extends StatelessWidget {
         height: 46,
         decoration: BoxDecoration(
           color: primaryColor.withOpacity(0.10),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Icon(icon, color: primaryColor, size: 23),
       ),
       title: Text(
         title,
         style: const TextStyle(
-          color: Color(0xff111827),
+          color: AppColors.textPrimary,
           fontWeight: FontWeight.w700,
           fontSize: 14.5,
         ),
@@ -421,7 +412,7 @@ class OtherFeaturesView extends StatelessWidget {
       ),
       trailing: Icon(
         Icons.chevron_right_rounded,
-        color: Colors.grey.shade400,
+        color: AppColors.textTertiary,
         size: 24,
       ),
     );

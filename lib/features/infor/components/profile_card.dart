@@ -3,6 +3,7 @@ import 'package:aqedu/features/infor/models/model_infor_student_fill.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/UI/styles/colors.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class ProfileCard extends StatelessWidget {
   final InforStudentFillData student;
 
@@ -11,10 +12,10 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: darkCard,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
       ),
       child: Row(
         children: [
@@ -27,14 +28,14 @@ class ProfileCard extends StatelessWidget {
                 Text(
                   student.name,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   student.maSv,
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  style: const TextStyle(color: AppColors.white70, fontSize: 14),
                 ),
               ],
             ),
@@ -47,7 +48,7 @@ class ProfileCard extends StatelessWidget {
                 duLieu: {'co_ma_sinh_vien': student.maSv.trim().isNotEmpty},
               );
             },
-            icon: const Icon(Icons.qr_code_2, color: Colors.white, size: 36),
+            icon: const Icon(Icons.qr_code_2, color: AppColors.white, size: 36),
           ),
         ],
       ),

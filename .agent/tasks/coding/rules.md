@@ -6,7 +6,7 @@
 | Use Flutter/Dart package conventions for app code. | `pubspec.yaml`, `lib/main.dart` |
 | Shared theme tokens and components live under `lib/core/theme/`; new UI should prefer `app_components.dart` where feasible. | `lib/core/theme/README.md` |
 | Legacy widgets under `lib/core/widgets/` are kept for compatibility and are deprecated for new code. | `lib/core/widgets/README.md` |
-| Runtime config keys are supplied through `--dart-define` and `String.fromEnvironment`. | `.env.example`, `README.md`, `lib/core/constants/api/*.dart` |
+| Runtime config keys are supplied through `flutter_dotenv` via `AppEnvironment`; `--dart-define` and `String.fromEnvironment` remain fallback paths. | `.env.example`, `README.md`, `lib/core/config/app_environment.dart` |
 | Local SQLite schema currently lives in `lib/config/config_DB.dart`. | `lib/config/config_DB.dart` |
 | Chat service table names and realtime behavior are implemented in `lib/features/chat/services/chat_service.dart`. | `lib/features/chat/services/chat_service.dart` |
 | Flutter lints are enabled through `analysis_options.yaml`. | `analysis_options.yaml` |

@@ -1,5 +1,6 @@
 import 'package:aqedu/core/config/app_environment.dart';
 import 'package:aqedu/features/ai_assistant/data/datasources/gemini_ai_data_source.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -9,6 +10,7 @@ void main() {
       const runLiveSmoke = bool.fromEnvironment('RUN_LIVE_GEMINI_SMOKE');
       if (!runLiveSmoke) return;
 
+      await dotenv.load(fileName: '.env', isOptional: true);
       const environment = AppEnvironment();
       const smokeTestModelDefine = String.fromEnvironment(
         'GEMINI_LIVE_TEST_MODEL',

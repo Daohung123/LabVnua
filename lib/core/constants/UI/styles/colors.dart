@@ -1,13 +1,10 @@
-import 'dart:ui';
+import 'package:aqedu/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-Color bg_color = Color(0xFFe9eaec);
-Color time_schedure_color = Color(0xFF838383);
+/// Deprecated compatibility aliases. New UI must import app_components.dart.
+Color bg_color = AppColors.background;
+Color time_schedure_color = AppColors.textSecondary;
 double font_time_schedure = 13;
-
-
-//Mau cua va co chu infor_student_view 
-Color primaryColor = const Color(0xff0047A8);
-Color darkCard = const Color(0xff1f1f1f);
-Color textBlue = const Color(0xff355070);
-
+Color primaryColor = AppColors.primary;
+Color darkCard = AppColors.textPrimary;
+Color textBlue = AppColors.blueText;

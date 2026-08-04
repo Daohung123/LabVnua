@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../models/notification_student.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
 
@@ -14,15 +15,15 @@ class NotificationView extends StatefulWidget {
 }
 
 class _NotificationViewState extends State<NotificationView> {
-  static const Color _bgTop = Color(0xFFF4F7FB);
-  static const Color _bgBottom = Color(0xFFE9EAEC);
-  static const Color _cardColor = Colors.white;
-  static const Color _brandColor = Color(0xFF104492);
-  static const Color _brandColorSoft = Color(0xFFEAF1FF);
-  static const Color _textDark = Color(0xFF1F2937);
-  static const Color _textMuted = Color(0xFF6B7280);
-  static const Color _warning = Color(0xFFF2994A);
-  static const Color _danger = Color(0xFFEB5757);
+  static const Color _bgTop = AppColors.background;
+  static const Color _bgBottom = AppColors.background;
+  static const Color _cardColor = AppColors.white;
+  static const Color _brandColor = AppColors.primaryPressed;
+  static const Color _brandColorSoft = AppColors.background;
+  static const Color _textDark = AppColors.textPrimary;
+  static const Color _textMuted = AppColors.textSecondary;
+  static const Color _warning = AppColors.error;
+  static const Color _danger = AppColors.error;
 
   late Future<List<NotificationItem>> _futureNotifications;
 
@@ -96,29 +97,23 @@ class _NotificationViewState extends State<NotificationView> {
     return Scaffold(
       backgroundColor: _bgBottom,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF104492),
+        backgroundColor: AppColors.primaryPressed,
         elevation: 0,
         centerTitle: true,
         scrolledUnderElevation: 0,
-        surfaceTintColor: Colors.transparent,
+        surfaceTintColor: AppColors.transparent,
         title: const Text(
           'Thông báo',
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.white,
             fontWeight: FontWeight.w700,
             fontSize: 20,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: AppColors.white),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [_bgTop, _bgBottom],
-          ),
-        ),
+        color: AppColors.background,
         child: SafeArea(
           top: false,
           child: FutureBuilder<List<NotificationItem>>(
@@ -154,7 +149,7 @@ class _NotificationViewState extends State<NotificationView> {
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                             itemCount: notifications.length,
                             separatorBuilder: (_, __) =>
-                                const SizedBox(height: 12),
+                                const SizedBox(height: AppSpacing.md),
                             itemBuilder: (context, index) {
                               final item = notifications[index];
                               return _buildNotificationCard(context, item);
@@ -173,21 +168,11 @@ class _NotificationViewState extends State<NotificationView> {
   Widget _buildHeader(BuildContext context, int total, int unread) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [_brandColor, Color(0xFF0B2F66)],
-        ),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: _brandColor.withOpacity(0.22),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: AppColors.primary,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.mediumShadow,
       ),
       child: Row(
         children: [
@@ -195,13 +180,13 @@ class _NotificationViewState extends State<NotificationView> {
             width: 54,
             height: 54,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.16),
+              color: AppColors.white.withOpacity(0.16),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white.withOpacity(0.18)),
+              border: Border.all(color: AppColors.white.withOpacity(0.18)),
             ),
             child: const Icon(
               Icons.notifications_rounded,
-              color: Colors.white,
+              color: AppColors.white,
               size: 28,
             ),
           ),
@@ -213,16 +198,16 @@ class _NotificationViewState extends State<NotificationView> {
                 const Text(
                   'Trung tâm thông báo',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Bạn đang có $total thông báo • $unread chưa đọc',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.86),
+                    color: AppColors.white.withOpacity(0.86),
                     fontSize: 12.5,
                     height: 1.3,
                   ),
@@ -230,18 +215,18 @@ class _NotificationViewState extends State<NotificationView> {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.14),
+              color: AppColors.white.withOpacity(0.14),
               borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: Colors.white.withOpacity(0.16)),
+              border: Border.all(color: AppColors.white.withOpacity(0.16)),
             ),
             child: Text(
               unread > 0 ? '$unread mới' : 'Đã đọc hết',
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
@@ -257,28 +242,28 @@ class _NotificationViewState extends State<NotificationView> {
     final bool isUrgent = item.isPhaiXem ?? false;
 
     final Color accentColor = isUrgent ? _warning : _brandColor;
-    final Color iconBg = isUrgent ? const Color(0xFFFFF4E6) : _brandColorSoft;
+    final Color iconBg = isUrgent ? AppColors.divider : _brandColorSoft;
     final IconData icon = isUrgent
         ? Icons.priority_high_rounded
         : Icons.notifications_none_rounded;
 
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         onTap: () => _showDetail(context, item),
         child: Ink(
           decoration: BoxDecoration(
             color: _cardColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             border: Border.all(
               color: isRead
-                  ? const Color(0xFFE5E7EB)
+                  ? AppColors.border
                   : accentColor.withOpacity(0.22),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: AppColors.black.withOpacity(0.05),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -293,10 +278,10 @@ class _NotificationViewState extends State<NotificationView> {
                 child: Container(
                   width: 4,
                   decoration: BoxDecoration(
-                    color: isRead ? const Color(0xFFE5E7EB) : accentColor,
+                    color: isRead ? AppColors.border : accentColor,
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
+                      topLeft: Radius.circular(AppRadius.lg),
+                      bottomLeft: Radius.circular(AppRadius.lg),
                     ),
                   ),
                 ),
@@ -329,7 +314,7 @@ class _NotificationViewState extends State<NotificationView> {
                                 color: _danger,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   width: 2,
                                 ),
                               ),
@@ -337,7 +322,7 @@ class _NotificationViewState extends State<NotificationView> {
                           ),
                       ],
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,7 +345,7 @@ class _NotificationViewState extends State<NotificationView> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: AppSpacing.sm),
                               Text(
                                 item.ngayGui != null
                                     ? DateFormat(
@@ -375,13 +360,13 @@ class _NotificationViewState extends State<NotificationView> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: AppSpacing.sm),
                           _buildHtmlContent(
                             item.noiDung,
                             fontSize: 13.5,
                             height: 42,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           Row(
                             children: [
                               const Icon(
@@ -389,7 +374,7 @@ class _NotificationViewState extends State<NotificationView> {
                                 size: 16,
                                 color: _textMuted,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
                                   item.nguoiGui ?? 'N/A',
@@ -421,14 +406,14 @@ class _NotificationViewState extends State<NotificationView> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: const [
             Icon(
               Icons.notifications_off_outlined,
               size: 68,
-              color: Color(0xFF9CA3AF),
+              color: AppColors.textTertiary,
             ),
             SizedBox(height: 14),
             Text(
@@ -463,7 +448,7 @@ class _NotificationViewState extends State<NotificationView> {
     );
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       isScrollControlled: true,
       builder: (context) {
         return DraggableScrollableSheet(
@@ -489,7 +474,7 @@ class _NotificationViewState extends State<NotificationView> {
                           width: 46,
                           height: 5,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFD1D5DB),
+                            color: AppColors.borderStrong,
                             borderRadius: BorderRadius.circular(100),
                           ),
                         ),
@@ -497,13 +482,13 @@ class _NotificationViewState extends State<NotificationView> {
                       const SizedBox(height: 18),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(AppSpacing.lg),
                         decoration: BoxDecoration(
                           color: _cardColor,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: AppColors.black.withOpacity(0.05),
                               blurRadius: 16,
                               offset: const Offset(0, 6),
                             ),
@@ -552,7 +537,7 @@ class _NotificationViewState extends State<NotificationView> {
                                   color: _textDark,
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: AppSpacing.sm),
                               Wrap(
                                 spacing: 8,
                                 runSpacing: 8,
@@ -563,7 +548,7 @@ class _NotificationViewState extends State<NotificationView> {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFFF3F4F6),
+                                      color: AppColors.surfaceAlt,
                                       borderRadius: BorderRadius.circular(999),
                                     ),
                                     child: Text(
@@ -596,7 +581,7 @@ class _NotificationViewState extends State<NotificationView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F4F6),
+        color: AppColors.surfaceAlt,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(

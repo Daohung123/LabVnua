@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 /// QR Scan Button - Icon button for QR code scanning
 class QRScanButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -10,7 +11,7 @@ class QRScanButton extends StatelessWidget {
   const QRScanButton({
     super.key,
     required this.onPressed,
-    this.iconColor = Colors.white,
+    this.iconColor = AppColors.white,
     this.iconSize = 28,
     this.tooltip = 'Quét mã QR',
   });

@@ -1,17 +1,12 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import '../../../core/services_root/api_daotao/course_Register/get_course_register_respone.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import '../models/model_course_register.dart';
 
 class CourseRegisterService {
-  static Future<List<CourseRegisterClass>> getClasses(
-    String cookie,
-    String token,
-  ) async {
+  static Future<List<CourseRegisterClass>> getClasses() async {
     try {
-      final CourseRegisterResponse? response = await getCourseRegisterResponse(
-        cookie,
-        token,
-      );
+      final CourseRegisterResponse? response =
+          await const PortalLocalReadStore().courseRegisterCatalog();
 
       if (response == null) {
         return [];
@@ -35,12 +30,9 @@ class CourseRegisterService {
     }
   }
 
-  static Future<CourseRegisterResponse?> getCourseRegisterFull(
-    String cookie,
-    String token,
-  ) async {
+  static Future<CourseRegisterResponse?> getCourseRegisterFull() async {
     try {
-      return await getCourseRegisterResponse(cookie, token);
+      return await const PortalLocalReadStore().courseRegisterCatalog();
     } catch (e) {
       AppLog.ungDung(
         'Ghi nhận hoạt động runtime',

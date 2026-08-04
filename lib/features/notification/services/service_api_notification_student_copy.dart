@@ -1,26 +1,17 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import "package:aqedu/core/services_root/api_daotao/notification/get_notification.dart";
-import "package:aqedu/core/services_root/sqlite/sessions/services_get_cookie_token.dart";
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 
 import "../models/notification_student.dart";
 
 class ServiceNotiStudent {
-  final String _cookie;
-  final String _token;
+  ServiceNotiStudent._();
 
-  ServiceNotiStudent._(this._cookie, this._token);
-
-  static Future<ServiceNotiStudent> create() async {
-    final cookie = await GETDB.getCookie();
-    final token = await GETDB.getToken();
-
-    return ServiceNotiStudent._(cookie, token);
-  }
+  static Future<ServiceNotiStudent> create() async => ServiceNotiStudent._();
 
   Future<List<NotificationItem>> getNotification() async {
     try {
       NotificationResponse? notificationResponse =
-          await getNotificationResponse(_cookie, _token);
+          await const PortalLocalReadStore().notifications();
       if (notificationResponse == null) {
         AppLog.thongBao(
           'Ghi nhận hoạt động runtime',

@@ -2,9 +2,9 @@
 
 ## Current Workflow
 - SQLite schema is created in `openDatabase` callbacks inside `lib/config/config_DB.dart`.
-- Current encrypted database version is `7`.
-- `onCreate` creates base, feature, cache, local-first snapshot, AI-turn, and chat-cache tables.
-- `onUpgrade` adds the local-first tables at version 7. Legacy `auth.db` is isolated rather than copied or deleted automatically.
+- Current encrypted database version is `8`.
+- `onCreate` creates base, feature, cache, local-first snapshot, AI-turn, chat-cache, and portal sync-state tables.
+- `onUpgrade` adds the local-first tables at version 7 and owner-scoped portal sync state at version 8. Legacy `auth.db` is isolated rather than copied or deleted automatically.
 
 Evidence: `lib/config/config_DB.dart`
 

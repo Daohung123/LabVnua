@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 /// User Avatar - Circular profile image with border
 class UserAvatar extends StatelessWidget {
   final String imagePath;
@@ -13,7 +14,7 @@ class UserAvatar extends StatelessWidget {
     required this.imagePath,
     this.radius = 20,
     this.onTap,
-    this.borderColor = Colors.white,
+    this.borderColor = AppColors.white,
     this.borderWidth = 2,
   });
 
@@ -26,7 +27,7 @@ class UserAvatar extends StatelessWidget {
       ),
       child: CircleAvatar(
         radius: radius,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         child: ClipOval(
           child: Image.asset(
             imagePath,

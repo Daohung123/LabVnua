@@ -1,15 +1,13 @@
 import 'package:aqedu/core/logging/app_log.dart';
-import '../../../core/services_root/api_daotao/trainning_Program/get_training_program_respone.dart';
+import 'package:aqedu/core/database/portal_local_read_store.dart';
 import '../models/model_program_data.dart';
 
 class ProgramTrainingService {
-  static Future<List<ProgramTrainingSemester>> getProgramTrainingSemesters(
-    String cookie,
-    String token,
-  ) async {
+  static Future<List<ProgramTrainingSemester>>
+  getProgramTrainingSemesters() async {
     try {
       final ProgramTrainingResponse? response =
-          await getProgramTrainingResponse(cookie, token);
+          await const PortalLocalReadStore().trainingProgram();
 
       if (response == null) {
         return [];

@@ -1,129 +1,51 @@
 import 'package:flutter/material.dart';
 
-/// ========================================
-/// APP THEME - Centralized Design System
-/// ========================================
-///
-/// This file contains all design tokens for the LabVnua Student App:
-/// - Color palette (primary, secondary, accents, semantic colors)
-/// - Spacing system (xs to xl)
-/// - Border radius presets
-/// - Shadow definitions
-///
-/// Usage: Import this file and use AppColors.primary, AppSpacing.lg, etc.
-/// Benefits: Single source of truth, easy maintenance, consistent design
+import 'app_colors.dart';
 
-/// ========================================
-/// 1. COLOR SYSTEM
-/// ========================================
-class AppColors {
-  // Primary colors - Main brand colors
-  static const Color primary = Color(0xff0047A8); // Deep professional blue
-  static const Color primaryLight = Color(0xff0F62CC); // Light blue variant
-  static const Color primaryDark = Color(0xff003A7A); // Dark blue variant
+export 'app_colors.dart';
 
-  // Secondary/Text colors
-  static const Color blueText = Color(0xff355070); // Muted blue for text
-  static const Color textPrimary = Color(
-    0xff111827,
-  ); // Dark text (almost black)
-  static const Color textSecondary = Color(0xff6B7280); // Gray text
-  static const Color textMuted = Color(0xff9CA3AF); // Light gray text
+/// Spacing tokens based on a 4 px grid, with 8 px as the primary rhythm.
+abstract final class AppSpacing {
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double sm10 = 10;
+  static const double md = 12;
+  static const double md14 = 14;
+  static const double lg = 16;
+  static const double lg20 = 20;
+  static const double lg22 = 22;
+  static const double xl = 24;
+  static const double xxl = 32;
+  static const double xxl40 = 40;
+  static const double xxl48 = 48;
+  static const double xxl56 = 56;
 
-  // Neutral colors - Backgrounds and surfaces
-  static const Color background = Color(
-    0xffF5F8FC,
-  ); // Light blue-gray background
-  static const Color surface = Color(0xffFFFFFF); // White surfaces/cards
-  static const Color border = Color(0xffE4EAF2); // Light border color
-  static const Color divider = Color(0xffE5E7EB); // Divider lines
-
-  // Semantic colors - Status and meaning
-  static const Color success = Color(0xff10B981); // Green for success
-  static const Color successLight = Color(0xffD1FAE5); // Light green background
-  static const Color error = Color(0xffEF4444); // Red for error
-  static const Color errorLight = Color(0xffFEE2E2); // Light red background
-  static const Color warning = Color(0xffF59E0B); // Amber for warning
-  static const Color warningLight = Color(0xffFEF3C7); // Light amber background
-  static const Color info = Color(0xff0EA5E9); // Cyan for info
-  static const Color infoLight = Color(0xffCFFAFE); // Light cyan background
-
-  // Accent colors - Feature-specific
-  static const Color scheduleColor = Color(0xff0EA5E9); // Cyan for schedule
-  static const Color tuitionColor = Color(0xff8B5CF6); // Purple for tuition
-  static const Color scoreColor = Color(0xff10B981); // Green for scores
-  static const Color materialsColor = Color(0xffF59E0B); // Amber for materials
-  static const Color notificationColor = Color(
-    0xff10B981,
-  ); // Green for notifications
-
-  // Overlay colors
-  static const Color overlay10 = Color(0x0F000000); // 10% opacity black
-  static const Color overlay20 = Color(0x33000000); // 20% opacity black
-  static const Color overlay30 = Color(0x4D000000); // 30% opacity black
-}
-
-/// ========================================
-/// 2. SPACING SYSTEM
-/// ========================================
-class AppSpacing {
-  // Consistent spacing values following 4px grid
-  static const double xs = 4; // Extra small - rarely used
-  static const double sm = 8; // Small - internal padding in components
-  static const double sm10 = 10; // Small variant
-  static const double md = 12; // Medium - spacing between elements
-  static const double md14 = 14; // Medium variant
-  static const double lg = 16; // Large - main padding for screens
-  static const double lg20 = 20; // Large variant
-  static const double lg22 = 22; // Large variant
-  static const double xl = 24; // Extra large - section spacing
-  static const double xxl = 32; // Double extra large - hero sections
-  static const double xxl40 = 40; // Double extra large variant
-  static const double xxl56 = 56; // Double extra large variant
-
-  // Common combinations
   static const EdgeInsets paddingXs = EdgeInsets.all(xs);
   static const EdgeInsets paddingSm = EdgeInsets.all(sm);
   static const EdgeInsets paddingMd = EdgeInsets.all(md);
   static const EdgeInsets paddingLg = EdgeInsets.all(lg);
   static const EdgeInsets paddingXl = EdgeInsets.all(xl);
-
-  // Horizontal & vertical specific
   static const EdgeInsets paddingH16V8 = EdgeInsets.symmetric(
     horizontal: lg,
     vertical: sm,
   );
-  static const EdgeInsets paddingH16V16 = EdgeInsets.symmetric(
-    horizontal: lg,
-    vertical: lg,
-  );
+  static const EdgeInsets paddingH16V16 = EdgeInsets.all(lg);
   static const EdgeInsets paddingH8V4 = EdgeInsets.symmetric(
     horizontal: sm,
     vertical: xs,
   );
-
-  // Screen padding (standard for all views)
   static const EdgeInsets screenPadding = EdgeInsets.fromLTRB(lg, lg, lg, xxl);
 }
 
-/// ========================================
-/// 3. BORDER RADIUS SYSTEM
-/// ========================================
-class AppRadius {
-  // Small rounded corners - for buttons, small icons
-  static const double sm = 8.0; // Slightly rounded
-  // Medium rounded corners - for standard components
-  static const double md = 14.0; // Standard cards and containers
-  // Large rounded corners - for prominent cards
-  static const double lg = 18.0; // Feature tiles and action cards
-  // Extra large rounded corners - for hero sections
-  static const double xl = 22.0; // Main content cards
-  // Extra extra large rounded corners - for hero headers
-  static const double xxl = 26.0; // Large hero sections
-  // Full rounded - for pills and chips
-  static const double full = 999.0; // Completely rounded
+/// Corner radii are soft but deliberately restrained.
+abstract final class AppRadius {
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 24;
+  static const double xxl = 24;
+  static const double full = 999;
 
-  // Convenience BorderRadius objects
   static final BorderRadius circular_sm = BorderRadius.circular(sm);
   static final BorderRadius circular_md = BorderRadius.circular(md);
   static final BorderRadius circular_lg = BorderRadius.circular(lg);
@@ -132,112 +54,608 @@ class AppRadius {
   static final BorderRadius circular_full = BorderRadius.circular(full);
 }
 
-/// ========================================
-/// 4. SHADOW SYSTEM
-/// ========================================
-class AppShadows {
-  // Light shadow - subtle elevation for cards
-  static final BoxShadow light = BoxShadow(
-    color: Colors.black.withOpacity(0.04),
-    blurRadius: 14,
-    offset: const Offset(0, 5),
+abstract final class AppShadows {
+  static const BoxShadow low = BoxShadow(
+    color: Color(0x0F101828),
+    blurRadius: 3,
+    offset: Offset(0, 1),
   );
-
-  // Medium shadow - more prominent elevation
-  static final BoxShadow medium = BoxShadow(
-    color: Colors.black.withOpacity(0.08),
+  static const BoxShadow medium = BoxShadow(
+    color: Color(0x14101828),
     blurRadius: 18,
-    offset: const Offset(0, 8),
+    offset: Offset(0, 6),
+  );
+  static const BoxShadow overlay = BoxShadow(
+    color: Color(0x24101828),
+    blurRadius: 40,
+    offset: Offset(0, 16),
   );
 
-  // Hero shadow - strong elevation for hero sections
-  static final BoxShadow hero = BoxShadow(
-    color: AppColors.primary.withOpacity(0.25),
-    blurRadius: 18,
-    offset: const Offset(0, 10),
-  );
-
-  // Elevated shadow - pronounced for FAB and popovers
-  static final BoxShadow elevated = BoxShadow(
-    color: Colors.black.withOpacity(0.15),
-    blurRadius: 24,
-    offset: const Offset(0, 12),
-  );
-
-  // Collections for use with boxShadow property
-  static final List<BoxShadow> lightShadow = [light];
-  static final List<BoxShadow> mediumShadow = [medium];
-  static final List<BoxShadow> heroShadow = [hero];
-  static final List<BoxShadow> elevatedShadow = [elevated];
+  // Backward-compatible aliases.
+  static const BoxShadow light = low;
+  static const BoxShadow hero = medium;
+  static const BoxShadow elevated = overlay;
+  static const List<BoxShadow> lightShadow = [low];
+  static const List<BoxShadow> mediumShadow = [medium];
+  static const List<BoxShadow> heroShadow = [medium];
+  static const List<BoxShadow> elevatedShadow = [overlay];
 }
 
-/// ========================================
-/// 5. BORDER SYSTEM
-/// ========================================
-class AppBorders {
-  // Standard border for cards and components
-  static final Border cardBorder = Border.all(
-    color: AppColors.border,
-    width: 1.0,
+abstract final class AppBorders {
+  static const Border cardBorder = Border.fromBorderSide(
+    BorderSide(color: AppColors.border),
   );
-
-  // Light border for subtle divisions
-  static final Border lightBorder = Border.all(
-    color: AppColors.divider,
-    width: 0.8,
+  static const Border lightBorder = Border.fromBorderSide(
+    BorderSide(color: AppColors.divider),
   );
-
-  // Color-coded borders for semantic meaning
-  static final Border successBorder = Border.all(
-    color: AppColors.success,
-    width: 1.0,
+  static const Border successBorder = Border.fromBorderSide(
+    BorderSide(color: AppColors.successBorder),
   );
-
-  static final Border errorBorder = Border.all(
-    color: AppColors.error,
-    width: 1.0,
+  static const Border errorBorder = Border.fromBorderSide(
+    BorderSide(color: AppColors.errorBorder),
   );
 }
 
-/// ========================================
-/// 6. GRADIENT SYSTEM
-/// ========================================
-class AppGradients {
-  // Hero header gradient - Professional blue gradient
+/// Gradients remain for compatibility with legacy widgets. New UI should use
+/// solid surfaces; therefore these gradients are intentionally very subtle.
+abstract final class AppGradients {
   static const LinearGradient heroGradient = LinearGradient(
-    colors: [AppColors.primary, AppColors.primaryLight, AppColors.blueText],
+    colors: [AppColors.primary, AppColors.primaryPressed],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-
-  // Subtle background gradient
   static const LinearGradient subtleGradient = LinearGradient(
-    colors: [Color(0xffF0F7FF), Color(0xffF5F8FC)],
+    colors: [AppColors.surface, AppColors.surfaceAlt],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-
-  // Success gradient
   static const LinearGradient successGradient = LinearGradient(
-    colors: [Color(0xff10B981), Color(0xff059669)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    colors: [AppColors.success, AppColors.success],
   );
 }
 
-/// ========================================
-/// 7. OPACITY SYSTEM
-/// ========================================
-class AppOpacity {
-  // Common opacity values for interactive states
-  static const double hovered = 0.08; // Hover state
-  static const double pressed = 0.12; // Pressed state
-  static const double disabled = 0.4; // Disabled state
-  static const double placeholder = 0.6; // Placeholder text
+abstract final class AppOpacity {
+  static const double hovered = 0.08;
+  static const double pressed = 0.12;
+  static const double disabled = 0.4;
+  static const double placeholder = 0.6;
+  static const double bg10 = 0.10;
+  static const double bg12 = 0.12;
+  static const double bg14 = 0.14;
+  static const double bg18 = 0.18;
+}
 
-  // Background opacity variations
-  static const double bg10 = 0.10; // Light background
-  static const double bg12 = 0.12; // Standard background
-  static const double bg14 = 0.14; // Slightly stronger background
-  static const double bg18 = 0.18; // Medium background
+/// Application-wide Material 3 configuration.
+abstract final class AppTheme {
+  static ThemeData get lightTheme => _buildLightTheme();
+  static ThemeData get darkTheme => _buildDarkTheme();
+
+  static ThemeData _buildLightTheme() {
+    const colorScheme = ColorScheme.light(
+      primary: AppColors.primary,
+      onPrimary: AppColors.onPrimary,
+      primaryContainer: AppColors.primarySoft,
+      onPrimaryContainer: AppColors.primaryPressed,
+      secondary: AppColors.primary,
+      onSecondary: AppColors.onPrimary,
+      secondaryContainer: AppColors.primarySoft,
+      onSecondaryContainer: AppColors.primaryPressed,
+      error: AppColors.error,
+      onError: AppColors.white,
+      errorContainer: AppColors.errorLight,
+      onErrorContainer: AppColors.error,
+      surface: AppColors.surface,
+      onSurface: AppColors.textPrimary,
+      outline: AppColors.border,
+      outlineVariant: AppColors.divider,
+      shadow: AppColors.overlay20,
+      scrim: AppColors.overlay30,
+    );
+
+    return _baseTheme(colorScheme).copyWith(
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: AppColors.background,
+      canvasColor: AppColors.background,
+      cardColor: AppColors.surface,
+      dividerColor: AppColors.divider,
+      textTheme: _textTheme(
+        AppColors.textPrimary,
+        AppColors.textSecondary,
+      ),
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.textPrimary,
+        surfaceTintColor: AppColors.transparent,
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          height: 1.4,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        iconTheme: IconThemeData(color: AppColors.textPrimary, size: 24),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.surface,
+        surfaceTintColor: AppColors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shadowColor: AppColors.overlay08,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: const BorderSide(color: AppColors.border),
+        ),
+      ),
+      inputDecorationTheme: _inputDecorationTheme(
+        fillColor: AppColors.surface,
+        textColor: AppColors.textPrimary,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.surface,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.textTertiary,
+        selectedLabelStyle: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 68,
+        elevation: 0,
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.transparent,
+        indicatorColor: AppColors.primarySoft,
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          return IconThemeData(
+            size: 24,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : AppColors.textTertiary,
+          );
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          return TextStyle(
+            fontSize: 12,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w600
+                : FontWeight.w500,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : AppColors.textTertiary,
+          );
+        }),
+      ),
+      navigationRailTheme: const NavigationRailThemeData(
+        elevation: 0,
+        backgroundColor: AppColors.surface,
+        indicatorColor: AppColors.primarySoft,
+        selectedIconTheme: IconThemeData(color: AppColors.primary),
+        unselectedIconTheme: IconThemeData(color: AppColors.textTertiary),
+        selectedLabelTextStyle: TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelTextStyle: TextStyle(
+          color: AppColors.textSecondary,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.transparent,
+        modalBackgroundColor: AppColors.surface,
+        modalBarrierColor: AppColors.overlay30,
+        showDragHandle: true,
+        dragHandleColor: AppColors.borderStrong,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.xl),
+          ),
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: AppColors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          height: 1.4,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        contentTextStyle: const TextStyle(
+          fontSize: 14,
+          height: 1.5,
+          fontWeight: FontWeight.w400,
+          color: AppColors.textSecondary,
+        ),
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.textPrimary,
+        contentTextStyle: TextStyle(
+          color: AppColors.white,
+          fontSize: 14,
+          height: 1.4,
+        ),
+        actionTextColor: AppColors.primaryLight,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.md)),
+        ),
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: AppColors.textSecondary,
+        textColor: AppColors.textPrimary,
+        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        minVerticalPadding: AppSpacing.sm,
+        minLeadingWidth: 24,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.divider,
+        thickness: 1,
+        space: 1,
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.surfaceAlt,
+        selectedColor: AppColors.primarySoft,
+        disabledColor: AppColors.surfaceAlt,
+        side: const BorderSide(color: AppColors.border),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+        ),
+        labelStyle: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
+        secondaryLabelStyle: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primaryPressed,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.onPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
+        ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.primarySoft,
+        circularTrackColor: AppColors.primarySoft,
+      ),
+    );
+  }
+
+  static ThemeData _buildDarkTheme() {
+    const colorScheme = ColorScheme.dark(
+      primary: AppColors.primaryLight,
+      onPrimary: AppColors.darkBackground,
+      primaryContainer: Color(0xFF153B63),
+      onPrimaryContainer: Color(0xFFD6EAFF),
+      secondary: AppColors.primaryLight,
+      onSecondary: AppColors.darkBackground,
+      error: Color(0xFFFF7A7E),
+      onError: AppColors.darkBackground,
+      surface: AppColors.darkSurface,
+      onSurface: AppColors.darkTextPrimary,
+      outline: AppColors.darkBorder,
+      outlineVariant: AppColors.darkBorder,
+    );
+
+    return _baseTheme(colorScheme).copyWith(
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.darkBackground,
+      canvasColor: AppColors.darkBackground,
+      cardColor: AppColors.darkSurface,
+      dividerColor: AppColors.darkBorder,
+      textTheme: _textTheme(
+        AppColors.darkTextPrimary,
+        AppColors.darkTextSecondary,
+      ),
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        backgroundColor: AppColors.darkBackground,
+        foregroundColor: AppColors.darkTextPrimary,
+        surfaceTintColor: AppColors.transparent,
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          height: 1.4,
+          fontWeight: FontWeight.w600,
+          color: AppColors.darkTextPrimary,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.darkSurface,
+        surfaceTintColor: AppColors.transparent,
+        elevation: 0,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          side: const BorderSide(color: AppColors.darkBorder),
+        ),
+      ),
+      inputDecorationTheme: _inputDecorationTheme(
+        fillColor: AppColors.darkSurface,
+        textColor: AppColors.darkTextPrimary,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.darkSurface,
+        selectedItemColor: AppColors.primaryLight,
+        unselectedItemColor: AppColors.darkTextSecondary,
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        height: 68,
+        elevation: 0,
+        backgroundColor: AppColors.darkSurface,
+        surfaceTintColor: AppColors.transparent,
+        indicatorColor: const Color(0xFF153B63),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          return IconThemeData(
+            size: 24,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primaryLight
+                : AppColors.darkTextSecondary,
+          );
+        }),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.darkSurface,
+        surfaceTintColor: AppColors.transparent,
+        modalBackgroundColor: AppColors.darkSurface,
+        showDragHandle: true,
+        dragHandleColor: AppColors.darkBorder,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.xl),
+          ),
+        ),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.darkBorder,
+        thickness: 1,
+      ),
+    );
+  }
+
+  static ThemeData _baseTheme(ColorScheme colorScheme) {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      visualDensity: VisualDensity.standard,
+      splashFactory: InkSparkle.splashFactory,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: _filledButtonStyle(),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: _filledButtonStyle(),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          minimumSize: const WidgetStatePropertyAll(Size(44, 50)),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsets.symmetric(horizontal: AppSpacing.lg20),
+          ),
+          elevation: const WidgetStatePropertyAll(0),
+          foregroundColor: const WidgetStatePropertyAll(AppColors.textPrimary),
+          side: const WidgetStatePropertyAll(
+            BorderSide(color: AppColors.border),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+          ),
+          textStyle: const WidgetStatePropertyAll(
+            TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          minimumSize: const WidgetStatePropertyAll(Size(44, 44)),
+          foregroundColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.disabled)) {
+              return AppColors.textTertiary;
+            }
+            return AppColors.primary;
+          }),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+          ),
+          textStyle: const WidgetStatePropertyAll(
+            TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static ButtonStyle _filledButtonStyle() {
+    return ButtonStyle(
+      minimumSize: const WidgetStatePropertyAll(Size(44, 50)),
+      padding: const WidgetStatePropertyAll(
+        EdgeInsets.symmetric(horizontal: AppSpacing.lg20),
+      ),
+      elevation: const WidgetStatePropertyAll(0),
+      foregroundColor: WidgetStateProperty.resolveWith((states) {
+        return states.contains(WidgetState.disabled)
+            ? AppColors.textTertiary
+            : AppColors.onPrimary;
+      }),
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return AppColors.disabled;
+        }
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.primaryPressed;
+        }
+        return AppColors.primary;
+      }),
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+      textStyle: const WidgetStatePropertyAll(
+        TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  static InputDecorationTheme _inputDecorationTheme({
+    required Color fillColor,
+    required Color textColor,
+  }) {
+    OutlineInputBorder border(Color color, [double width = 1]) {
+      return OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        borderSide: BorderSide(color: color, width: width),
+      );
+    }
+
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: fillColor,
+      isDense: false,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md14,
+      ),
+      labelStyle: TextStyle(
+        color: textColor.withValues(alpha: 0.72),
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+      hintStyle: const TextStyle(
+        color: AppColors.textTertiary,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+      ),
+      helperStyle: const TextStyle(
+        color: AppColors.textSecondary,
+        fontSize: 12,
+        height: 1.35,
+      ),
+      errorStyle: const TextStyle(
+        color: AppColors.error,
+        fontSize: 12,
+        height: 1.35,
+      ),
+      border: border(AppColors.border),
+      enabledBorder: border(AppColors.border),
+      focusedBorder: border(AppColors.primary, 1.5),
+      errorBorder: border(AppColors.error),
+      focusedErrorBorder: border(AppColors.error, 1.5),
+      disabledBorder: border(AppColors.divider),
+    );
+  }
+
+  static TextTheme _textTheme(Color primary, Color secondary) {
+    return TextTheme(
+      displaySmall: TextStyle(
+        fontSize: 32,
+        height: 1.25,
+        fontWeight: FontWeight.w700,
+        color: primary,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 24,
+        height: 1.34,
+        fontWeight: FontWeight.w700,
+        color: primary,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 20,
+        height: 1.4,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 17,
+        height: 1.42,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 15,
+        height: 1.35,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        height: 1.5,
+        fontWeight: FontWeight.w400,
+        color: primary,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        height: 1.43,
+        fontWeight: FontWeight.w400,
+        color: primary,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 13,
+        height: 1.38,
+        fontWeight: FontWeight.w400,
+        color: secondary,
+      ),
+      labelLarge: TextStyle(
+        fontSize: 15,
+        height: 1.34,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 13,
+        height: 1.38,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 12,
+        height: 1.34,
+        fontWeight: FontWeight.w500,
+        color: secondary,
+      ),
+    );
+  }
 }

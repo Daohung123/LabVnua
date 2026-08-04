@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aqedu/core/services_root/notification/notification_channels.dart';
+import 'package:aqedu/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
@@ -70,7 +71,7 @@ class LocalNotificationService {
         enableVibration: true,
         playSound: true,
         sound: const RawResourceAndroidNotificationSound('notif_chat'),
-        color: const Color(0xFF0066FF),
+        color: AppColors.primary,
         icon: '@mipmap/ic_launcher',
         largeIcon: largeIcon,
         styleInformation: BigTextStyleInformation(

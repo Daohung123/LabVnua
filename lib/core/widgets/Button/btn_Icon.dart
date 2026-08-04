@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aqedu/core/theme/app_components.dart';
 /// Deprecated: Use AppIconButton instead
 /// Image-based button component kept for backward compatibility
 @Deprecated('Use AppIconButton or AppButton.small() with icon instead')
@@ -30,7 +31,7 @@ class ButtonImage extends StatelessWidget {
             fit: BoxFit.contain,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Text(
           text,
           style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
